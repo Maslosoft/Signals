@@ -1,5 +1,7 @@
 <?php
+
 Yii::import('ext.signals.*');
+
 /**
  * Description of MSignal
  *
@@ -10,6 +12,8 @@ class MSignal extends CApplicationComponent
 
 	const ConfigFilename = 'signals-definition.php';
 
+	public $containerClass = 'ext.signals.MSignalContainer';
+
 	/**
 	 * Access control callback.
 	 * Callback signature:
@@ -17,7 +21,6 @@ class MSignal extends CApplicationComponent
 	 * @var callback
 	 */
 	public $accessCallback = [];
-
 	private static $_config = [];
 
 	public function init()
@@ -44,7 +47,7 @@ class MSignal extends CApplicationComponent
 		$result = [];
 //		var_dump(self::$_config);
 //		exit;
-		foreach(self::$_config[$class] as $alias)
+		foreach (self::$_config[$class] as $alias)
 		{
 			$slot = Yii::createComponent($alias);
 			$slot->setSignal($signal);
