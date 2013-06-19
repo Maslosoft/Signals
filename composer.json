@@ -12,6 +12,6 @@
 	],
 	"require": {
 		"composer/installers": "~1.0",
-		"maslosoft/yii-addendum": "0.1"
+		"maslosoft/yii-addendum": "dev-master"
 	}
 }
