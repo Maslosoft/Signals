@@ -4,7 +4,7 @@
  * MExampleSlot
  * @Label('Say hello to signal')
  * @Description('This slot is saying helo to any signal')
- * @Signal('MExampleSignal')
+ * @SlotFor('MExampleSignal')
  * @Allowed('ua.user.allowed')
  * @author Piotr
  */

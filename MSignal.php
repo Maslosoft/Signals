@@ -1,6 +1,6 @@
 <?php
-
-Yii::import('ext.signals.*');
+Yii::setPathOfAlias('yii-signals', __DIR__);
+Yii::import('yii-signals.*');
 
 /**
  * Description of MSignal
@@ -12,6 +12,15 @@ class MSignal extends CApplicationComponent
 
 	const ConfigFilename = 'signals-definition.php';
 
+	/**
+	 * Path alias of where to store signals definios
+	 * @var string
+	 */
+	public $configAlias = 'autogen';
+
+	/**
+	 * 
+	 */
 	public $containerClass = 'ext.signals.MSignalContainer';
 
 	/**
@@ -38,6 +47,7 @@ class MSignal extends CApplicationComponent
 	}
 
 	/**
+	 * Emit signal and get results from connected slots
 	 * @param IMSignal $signal
 	 * @return IMSignalSlot[] Slot container
 	 */
@@ -59,4 +69,12 @@ class MSignal extends CApplicationComponent
 		return $result;
 	}
 
+	/**
+	 * Call for signals from slot
+	 * @param IMSignalSlot $slot
+	 */
+	public function collect(IMSignalSlot $slot)
+	{
+
+	}
 }
