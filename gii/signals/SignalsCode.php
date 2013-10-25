@@ -1,6 +1,7 @@
 <?php
 
 Yii::import('ext.signals.MSignal');
+Yii::import('ext.signals.MSignalUtility');
 
 /**
  * MSignalsCode
@@ -43,54 +44,25 @@ class SignalsCode extends CCodeModel
 	 */
 	public function prepare()
 	{
-		$annotations = [
-			 'SlotFor',
-			 'SignalFor'
-		];
-//		EAnnotationUtility::fileWalker($annotations, [$this, 'processFile']);
-		Yii::app()->addendum;
+		
 
-		$file = __DIR__ . '/../../example/MExampleNameSignal.php';
-		$this->processFile($file);
+//		$file = __DIR__ . '/../../example/MExampleNameSignal.php';
+//		$this->processFile($file);
 //		$string = file_get_contents($file);
 
-		var_dump($value);
-
+//		var_dump($value);
+		$data = (new MSignalUtility)->generate();
 		$path = Yii::getPathOfAlias('autogen') . '/' . MSignal::ConfigFilename;
 		$code = "<?\n";
 		$code .= "return ";
-		$code .= var_export([], true);
+		$code .= var_export($data, true);
 		$code .= ";";
 
 		$this->files[] = new CCodeFile($path, $code);
 	}
 
-	public function processFile($file)
-	{
-		$value = EAnnotationUtility::rawAnnotate($file)['class'];
-
-
-		var_dump($value);
-	}
-
-	private function _getValuesFor($key)
-	{
-		$value = [];
-		if (isset($value[$key]))
-		{
-			foreach ($value[$key] as $val)
-			{
-				if (is_array($val))
-				{
-					$value = array_merge($value, $val);
-				}
-				elseif (is_string($val))
-				{
-					$value[] = $val;
-				}
-			}
-		}
-		return array_keys(array_unique($value));
-	}
+	
+	
+	
 
 }
