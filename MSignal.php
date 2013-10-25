@@ -9,7 +9,8 @@ Yii::import('yii-signals.*');
  */
 class MSignal extends CApplicationComponent
 {
-
+	const slots = 'slots';
+	const signals = 'signals';
 	const ConfigFilename = 'signals-definition.php';
 
 	/**
@@ -47,11 +48,55 @@ class MSignal extends CApplicationComponent
 	}
 
 	/**
+	 * Emit signal to inform slots
+	 * @param object $signal
+	 * @return object[]
+	 */
+	public function emit($signal)
+	{
+		$result = [];
+		$name = get_class($signal);
+		if(!isset(self::$_config[self::signals][$name]))
+		{
+			return $result;
+		}
+		foreach(self::$_config[self::signals][$name] as $alias => $injection)
+		{
+			// Skip
+			if(false === $injection)
+			{
+				continue;
+			}
+			// Constructor injection
+			if(true === $injection)
+			{
+				$result[] = Yii::createComponent($alias, $signal);
+				continue;
+			}
+			
+			$slot = Yii::createComponent($alias);
+			if(strstr($injection, '()'))
+			{
+				// Method injection
+				$methodName = str_replace('()', '', $injection);
+				$slot->$methodName($signal);
+			}
+			else
+			{
+				// field injection
+				$slot->$injection = $signal;
+			}
+			$result[] = $slot;
+		}
+		return $result;
+	}
+	
+	/**
 	 * Emit signal and get results from connected slots
 	 * @param IMSignal $signal
 	 * @return IMSignalSlot[] Slot container
 	 */
-	public function emit(IMSignal $signal)
+	public function _old_emit(IMSignal $signal)
 	{
 		$class = get_class($signal);
 		$result = [];
@@ -71,10 +116,20 @@ class MSignal extends CApplicationComponent
 
 	/**
 	 * Call for signals from slot
-	 * @param IMSignalSlot $slot
+	 * @param object $slot
 	 */
-	public function collect(IMSignalSlot $slot)
+	public function gather($slot)
 	{
-
+		$result = [];
+		$name = get_class($slot);
+		foreach(self::$_config[self::slots][$name] as $alias => $emit)
+		{
+			if(false === $emit)
+			{
+				continue;
+			}
+			$result[] = Yii::createComponent($alias);
+		}
+		return $result;
 	}
 }

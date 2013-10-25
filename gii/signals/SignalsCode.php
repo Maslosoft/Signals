@@ -23,18 +23,18 @@ class SignalsCode extends CCodeModel
 
 	public function checkAutogenAlias($attribute, $params)
 	{
-		$path = Yii::getPathOfAlias('autogen');
+		$path = Yii::getPathOfAlias(Yii::app()->signal->configAlias);
 		if (!Yii::app()->addendum)
 		{
 			$this->addError($attribute, 'Yii Signals requires Yii Addendum extension');
 		}
 		if (false === $path)
 		{
-			$this->addError($attribute, 'Path alias "autogen" is not defined');
+			$this->addError($attribute, sprintf('Path alias "%s" does not exists, configure "configAlias" property of signal extension', Yii::app()->signal->configAlias));
 		}
 		if (!is_writable($path))
 		{
-			$this->addError($attribute, sprintf('Path alias "autogen" (%s) is not writable', realpath($path)));
+			$this->addError($attribute, sprintf('Path alias "%s" (%s) is not writable', Yii::app()->signal->configAlias, realpath($path)));
 		}
 	}
 
@@ -44,13 +44,6 @@ class SignalsCode extends CCodeModel
 	 */
 	public function prepare()
 	{
-		
-
-//		$file = __DIR__ . '/../../example/MExampleNameSignal.php';
-//		$this->processFile($file);
-//		$string = file_get_contents($file);
-
-//		var_dump($value);
 		$data = (new MSignalUtility)->generate();
 		$path = Yii::getPathOfAlias('autogen') . '/' . MSignal::ConfigFilename;
 		$code = "<?\n";

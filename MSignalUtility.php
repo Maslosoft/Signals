@@ -8,6 +8,9 @@
 class MSignalUtility extends CComponent
 {
 
+	const slotFor = 'SlotFor';
+	const signalFor = 'SignalFor';
+	
 	private $_data = [];
 
 	public function generate()
@@ -16,10 +19,12 @@ class MSignalUtility extends CComponent
 			'SlotFor',
 			'SignalFor'
 		];
+//		echo '<pre>';
 		EAnnotationUtility::fileWalker($annotations, [$this, 'processFile']);
-		echo '<pre>';
-		var_dump($this->_data);
-		echo '</pre>';
+
+//		var_export($this->_data);
+//		echo '</pre>';
+		return $this->_data;
 	}
 
 	/**
@@ -28,28 +33,58 @@ class MSignalUtility extends CComponent
 	 */
 	public function processFile($file)
 	{
-		$value = EAnnotationUtility::rawAnnotate($file)['class'];
-		$for = [
-			'slots' => 'SignalFor',
-			'signals' => 'SlotFor'
-		];
-		foreach ($for as $src => $annotation)
+		// Signals
+		$class = EAnnotationUtility::rawAnnotate($file)['class'];
+		$alias = MSignalUtility::getAliasOfPath($file);
+		if (isset($class[self::signalFor]))
 		{
-			if (!isset($value[$annotation]))
+			$val = $this->_getValuesFor($class[self::signalFor]);
+			foreach ($val as $slot)
+			{
+				$this->_data[MSignal::slots][$slot][$alias] = true;
+			}
+		}
+
+		// Slots
+		// For constructor injection
+		if (isset($class[self::slotFor]))
+		{
+			$val = $this->_getValuesFor($class[self::slotFor]);
+			foreach ($val as $slot)
+			{
+				$this->_data[MSignal::signals][$slot][$alias] = true;
+			}
+		}
+
+		// For method injection
+		$methods = EAnnotationUtility::rawAnnotate($file)['methods'];
+		foreach ($methods as $methodName => $method)
+		{
+			if (!isset($method[self::slotFor]))
 			{
 				continue;
 			}
-			$val = $this->_getValuesFor($value[$annotation]);
+			$val = $this->_getValuesFor($method[self::slotFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[$src][$slot][] = MSignalUtility::getAliasOfPath($file);
+				$this->_data[MSignal::signals][$slot][$alias] = sprintf('%s()', $methodName);
 			}
 		}
-		echo '<pre>';
-//		var_dump();
-		echo '----------------' . "\n";
-		var_dump($val);
-		echo '</pre>';
+
+		// For property injection
+		$fields = EAnnotationUtility::rawAnnotate($file)['fields'];
+		foreach ($fields as $fieldName => $method)
+		{
+			if (!isset($method[self::slotFor]))
+			{
+				continue;
+			}
+			$val = $this->_getValuesFor($method[self::slotFor]);
+			foreach ($val as $slot)
+			{
+				$this->_data[MSignal::signals][$slot][$alias] = sprintf('%s', $fieldName);
+			}
+		}
 	}
 
 	private function _getValuesFor($src)
