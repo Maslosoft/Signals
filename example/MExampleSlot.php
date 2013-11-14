@@ -5,10 +5,10 @@
  * @Label('Say hello to signal')
  * @Description('This slot is saying helo to any signal')
  * @SlotFor('MExampleSignal')
- * @Allowed('ua.user.allowed')
+ * @\Allowed('ua.user.allowed')
  * @author Piotr
  */
-class MExampleSlot extends CComponent implements IMSignalSlot, IAnnotated
+class MExampleSlot extends CComponent implements IAnnotated
 {
 	private $_signal = null;
 	public function result()
