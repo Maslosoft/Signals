@@ -10,7 +10,7 @@ class MSignalUtility extends CComponent
 
 	const slotFor = 'SlotFor';
 	const signalFor = 'SignalFor';
-	
+
 	private $_data = [];
 
 	public function generate()
@@ -35,7 +35,7 @@ class MSignalUtility extends CComponent
 	{
 		// Signals
 		$class = EAnnotationUtility::rawAnnotate($file)['class'];
-		$alias = MSignalUtility::getAliasOfPath($file);
+		$alias = EAnnotationUtility::getAliasOfPath($file);
 		if (isset($class[self::signalFor]))
 		{
 			$val = $this->_getValuesFor($class[self::signalFor]);
@@ -103,16 +103,6 @@ class MSignalUtility extends CComponent
 			}
 		}
 		return array_values(array_unique($value));
-	}
-
-	public static function getAliasOfPath($path = __DIR__)
-	{
-		$path = str_replace(Yii::app()->basePath, '', $path);
-		$path = sprintf('application%s', $path);
-		$path = str_replace('\\', '/', $path);
-		$path = str_replace('/', '.', $path);
-		$path = preg_replace('~\.php$~', '', $path);
-		return $path;
 	}
 
 }
