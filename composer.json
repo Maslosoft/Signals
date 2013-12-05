@@ -1,5 +1,5 @@
 {
-	"name": "maslosoft/yii-signals",
+	"name": "maslosoft/signals",
 	"type": "yii-extension",
 	"description": "Cross-component communication for Yii",
 	"keywords" : ["signal", "signals", "event", "events", "slot", "slots", "yii"],
@@ -13,6 +13,6 @@
 		}
 	],
 	"require": {
-		"maslosoft/yii-addendum": "dev-master"
+		"maslosoft/addendum": "dev-master"
 	}
 }
