@@ -2,7 +2,7 @@
 	"name": "maslosoft/signals",
 	"type": "yii-extension",
 	"description": "Cross-component communication for Yii",
-	"keywords" : ["signal", "signals", "event", "events", "slot", "slots", "yii"],
+	"keywords": ["signal", "signals", "event", "events", "slot", "slots", "yii"],
 	"license": "GNU LESSER GENERAL PUBLIC LICENSE",
 	"authors": [
 		{
@@ -14,5 +14,10 @@
 	],
 	"require": {
 		"maslosoft/addendum": "dev-master"
+	},
+	"autoload": {
+		"psr-0": {
+			"Maslosoft\\Signals": "./"
+		}
 	}
 }

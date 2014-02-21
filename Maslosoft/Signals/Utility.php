@@ -1,11 +1,16 @@
 <?php
 
+namespace Maslosoft\Signals;
+
+use CComponent;
+use EAnnotationUtility;
+
 /**
  * Signals utility class
  *
  * @author Piotr
  */
-class MSignalUtility extends CComponent
+class Utility extends CComponent
 {
 
 	const slotFor = 'SlotFor';
@@ -41,7 +46,7 @@ class MSignalUtility extends CComponent
 			$val = $this->_getValuesFor($class[self::signalFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[MSignal::slots][$slot][$alias] = true;
+				$this->_data[Signal::slots][$slot][$alias] = true;
 			}
 		}
 
@@ -52,7 +57,7 @@ class MSignalUtility extends CComponent
 			$val = $this->_getValuesFor($class[self::slotFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[MSignal::signals][$slot][$alias] = true;
+				$this->_data[Signal::signals][$slot][$alias] = true;
 			}
 		}
 
@@ -67,7 +72,7 @@ class MSignalUtility extends CComponent
 			$val = $this->_getValuesFor($method[self::slotFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[MSignal::signals][$slot][$alias] = sprintf('%s()', $methodName);
+				$this->_data[Signal::signals][$slot][$alias] = sprintf('%s()', $methodName);
 			}
 		}
 
@@ -82,7 +87,7 @@ class MSignalUtility extends CComponent
 			$val = $this->_getValuesFor($method[self::slotFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[MSignal::signals][$slot][$alias] = sprintf('%s', $fieldName);
+				$this->_data[Signal::signals][$slot][$alias] = sprintf('%s', $fieldName);
 			}
 		}
 	}

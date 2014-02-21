@@ -1,5 +1,7 @@
 <?php
 
+use Maslosoft\Signals\ISignal;
+
 /**
  * MExampleSlot
  * @Label('Say hello to signal')
@@ -10,7 +12,9 @@
  */
 class MExampleSlot extends CComponent implements IAnnotated
 {
+
 	private $_signal = null;
+
 	public function result()
 	{
 		var_dump(Yii::app()->basePath);
@@ -24,8 +28,9 @@ class MExampleSlot extends CComponent implements IAnnotated
 		return sprintf('Hello %s', $this->_signal->name);
 	}
 
-	public function setSignal(IMSignal $signal)
+	public function setSignal(ISignal $signal)
 	{
 		$this->_signal = $signal;
 	}
+
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace Maslosoft\Signals;
+
 /**
  * SignalForAnnotation
  * @template SignalFor(${SlotClass})

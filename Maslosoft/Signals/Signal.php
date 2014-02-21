@@ -1,14 +1,20 @@
 <?php
-Yii::setPathOfAlias('yii-signals', __DIR__);
-Yii::import('yii-signals.*');
+
+namespace Maslosoft\Signals;
+
+use CApplicationComponent;
+use EComponentMeta;
+use RuntimeException;
+use Yii;
 
 /**
- * Description of MSignal
+ * Main signals components
  *
  * @author Piotr
  */
-class MSignal extends CApplicationComponent
+class Signal extends CApplicationComponent
 {
+
 	const slots = 'slots';
 	const signals = 'signals';
 	const ConfigFilename = 'signals-definition.php';
@@ -22,7 +28,7 @@ class MSignal extends CApplicationComponent
 	/**
 	 * 
 	 */
-	public $containerClass = 'ext.signals.MSignalContainer';
+	public $containerClass = 'Maslosoft\Signals\Container';
 
 	/**
 	 * Access control callback.
@@ -56,26 +62,26 @@ class MSignal extends CApplicationComponent
 	{
 		$result = [];
 		$name = get_class($signal);
-		if(!isset(self::$_config[self::signals][$name]))
+		if (!isset(self::$_config[self::signals][$name]))
 		{
 			return $result;
 		}
-		foreach(self::$_config[self::signals][$name] as $alias => $injection)
+		foreach (self::$_config[self::signals][$name] as $alias => $injection)
 		{
 			// Skip
-			if(false === $injection)
+			if (false === $injection)
 			{
 				continue;
 			}
 			// Constructor injection
-			if(true === $injection)
+			if (true === $injection)
 			{
 				$result[] = Yii::createComponent($alias, $signal);
 				continue;
 			}
-			
+
 			$slot = Yii::createComponent($alias);
-			if(strstr($injection, '()'))
+			if (strstr($injection, '()'))
 			{
 				// Method injection
 				$methodName = str_replace('()', '', $injection);
@@ -90,13 +96,13 @@ class MSignal extends CApplicationComponent
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Emit signal and get results from connected slots
-	 * @param IMSignal $signal
-	 * @return IMSignalSlot[] Slot container
+	 * @param ISignal $signal
+	 * @return ISignalSlot[] Slot container
 	 */
-	public function _old_emit(IMSignal $signal)
+	public function _old_emit(ISignal $signal)
 	{
 		$class = get_class($signal);
 		$result = [];
@@ -106,7 +112,7 @@ class MSignal extends CApplicationComponent
 		{
 			$slot = Yii::createComponent($alias);
 			$slot->setSignal($signal);
-			$container = new MSignalContainer();
+			$container = new Container();
 			$container->result = $slot->result();
 			$container->meta = EComponentMeta::create($slot);
 			$result[] = $container;
@@ -122,9 +128,9 @@ class MSignal extends CApplicationComponent
 	{
 		$result = [];
 		$name = get_class($slot);
-		foreach(self::$_config[self::slots][$name] as $alias => $emit)
+		foreach (self::$_config[self::slots][$name] as $alias => $emit)
 		{
-			if(false === $emit)
+			if (false === $emit)
 			{
 				continue;
 			}
@@ -132,4 +138,5 @@ class MSignal extends CApplicationComponent
 		}
 		return $result;
 	}
+
 }

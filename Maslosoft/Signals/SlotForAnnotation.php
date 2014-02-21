@@ -1,5 +1,9 @@
 <?php
 
+namespace Maslosoft\Signals;
+
+use EComponentMetaAnnotation;
+
 /**
  * SlotForAnnotation
  * @template SlotFor('${SignalClass}')
@@ -7,8 +11,10 @@
  */
 class SlotForAnnotation extends EComponentMetaAnnotation
 {
+
 	public function init()
 	{
-
+		
 	}
+
 }

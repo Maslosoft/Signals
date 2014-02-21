@@ -1,10 +1,10 @@
 <?php
 
-Yii::import('ext.signals.MSignal');
-Yii::import('ext.signals.MSignalUtility');
+use Maslosoft\Signals\Signal;
+use Maslosoft\Signals\Utility;
 
 /**
- * MSignalsCode
+ * Signals code
  *
  * @author Piotr
  */
@@ -17,7 +17,7 @@ class SignalsCode extends CCodeModel
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			 ['autogenAlias', 'checkAutogenAlias']
+			['autogenAlias', 'checkAutogenAlias']
 		]);
 	}
 
@@ -44,8 +44,8 @@ class SignalsCode extends CCodeModel
 	 */
 	public function prepare()
 	{
-		$data = (new MSignalUtility)->generate();
-		$path = Yii::getPathOfAlias('autogen') . '/' . MSignal::ConfigFilename;
+		$data = (new Utility)->generate();
+		$path = Yii::getPathOfAlias('autogen') . '/' . Signal::ConfigFilename;
 		$code = "<?\n";
 		$code .= "return ";
 		$code .= var_export($data, true);
@@ -53,9 +53,5 @@ class SignalsCode extends CCodeModel
 
 		$this->files[] = new CCodeFile($path, $code);
 	}
-
-	
-	
-	
 
 }

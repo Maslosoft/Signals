@@ -1,17 +1,21 @@
 <?php
 
+namespace Maslosoft\Signals;
+
+use Maslosoft\Signals\ISignal;
+
 /**
  * Signal slot interface
  * @author Piotr
  */
-interface IMSignalSlot
+interface ISignalSlot
 {
 
 	/**
 	 * Set signal comming from application
-	 * @param IMSignal $signal
+	 * @param ISignal $signal
 	 */
-	public function setSignal(IMSignal $signal);
+	public function setSignal(ISignal $signal);
 
 	/**
 	 * Get result of signal
