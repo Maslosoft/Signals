@@ -48,7 +48,11 @@ class Signal extends CApplicationComponent
 			{
 				throw new RuntimeException('Alias "autogen" is not defined');
 			}
-			self::$_config = require $configPath . '/' . self::ConfigFilename;
+			$file = $configPath . '/' . self::ConfigFilename;
+			if(file_exists($file))
+			{
+				self::$_config = require $file;
+			}
 		}
 		parent::init();
 	}

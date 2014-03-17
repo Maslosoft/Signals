@@ -1,7 +1,12 @@
 <?php
 
+namespace Maslosoft\Signals\Gii;
+
+use CCodeFile;
+use CCodeModel;
 use Maslosoft\Signals\Signal;
 use Maslosoft\Signals\Utility;
+use Yii;
 
 /**
  * Signals code
@@ -46,7 +51,7 @@ class SignalsCode extends CCodeModel
 	{
 		$data = (new Utility)->generate();
 		$path = Yii::getPathOfAlias('autogen') . '/' . Signal::ConfigFilename;
-		$code = "<?\n";
+		$code = "<?php\n";
 		$code .= "return ";
 		$code .= var_export($data, true);
 		$code .= ";";
@@ -54,4 +59,17 @@ class SignalsCode extends CCodeModel
 		$this->files[] = new CCodeFile($path, $code);
 	}
 
+	/**
+	 * Saves the generated code into files.
+	 */
+	public function save()
+	{
+		$result=true;
+		foreach($this->files as $file)
+		{
+			// Dont ask anything, just overwrite
+			$result=$file->save() && $result;
+		}
+		return $result;
+	}
 }

@@ -4,6 +4,7 @@ namespace Maslosoft\Signals;
 
 use CComponent;
 use EAnnotationUtility;
+use Yii;
 
 /**
  * Signals utility class
@@ -25,7 +26,15 @@ class Utility extends CComponent
 			'SignalFor'
 		];
 //		echo '<pre>';
-		EAnnotationUtility::fileWalker($annotations, [$this, 'processFile']);
+		/**
+		 * FIXME This must be configurable
+		 */
+		$paths = [
+			Yii::getPathOfAlias('application'),
+			Yii::getPathOfAlias('vendor'),
+			Yii::getPathOfAlias('maslosoft'),
+		];
+		EAnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $paths);
 
 //		var_export($this->_data);
 //		echo '</pre>';
@@ -38,9 +47,27 @@ class Utility extends CComponent
 	 */
 	public function processFile($file)
 	{
+		// Create alias for current file
+		$namespace = EAnnotationUtility::rawAnnotate($file)['namespace'];
+		$className = EAnnotationUtility::rawAnnotate($file)['className'];
+		
+		// Remove global `\` namespace
+		$namespace = preg_replace('~^\\\\+~', '', $namespace);
+
+		// Create alias or fully namespaced class name
+		if(strstr($namespace, '\\'))
+		{
+			// Use namespaced name, class must autoload
+			$alias = $namespace . '\\' . $className;
+		}
+		else
+		{
+			// Use alias for non namespaced classes
+			$alias = EAnnotationUtility::getAliasOfPath($file);
+		}
+
 		// Signals
 		$class = EAnnotationUtility::rawAnnotate($file)['class'];
-		$alias = EAnnotationUtility::getAliasOfPath($file);
 		if (isset($class[self::signalFor]))
 		{
 			$val = $this->_getValuesFor($class[self::signalFor]);
@@ -108,6 +135,12 @@ class Utility extends CComponent
 			}
 		}
 		return array_values(array_unique($value));
+	}
+
+	private function _getAlias($val, $file)
+	{
+		
+		return $alias;
 	}
 
 }
