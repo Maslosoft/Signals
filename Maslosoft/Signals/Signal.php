@@ -3,7 +3,6 @@
 namespace Maslosoft\Signals;
 
 use CApplicationComponent;
-use EComponentMeta;
 use RuntimeException;
 use Yii;
 
@@ -102,43 +101,41 @@ class Signal extends CApplicationComponent
 	}
 
 	/**
-	 * Emit signal and get results from connected slots
-	 * @param ISignal $signal
-	 * @return ISignalSlot[] Slot container
-	 */
-	public function _old_emit(ISignal $signal)
-	{
-		$class = get_class($signal);
-		$result = [];
-//		var_dump(self::$_config);
-//		exit;
-		foreach (self::$_config[$class] as $alias)
-		{
-			$slot = Yii::createComponent($alias);
-			$slot->setSignal($signal);
-			$container = new Container();
-			$container->result = $slot->result();
-			$container->meta = EComponentMeta::create($slot);
-			$result[] = $container;
-		}
-		return $result;
-	}
-
-	/**
 	 * Call for signals from slot
 	 * @param object $slot
 	 */
-	public function gather($slot)
+	public function gather($slot, $interface = null)
 	{
 		$result = [];
 		$name = get_class($slot);
-		foreach (self::$_config[self::slots][$name] as $alias => $emit)
+		foreach ((array)self::$_config[self::slots][$name] as $alias => $emit)
 		{
 			if (false === $emit)
 			{
 				continue;
 			}
-			$result[] = Yii::createComponent($alias);
+			if(null === $interface)
+			{
+				$result[] = $component;
+				continue;
+			}
+
+			// Check if class implements interface
+			if(strstr($alias, '\\'))
+			{
+				$className = $alias;
+			}
+			else
+			{
+				$className = substr($alias, strrpos($alias, '.', -1) + 1);
+			}
+			Yii::import($alias);
+			if(class_implements($className)[$interface])
+			{
+				$component = Yii::createComponent($alias);
+	//			if($component instanceof $interface)
+				$result[] = $component;
+			}
 		}
 		return $result;
 	}
