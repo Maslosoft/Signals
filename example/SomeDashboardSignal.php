@@ -4,10 +4,10 @@ use Maslosoft\Signals\ISignal;
 
 /**
  * SomeDashboardSignal
- * @SignalFor('DashboardController')
+ * @SignalFor('SomeDashboardController')
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
-class SomeDashboardSignal implements ISignal, DashboardWidget
+class SomeDashboardSignal implements ISignal, IDashboardWidget
 {
 
 	public function getName()

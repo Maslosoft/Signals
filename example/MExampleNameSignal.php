@@ -3,11 +3,11 @@
 use Maslosoft\Signals\ISignal;
 
 /**
- * @SignalFor('DashboardController')
+ * @SignalFor('SomeDashboardController')
  * @SignalFor({'OtherSlot', 'AndThis'})
  * @author Piotr
  */
-class MExampleNameSignal extends CComponent implements ISignal, DashboardWidget
+class MExampleNameSignal extends CComponent implements ISignal, IDashboardWidget
 {
 
 	public $name = 'foo';
