@@ -4,7 +4,6 @@ namespace Maslosoft\Signals\Gii;
 
 use CCodeFile;
 use CCodeModel;
-use Maslosoft\Signals\Signal;
 use Maslosoft\Signals\Utility;
 use Yii;
 
@@ -16,17 +15,26 @@ use Yii;
 class SignalsCode extends CCodeModel
 {
 
-	public $autogenAlias = 'autogen';
 	private $_data = [];
 
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			['autogenAlias', 'checkAutogenAlias']
+			['configAlias', 'checkConfigAlias']
 		]);
 	}
 
-	public function checkAutogenAlias($attribute, $params)
+	public function getConfigAlias()
+	{
+		return Yii::app()->signal->configAlias;
+	}
+
+	public function setConfigAlias($value)
+	{
+		// Do nothing
+	}
+
+	public function checkconfigAlias($attribute, $params)
 	{
 		$path = Yii::getPathOfAlias(Yii::app()->signal->configAlias);
 		if (!Yii::app()->addendum)
@@ -50,7 +58,7 @@ class SignalsCode extends CCodeModel
 	public function prepare()
 	{
 		$data = (new Utility)->generate();
-		$path = Yii::getPathOfAlias('autogen') . '/' . Signal::ConfigFilename;
+		$path = Yii::getPathOfAlias(Yii::app()->signal->configAlias) . '/' . Yii::app()->signal->configFilename;
 		$code = "<?php\n";
 		$code .= "return ";
 		$code .= var_export($data, true);
@@ -64,12 +72,13 @@ class SignalsCode extends CCodeModel
 	 */
 	public function save()
 	{
-		$result=true;
-		foreach($this->files as $file)
+		$result = true;
+		foreach ($this->files as $file)
 		{
 			// Dont ask anything, just overwrite
-			$result=$file->save() && $result;
+			$result = $file->save() && $result;
 		}
 		return $result;
 	}
+
 }

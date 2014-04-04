@@ -18,11 +18,23 @@ class Signal extends CApplicationComponent
 	const signals = 'signals';
 	const ConfigFilename = 'signals-definition.php';
 
+	public $configFilename = 'signals-definition.php';
+
 	/**
 	 * Path alias of where to store signals definios
 	 * @var string
 	 */
 	public $configAlias = 'autogen';
+
+	/**
+	 * This aliases will be searched for SlotFor and SignalFor annotations
+	 * @var string[]
+	 */
+	public $searchAliases = [
+		'application',
+		'vendor',
+		'maslosoft'
+	];
 
 	/**
 	 * 
@@ -42,15 +54,19 @@ class Signal extends CApplicationComponent
 	{
 		if (!$this->isInitialized)
 		{
-			$configPath = Yii::getPathOfAlias('autogen');
+			$configPath = Yii::getPathOfAlias($this->configAlias);
 			if (false === $configPath)
 			{
-				throw new RuntimeException('Alias "autogen" is not defined');
+				throw new RuntimeException(sprintf('Alias "%s" is invalid', $this->configAlias));
 			}
-			$file = $configPath . '/' . self::ConfigFilename;
+			$file = $configPath . '/' . $this->configFilename;
 			if(file_exists($file))
 			{
 				self::$_config = require $file;
+			}
+			else
+			{
+				Yii::log(sprintf('Config file "%s" does not exists, have you generated signals config file?', $file));
 			}
 		}
 		parent::init();
@@ -103,6 +119,7 @@ class Signal extends CApplicationComponent
 	/**
 	 * Call for signals from slot
 	 * @param object $slot
+	 * @param string $interface Interface, which must be implemented to get into slot
 	 */
 	public function gather($slot, $interface = null)
 	{
@@ -116,6 +133,7 @@ class Signal extends CApplicationComponent
 			}
 			if(null === $interface)
 			{
+				$component = Yii::createComponent($alias);
 				$result[] = $component;
 				continue;
 			}

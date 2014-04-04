@@ -3,6 +3,7 @@
 namespace Maslosoft\Signals;
 
 use CComponent;
+use CLogger;
 use EAnnotationUtility;
 use Yii;
 
@@ -25,25 +26,25 @@ class Utility extends CComponent
 			'SlotFor',
 			'SignalFor'
 		];
-//		echo '<pre>';
-		/**
-		 * FIXME This must be configurable
-		 */
-		$paths = [
-			Yii::getPathOfAlias('application'),
-			Yii::getPathOfAlias('vendor'),
-			Yii::getPathOfAlias('maslosoft'),
-		];
+		$paths = [];
+		foreach(Yii::app()->signal->searchAliases as $alias)
+		{
+			$path = Yii::getPathOfAlias($alias);
+			if($path)
+			{
+				$paths[] = $path;
+			}
+			else
+			{
+				Yii::log(sprintf("Alias %s is invalid", $alias), CLogger::LEVEL_WARNING);
+			}
+		}
 		EAnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $paths);
-
-//		var_export($this->_data);
-//		echo '</pre>';
 		return $this->_data;
 	}
 
 	/**
-	 * TODO Slot should be annotated at method level and store this method name in definiution file
-	 * @param type $file
+	 * @param string $file
 	 */
 	public function processFile($file)
 	{
@@ -124,6 +125,10 @@ class Utility extends CComponent
 		$value = [];
 		foreach ($src as $val)
 		{
+			if(!isset($val['value']))
+			{
+				continue;
+			}
 			$val = $val['value'];
 			if (is_array($val))
 			{

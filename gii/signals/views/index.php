@@ -1,14 +1,23 @@
 <h1>Signals Generator</h1>
 
-<? $form = $this->beginWidget('CCodeForm', array('model' => $model)); ?>
+<?php $form = $this->beginWidget('CCodeForm', array('model' => $model)); ?>
 
 <div class="row">
-	<?= $form->labelEx($model, 'autogenAlias'); ?>
-	<?= $form->textField($model, 'autogenAlias', array('size' => 65, 'readonly' => true)); ?>
-	<div class="tooltip">
-		Path alias "autogen" must be defined and writable.
+	<?= $form->labelEx($model, 'configAlias'); ?>
+	<?= $form->textField($model, 'configAlias', array('size' => 65, 'readonly' => true)); ?>
+	<div class="hint">
+		Path alias "<?= $model->configAlias; ?>" must be defined and writable.<br />
+		Can be changed in application config like this:<br />
+		<pre>
+	'components' => [
+		...
+		'signal' => [
+		...
+		'configAlias' => '<?= $model->configAlias; ?>'
+		]
+	]</pre>
 	</div>
-	<?= $form->error($model, 'autogenAlias'); ?>
+	<?= $form->error($model, 'configAlias'); ?>
 </div>
 
-<? $this->endWidget(); ?>
+<?php $this->endWidget(); ?>
