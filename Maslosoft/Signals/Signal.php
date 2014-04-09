@@ -56,20 +56,7 @@ class Signal extends CApplicationComponent
 	{
 		if (!$this->isInitialized)
 		{
-			$configPath = Yii::getPathOfAlias($this->configAlias);
-			if (false === $configPath)
-			{
-				throw new RuntimeException(sprintf('Alias "%s" is invalid', $this->configAlias));
-			}
-			$file = $configPath . '/' . $this->configFilename;
-			if(file_exists($file))
-			{
-				self::$_config = require $file;
-			}
-			else
-			{
-				Yii::log(sprintf('Config file "%s" does not exists, have you generated signals config file?', $file));
-			}
+			$this->_init();
 		}
 		parent::init();
 	}
@@ -181,4 +168,29 @@ class Signal extends CApplicationComponent
 		return $result;
 	}
 
+	/**
+	 * Reloads signals cache and reinitializes component.
+	 */
+	public function resetCache()
+	{
+		$this->_init();
+	}
+
+	private function _init()
+	{
+		$configPath = Yii::getPathOfAlias($this->configAlias);
+		if (false === $configPath)
+		{
+			throw new RuntimeException(sprintf('Alias "%s" is invalid', $this->configAlias));
+		}
+		$file = $configPath . '/' . $this->configFilename;
+		if(file_exists($file))
+		{
+			self::$_config = require $file;
+		}
+		else
+		{
+			Yii::log(sprintf('Config file "%s" does not exists, have you generated signals config file?', $file), CLogger::LEVEL_WARNING);
+		}
+	}
 }
