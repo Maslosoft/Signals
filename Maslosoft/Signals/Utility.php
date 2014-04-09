@@ -18,7 +18,14 @@ class Utility extends CComponent
 	const slotFor = 'SlotFor';
 	const signalFor = 'SignalFor';
 
-	private $_data = [];
+	private $_data = [
+		Signal::slots => [
+
+		],
+		Signal::signals => [
+			
+		]
+	];
 
 	public function generate()
 	{

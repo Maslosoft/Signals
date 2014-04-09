@@ -85,7 +85,7 @@ class Signal extends CApplicationComponent
 		$name = get_class($signal);
 		if (!isset(self::$_config[self::signals][$name]))
 		{
-			return $result;
+			self::$_config[self::signals][$name] = [];
 		}
 		foreach (self::$_config[self::signals][$name] as $alias => $injection)
 		{
@@ -136,7 +136,11 @@ class Signal extends CApplicationComponent
 	{
 		$result = [];
 		$name = get_class($slot);
-		foreach ((array)self::$_config[self::slots][$name] as $alias => $emit)
+		if (!isset(self::$_config[self::slots][$name]))
+		{
+			self::$_config[self::slots][$name] = [];
+		}
+		foreach ((array) self::$_config[self::slots][$name] as $alias => $emit)
 		{
 			if (false === $emit)
 			{
