@@ -167,7 +167,7 @@ class Signal extends CApplicationComponent
 			{
 				$className = substr($alias, strrpos($alias, '.', -1) + 1);
 			}
-			if(class_implements($className)[$interface])
+			if(isset(class_implements($className)[$interface]))
 			{
 				$component = Yii::createComponent($alias);
 	//			if($component instanceof $interface)
