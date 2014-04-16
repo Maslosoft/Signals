@@ -23,7 +23,7 @@ class Signal extends CApplicationComponent
 	public $configFilename = 'signals-definition.php';
 
 	/**
-	 * Path alias of where to store signals definios
+	 * Path alias of where to store signals definitions
 	 * @var string
 	 */
 	public $configAlias = 'autogen';
