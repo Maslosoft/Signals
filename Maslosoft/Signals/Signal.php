@@ -63,16 +63,21 @@ class Signal extends CApplicationComponent
 
 	/**
 	 * Emit signal to inform slots
-	 * @param object $signal
+	 * @param object|string $signal
 	 * @return object[]
 	 */
 	public function emit($signal)
 	{
 		$result = [];
+		if(is_string($signal))
+		{
+			$signal = new $signal;
+		}
 		$name = get_class($signal);
 		if (!isset(self::$_config[self::signals][$name]))
 		{
 			self::$_config[self::signals][$name] = [];
+			Yii::log(sprintf('No slots found for signal `%s`, skipping', $name), CLogger::LEVEL_INFO, 'Maslosoft.Signals');
 		}
 		foreach (self::$_config[self::signals][$name] as $alias => $injection)
 		{
@@ -87,13 +92,18 @@ class Signal extends CApplicationComponent
 			}
 			catch (CException $exc)
 			{
-				Yii::log(sprintf("Slot %s for signal %s not found", $alias, $name), CLogger::LEVEL_ERROR);
+				Yii::log(sprintf("Slot %s for signal %s not found, exception message: '%s'", $alias, $name, $exc->getMessage()), CLogger::LEVEL_ERROR, 'Maslosoft.Signals');
 				continue;
 			}
+
+			// Clone signal, as it might be modified by slot
+			$signal = clone $signal;
+
 			// Constructor injection
 			if (true === $injection)
 			{
-				$result[] = Yii::createComponent($alias, $signal);
+				Yii::createComponent($alias, $signal);
+				$result[] = $signal;
 				continue;
 			}
 
@@ -109,7 +119,7 @@ class Signal extends CApplicationComponent
 				// field injection
 				$slot->$injection = $signal;
 			}
-			$result[] = $slot;
+			$result[] = $signal;
 		}
 		return $result;
 	}
@@ -139,7 +149,7 @@ class Signal extends CApplicationComponent
 			}
 			catch (CException $exc)
 			{
-				Yii::log(sprintf("Signal %s for slot %s not found", $alias, $name), CLogger::LEVEL_ERROR);
+				Yii::log(sprintf("Signal %s for slot %s not found", $alias, $name), CLogger::LEVEL_ERROR, 'Maslosoft.Signals');
 				continue;
 			}
 			if(null === $interface)
@@ -190,7 +200,7 @@ class Signal extends CApplicationComponent
 		}
 		else
 		{
-			Yii::log(sprintf('Config file "%s" does not exists, have you generated signals config file?', $file), CLogger::LEVEL_WARNING);
+			Yii::log(sprintf('Config file "%s" does not exists, have you generated signals config file?', $file), CLogger::LEVEL_WARNING, 'Maslosoft.Signals');
 		}
 	}
 }

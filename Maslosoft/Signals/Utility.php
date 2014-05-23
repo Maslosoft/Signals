@@ -43,7 +43,7 @@ class Utility extends CComponent
 			}
 			else
 			{
-				Yii::log(sprintf("Alias %s is invalid", $alias), CLogger::LEVEL_WARNING);
+				Yii::log(sprintf("Alias %s is invalid", $alias), CLogger::LEVEL_WARNING, 'Maslosoft.Signals');
 			}
 		}
 		EAnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $paths);
