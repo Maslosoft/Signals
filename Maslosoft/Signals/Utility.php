@@ -63,6 +63,14 @@ class Utility extends CComponent
 		$namespace = preg_replace('~^\\\\+~', '', $namespace);
 
 		// Create alias or fully namespaced class name
+		/**
+		 * TODO Investigate this case, this is only workaround
+		 */
+		if(!is_string($namespace))
+		{
+//			var_dump($file);
+			return false;
+		}
 		if(strstr($namespace, '\\'))
 		{
 			// Use namespaced name, class must autoload
