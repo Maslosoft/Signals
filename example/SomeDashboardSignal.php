@@ -7,7 +7,7 @@ use Maslosoft\Signals\ISignal;
  * @SignalFor('SomeDashboardController')
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
-class SomeDashboardSignal implements ISignal, IDashboardWidget
+class SomeDashboardSignal implements ISignal
 {
 
 	public function getName()

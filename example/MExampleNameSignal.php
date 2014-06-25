@@ -7,7 +7,7 @@ use Maslosoft\Signals\ISignal;
  * @SignalFor({'OtherSlot', 'AndThis'})
  * @author Piotr
  */
-class MExampleNameSignal extends CComponent implements ISignal, IDashboardWidget
+class MExampleNameSignal extends CComponent implements ISignal
 {
 
 	public $name = 'foo';

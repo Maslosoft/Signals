@@ -7,6 +7,8 @@ use CCodeModel;
 use Maslosoft\Signals\Utility;
 use Yii;
 
+Yii::import('gii.*');
+
 /**
  * Signals code
  *
