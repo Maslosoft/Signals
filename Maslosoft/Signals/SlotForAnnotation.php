@@ -1,8 +1,8 @@
 <?php
 
-use Maslosoft\Addendum\Collections\MetaAnnotation;
-
 namespace Maslosoft\Signals;
+
+use Maslosoft\Addendum\Collections\MetaAnnotation;
 
 /**
  * SlotForAnnotation
