@@ -4,7 +4,7 @@ namespace Maslosoft\Signals;
 
 use CComponent;
 use CLogger;
-use EAnnotationUtility;
+use Maslosoft\Addendum\Utilities\AnnotationUtility;
 use Yii;
 
 /**
@@ -46,7 +46,7 @@ class Utility extends CComponent
 				Yii::log(sprintf("Alias %s is invalid", $alias), CLogger::LEVEL_WARNING, 'Maslosoft.Signals');
 			}
 		}
-		EAnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $paths);
+		AnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $paths);
 		return $this->_data;
 	}
 
@@ -56,8 +56,8 @@ class Utility extends CComponent
 	public function processFile($file)
 	{
 		// Create alias for current file
-		$namespace = EAnnotationUtility::rawAnnotate($file)['namespace'];
-		$className = EAnnotationUtility::rawAnnotate($file)['className'];
+		$namespace = AnnotationUtility::rawAnnotate($file)['namespace'];
+		$className = AnnotationUtility::rawAnnotate($file)['className'];
 		
 		// Remove global `\` namespace
 		$namespace = preg_replace('~^\\\\+~', '', $namespace);
@@ -79,11 +79,11 @@ class Utility extends CComponent
 		else
 		{
 			// Use alias for non namespaced classes
-			$alias = EAnnotationUtility::getAliasOfPath($file);
+			$alias = AnnotationUtility::getAliasOfPath($file);
 		}
 
 		// Signals
-		$class = EAnnotationUtility::rawAnnotate($file)['class'];
+		$class = AnnotationUtility::rawAnnotate($file)['class'];
 		if (isset($class[self::signalFor]))
 		{
 			$val = $this->_getValuesFor($class[self::signalFor]);
@@ -105,7 +105,7 @@ class Utility extends CComponent
 		}
 
 		// For method injection
-		$methods = EAnnotationUtility::rawAnnotate($file)['methods'];
+		$methods = AnnotationUtility::rawAnnotate($file)['methods'];
 		foreach ($methods as $methodName => $method)
 		{
 			if (!isset($method[self::slotFor]))
@@ -120,7 +120,7 @@ class Utility extends CComponent
 		}
 
 		// For property injection
-		$fields = EAnnotationUtility::rawAnnotate($file)['fields'];
+		$fields = AnnotationUtility::rawAnnotate($file)['fields'];
 		foreach ($fields as $fieldName => $method)
 		{
 			if (!isset($method[self::slotFor]))

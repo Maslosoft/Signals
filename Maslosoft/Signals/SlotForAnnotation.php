@@ -1,15 +1,15 @@
 <?php
 
-namespace Maslosoft\Signals;
+use Maslosoft\Addendum\Collections\MetaAnnotation;
 
-use EComponentMetaAnnotation;
+namespace Maslosoft\Signals;
 
 /**
  * SlotForAnnotation
  * @template SlotFor('${SignalClass}')
  * @author Piotr
  */
-class SlotForAnnotation extends EComponentMetaAnnotation
+class SlotForAnnotation extends MetaAnnotation
 {
 
 	public function init()

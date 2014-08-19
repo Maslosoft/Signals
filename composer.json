@@ -13,7 +13,7 @@
 		}
 	],
 	"require": {
-		"maslosoft/addendum": "dev-master"
+		"maslosoft/addendum": "2.*.*"
 	},
 	"autoload": {
 		"psr-0": {

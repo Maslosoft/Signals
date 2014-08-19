@@ -1,5 +1,6 @@
 <?php
 
+use Maslosoft\Addendum\Interfaces\IAnnotated;
 use Maslosoft\Signals\ISignal;
 
 /**
