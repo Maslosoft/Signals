@@ -97,13 +97,13 @@ class Signal extends CApplicationComponent
 			}
 
 			// Clone signal, as it might be modified by slot
-			$signal = clone $signal;
+			$cloned = clone $signal;
 
 			// Constructor injection
 			if (true === $injection)
 			{
-				Yii::createComponent($alias, $signal);
-				$result[] = $signal;
+				Yii::createComponent($alias, $cloned);
+				$result[] = $cloned;
 				continue;
 			}
 
@@ -112,14 +112,14 @@ class Signal extends CApplicationComponent
 			{
 				// Method injection
 				$methodName = str_replace('()', '', $injection);
-				$slot->$methodName($signal);
+				$slot->$methodName($cloned);
 			}
 			else
 			{
 				// field injection
-				$slot->$injection = $signal;
+				$slot->$injection = $cloned;
 			}
-			$result[] = $signal;
+			$result[] = $cloned;
 		}
 		return $result;
 	}
