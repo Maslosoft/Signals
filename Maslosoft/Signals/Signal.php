@@ -3,8 +3,8 @@
 namespace Maslosoft\Signals;
 
 use CApplicationComponent;
-use CException;
 use CLogger;
+use Exception;
 use RuntimeException;
 use Yii;
 
@@ -90,9 +90,9 @@ class Signal extends CApplicationComponent
 			{
 				Yii::import($alias);
 			}
-			catch (CException $exc)
+			catch (Exception $exc)
 			{
-				Yii::log(sprintf("Slot %s for signal %s not found, exception message: '%s'", $alias, $name, $exc->getMessage()), CLogger::LEVEL_ERROR, 'Maslosoft.Signals');
+				Yii::log(sprintf("Slot %s for signal %s not found. Exception message: '%s'", $alias, $name, $exc->getMessage()), CLogger::LEVEL_ERROR, 'Maslosoft.Signals');
 				continue;
 			}
 
@@ -147,9 +147,9 @@ class Signal extends CApplicationComponent
 			{
 				Yii::import($alias);
 			}
-			catch (CException $exc)
+			catch (Exception $exc)
 			{
-				Yii::log(sprintf("Signal %s for slot %s not found", $alias, $name), CLogger::LEVEL_ERROR, 'Maslosoft.Signals');
+				Yii::log(sprintf("Signal %s for slot %s not found. Exception message: '%s'", $alias, $name, $exc->getMessage()), CLogger::LEVEL_ERROR, 'Maslosoft.Signals');
 				continue;
 			}
 			if(null === $interface)
