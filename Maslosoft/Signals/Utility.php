@@ -20,10 +20,8 @@ class Utility extends CComponent
 
 	private $_data = [
 		Signal::slots => [
-
 		],
 		Signal::signals => [
-			
 		]
 	];
 
@@ -34,10 +32,10 @@ class Utility extends CComponent
 			'SignalFor'
 		];
 		$paths = [];
-		foreach(Yii::app()->signal->searchAliases as $alias)
+		foreach (Yii::app()->signal->searchAliases as $alias)
 		{
 			$path = Yii::getPathOfAlias($alias);
-			if($path)
+			if ($path)
 			{
 				$paths[] = $path;
 			}
@@ -58,7 +56,7 @@ class Utility extends CComponent
 		// Create alias for current file
 		$namespace = AnnotationUtility::rawAnnotate($file)['namespace'];
 		$className = AnnotationUtility::rawAnnotate($file)['className'];
-		
+
 		// Remove global `\` namespace
 		$namespace = preg_replace('~^\\\\+~', '', $namespace);
 
@@ -66,12 +64,12 @@ class Utility extends CComponent
 		/**
 		 * TODO Investigate this case, this is only workaround
 		 */
-		if(!is_string($namespace))
+		if (!is_string($namespace))
 		{
 //			var_dump($file);
 			return false;
 		}
-		if(strstr($namespace, '\\'))
+		if (strstr($namespace, '\\'))
 		{
 			// Use namespaced name, class must autoload
 			$alias = $namespace . '\\' . $className;
@@ -140,7 +138,7 @@ class Utility extends CComponent
 		$value = [];
 		foreach ($src as $val)
 		{
-			if(!isset($val['value']))
+			if (!array_key_exists('value', $val))
 			{
 				continue;
 			}
@@ -155,12 +153,6 @@ class Utility extends CComponent
 			}
 		}
 		return array_values(array_unique($value));
-	}
-
-	private function _getAlias($val, $file)
-	{
-		
-		return $alias;
 	}
 
 }
