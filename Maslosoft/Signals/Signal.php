@@ -2,9 +2,7 @@
 
 namespace Maslosoft\Signals;
 
-use CApplicationComponent;
 use CLogger;
-use Exception;
 use RuntimeException;
 use Yii;
 
@@ -13,7 +11,7 @@ use Yii;
  *
  * @author Piotr
  */
-class Signal extends CApplicationComponent
+class Signal
 {
 
 	const slots = 'slots';
@@ -24,12 +22,14 @@ class Signal extends CApplicationComponent
 
 	/**
 	 * Path alias of where to store signals definitions
+	 * TODO Change it to path
 	 * @var string
 	 */
 	public $configAlias = 'autogen';
 
 	/**
 	 * This aliases will be searched for SlotFor and SignalFor annotations
+	 * TODO Change it to paths
 	 * @var string[]
 	 */
 	public $searchAliases = [
@@ -39,17 +39,15 @@ class Signal extends CApplicationComponent
 	];
 
 	/**
-	 * 
+	 * Whenever component is initialized
+	 * @var bool
 	 */
-	public $containerClass = 'Maslosoft\Signals\Container';
+	public $isInitialized = false;
 
 	/**
-	 * Access control callback.
-	 * Callback signature:
-	 * <code><pre>public function(string $role, User $user)</pre></code>
-	 * @var callback
+	 * Configuration of signals and slots
+	 * @var string[][]
 	 */
-	public $accessCallback = [];
 	private static $_config = [];
 
 	public function init()
@@ -58,7 +56,6 @@ class Signal extends CApplicationComponent
 		{
 			$this->_init();
 		}
-		parent::init();
 	}
 
 	/**
@@ -79,20 +76,11 @@ class Signal extends CApplicationComponent
 			self::$_config[self::signals][$name] = [];
 			Yii::log(sprintf('No slots found for signal `%s`, skipping', $name), CLogger::LEVEL_INFO, 'Maslosoft.Signals');
 		}
-		foreach (self::$_config[self::signals][$name] as $alias => $injection)
+		foreach (self::$_config[self::signals][$name] as $fqn => $injection)
 		{
 			// Skip
 			if (false === $injection)
 			{
-				continue;
-			}
-			try
-			{
-				Yii::import($alias);
-			}
-			catch (Exception $exc)
-			{
-				Yii::log(sprintf("Slot %s for signal %s not found. Exception message: '%s'", $alias, $name, $exc->getMessage()), CLogger::LEVEL_ERROR, 'Maslosoft.Signals');
 				continue;
 			}
 
@@ -102,12 +90,14 @@ class Signal extends CApplicationComponent
 			// Constructor injection
 			if (true === $injection)
 			{
-				Yii::createComponent($alias, $cloned);
+				new $fqn($cloned);
 				$result[] = $cloned;
 				continue;
 			}
 
-			$slot = Yii::createComponent($alias);
+			// Othe type injection
+			$slot = new $fqn;
+
 			if (strstr($injection, '()'))
 			{
 				// Method injection
@@ -137,42 +127,22 @@ class Signal extends CApplicationComponent
 		{
 			self::$_config[self::slots][$name] = [];
 		}
-		foreach ((array) self::$_config[self::slots][$name] as $alias => $emit)
+		foreach ((array) self::$_config[self::slots][$name] as $fqn => $emit)
 		{
 			if (false === $emit)
 			{
 				continue;
 			}
-			try
-			{
-				Yii::import($alias);
-			}
-			catch (Exception $exc)
-			{
-				Yii::log(sprintf("Signal %s for slot %s not found. Exception message: '%s'", $alias, $name, $exc->getMessage()), CLogger::LEVEL_ERROR, 'Maslosoft.Signals');
-				continue;
-			}
 			if(null === $interface)
 			{
-				$component = Yii::createComponent($alias);
-				$result[] = $component;
+				$result[] = new $fqn;
 				continue;
 			}
 
 			// Check if class implements interface
-			if(strstr($alias, '\\'))
+			if(isset(class_implements($fqn)[$interface]))
 			{
-				$className = $alias;
-			}
-			else
-			{
-				$className = substr($alias, strrpos($alias, '.', -1) + 1);
-			}
-			if(isset(class_implements($className)[$interface]))
-			{
-				$component = Yii::createComponent($alias);
-	//			if($component instanceof $interface)
-				$result[] = $component;
+				$result[] = new $fqn;
 			}
 		}
 		return $result;
