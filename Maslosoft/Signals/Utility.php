@@ -27,6 +27,7 @@ class Utility extends CComponent
 
 	public function generate()
 	{
+		// Here are string literals instead of consts, because these are annotation names
 		$annotations = [
 			'SlotFor',
 			'SignalFor'
@@ -53,32 +54,12 @@ class Utility extends CComponent
 	 */
 	public function processFile($file)
 	{
-		// Create alias for current file
-		$namespace = AnnotationUtility::rawAnnotate($file)['namespace'];
+		// Remove initial `\` from namespace
+		$namespace = preg_replace('~^\\\\+~', '', AnnotationUtility::rawAnnotate($file)['namespace']);
 		$className = AnnotationUtility::rawAnnotate($file)['className'];
 
-		// Remove global `\` namespace
-		$namespace = preg_replace('~^\\\\+~', '', $namespace);
-
-		// Create alias or fully namespaced class name
-		/**
-		 * TODO Investigate this case, this is only workaround
-		 */
-		if (!is_string($namespace))
-		{
-//			var_dump($file);
-			return false;
-		}
-		if (strstr($namespace, '\\'))
-		{
-			// Use namespaced name, class must autoload
-			$alias = $namespace . '\\' . $className;
-		}
-		else
-		{
-			// Use alias for non namespaced classes
-			$alias = AnnotationUtility::getAliasOfPath($file);
-		}
+		// Use fully qualified name, class must autoload
+		$fqn = str_replace('\\\\', '\\', '\\' . $namespace . '\\' . $className);
 
 		// Signals
 		$class = AnnotationUtility::rawAnnotate($file)['class'];
@@ -87,7 +68,7 @@ class Utility extends CComponent
 			$val = $this->_getValuesFor($class[self::signalFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[Signal::slots][$slot][$alias] = true;
+				$this->_data[Signal::slots][$slot][$fqn] = true;
 			}
 		}
 
@@ -98,7 +79,7 @@ class Utility extends CComponent
 			$val = $this->_getValuesFor($class[self::slotFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[Signal::signals][$slot][$alias] = true;
+				$this->_data[Signal::signals][$slot][$fqn] = true;
 			}
 		}
 
@@ -113,7 +94,7 @@ class Utility extends CComponent
 			$val = $this->_getValuesFor($method[self::slotFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[Signal::signals][$slot][$alias] = sprintf('%s()', $methodName);
+				$this->_data[Signal::signals][$slot][$fqn] = sprintf('%s()', $methodName);
 			}
 		}
 
@@ -128,7 +109,7 @@ class Utility extends CComponent
 			$val = $this->_getValuesFor($method[self::slotFor]);
 			foreach ($val as $slot)
 			{
-				$this->_data[Signal::signals][$slot][$alias] = sprintf('%s', $fieldName);
+				$this->_data[Signal::signals][$slot][$fqn] = sprintf('%s', $fieldName);
 			}
 		}
 	}
