@@ -13,11 +13,11 @@
 		}
 	],
 	"require": {
-		"maslosoft/addendum": "~3@alpha"
+		"maslosoft/addendum": "~3alpha"
 	},
 	"autoload": {
-		"psr-0": {
-			"Maslosoft\\Signals": "./"
+		"psr-4": {
+			"Maslosoft\\Signals\\": "src/"
 		}
 	}
 }
