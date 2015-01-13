@@ -1,0 +1,5 @@
+#!/bin/bash
+cd vendor/maslosoft/signalstest
+git add *
+git commit -am'+ Tests'
+git push

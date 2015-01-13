@@ -12,6 +12,7 @@
 			"role": "Developer"
 		}
 	],
+	"minimum-stability": "dev",
 	"require": {
 		"maslosoft/addendum": "~3"
 	},
@@ -19,5 +20,8 @@
 		"psr-4": {
 			"Maslosoft\\Signals\\": "src/"
 		}
+	},
+	"require-dev": {
+		"maslosoft/signalstest": "dev-master"
 	}
 }

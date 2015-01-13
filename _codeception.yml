@@ -1,0 +1,17 @@
+actor: Tester
+paths:
+    tests: vendor/maslosoft/signalstest/tests
+    log: tests/_output
+    data: vendor/maslosoft/signalstest/tests/_data
+    helpers: vendor/maslosoft/signalstest/tests/_support
+settings:
+    bootstrap: _bootstrap.php
+    colors: true
+    memory_limit: 1024M
+coverage:
+    enabled: true
+    remote: false
+    xml: coverage.clover
+    html: true
+    include:
+        - src/*
