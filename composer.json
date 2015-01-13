@@ -14,7 +14,8 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"maslosoft/addendum": "~3"
+		"maslosoft/addendum": "~3",
+		"yiisoft/yii": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
