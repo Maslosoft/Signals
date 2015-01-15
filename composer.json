@@ -15,7 +15,8 @@
 	"minimum-stability": "dev",
 	"require": {
 		"maslosoft/addendum": "~3",
-		"yiisoft/yii": "dev-master"
+		"yiisoft/yii": "dev-master",
+		"psr/log": "~1.0@dev"
 	},
 	"autoload": {
 		"psr-4": {
@@ -23,6 +24,7 @@
 		}
 	},
 	"require-dev": {
-		"maslosoft/signalstest": "dev-master"
+		"maslosoft/signalstest": "dev-master",
+		"maslosoft/hedron": "dev-master"
 	}
 }
