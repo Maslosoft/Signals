@@ -2,16 +2,16 @@
 
 namespace Maslosoft\Signals;
 
-use CLogger;
-use RuntimeException;
-use Yii;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Main signals components
  *
  * @author Piotr
  */
-class Signal
+class Signal implements LoggerAwareInterface
 {
 
 	const slots = 'slots';
@@ -19,6 +19,12 @@ class Signal
 	const ConfigFilename = 'signals-definition.php';
 
 	public $configFilename = 'signals-definition.php';
+
+	/**
+	 * Runtime path
+	 * @var string
+	 */
+	public $runtimePath = 'runtime';
 
 	/**
 	 * Path alias of where to store signals definitions
@@ -50,6 +56,17 @@ class Signal
 	 */
 	private static $_config = [];
 
+	/**
+	 * Logger
+	 * @var LoggerInterface
+	 */
+	private $log = null;
+
+	public function __construct()
+	{
+		$this->log = new NullLogger;
+	}
+
 	public function init()
 	{
 		if (!$this->isInitialized)
@@ -66,7 +83,7 @@ class Signal
 	public function emit($signal)
 	{
 		$result = [];
-		if(is_string($signal))
+		if (is_string($signal))
 		{
 			$signal = new $signal;
 		}
@@ -74,7 +91,7 @@ class Signal
 		if (!isset(self::$_config[self::signals][$name]))
 		{
 			self::$_config[self::signals][$name] = [];
-			Yii::log(sprintf('No slots found for signal `%s`, skipping', $name), CLogger::LEVEL_INFO, 'Maslosoft.Signals');
+			$this->log->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
 		}
 		foreach (self::$_config[self::signals][$name] as $fqn => $injection)
 		{
@@ -133,19 +150,37 @@ class Signal
 			{
 				continue;
 			}
-			if(null === $interface)
+			if (null === $interface)
 			{
 				$result[] = new $fqn;
 				continue;
 			}
 
 			// Check if class implements interface
-			if(isset(class_implements($fqn)[$interface]))
+			if (isset(class_implements($fqn)[$interface]))
 			{
 				$result[] = new $fqn;
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * Get logger
+	 * @return LoggerInterface
+	 */
+	public function getLogger()
+	{
+		return $this->log;
+	}
+
+	/**
+	 * Set logger
+	 * @param LoggerInterface $logger
+	 */
+	public function setLogger(LoggerInterface $logger)
+	{
+		$this->log = $logger;
 	}
 
 	/**
@@ -158,19 +193,15 @@ class Signal
 
 	private function _init()
 	{
-		$configPath = Yii::getPathOfAlias($this->configAlias);
-		if (false === $configPath)
-		{
-			throw new RuntimeException(sprintf('Alias "%s" is invalid', $this->configAlias));
-		}
-		$file = $configPath . '/' . $this->configFilename;
-		if(file_exists($file))
+		$file = $this->runtimePath . '/' . $this->configFilename;
+		if (file_exists($file))
 		{
 			self::$_config = require $file;
 		}
 		else
 		{
-			Yii::log(sprintf('Config file "%s" does not exists, have you generated signals config file?', $file), CLogger::LEVEL_WARNING, 'Maslosoft.Signals');
+			$this->log->debug('Config file "{file}" does not exists, have you generated signals config file?', ['file' => $file]);
 		}
 	}
+
 }

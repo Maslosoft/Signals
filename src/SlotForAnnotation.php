@@ -6,7 +6,7 @@ use Maslosoft\Addendum\Collections\MetaAnnotation;
 
 /**
  * SlotForAnnotation
- * @template SlotFor('${SignalClass}')
+ * @template SlotFor(${SignalClass})
  * @author Piotr
  */
 class SlotForAnnotation extends MetaAnnotation

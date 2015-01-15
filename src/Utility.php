@@ -2,17 +2,14 @@
 
 namespace Maslosoft\Signals;
 
-use CComponent;
-use CLogger;
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
-use Yii;
 
 /**
  * Signals utility class
  *
  * @author Piotr
  */
-class Utility extends CComponent
+class Utility
 {
 
 	const slotFor = 'SlotFor';
@@ -25,6 +22,16 @@ class Utility extends CComponent
 		]
 	];
 
+	private $signal = null;
+
+	private $log = null;
+
+	public function __construct(Signal $signal)
+	{
+		$this->signal = $signal;
+		$this->log = $this->signal->getLogger();
+	}
+
 	public function generate()
 	{
 		// Here are string literals instead of consts, because these are annotation names
@@ -32,20 +39,7 @@ class Utility extends CComponent
 			'SlotFor',
 			'SignalFor'
 		];
-		$paths = [];
-		foreach (Yii::app()->signal->searchAliases as $alias)
-		{
-			$path = Yii::getPathOfAlias($alias);
-			if ($path)
-			{
-				$paths[] = $path;
-			}
-			else
-			{
-				Yii::log(sprintf("Alias %s is invalid", $alias), CLogger::LEVEL_WARNING, 'Maslosoft.Signals');
-			}
-		}
-		AnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $paths);
+		AnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $this->signal->paths);
 		return $this->_data;
 	}
 
