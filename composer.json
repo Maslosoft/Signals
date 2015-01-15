@@ -16,7 +16,8 @@
 	"require": {
 		"maslosoft/addendum": "~3",
 		"yiisoft/yii": "dev-master",
-		"psr/log": "~1.0@dev"
+		"psr/log": "~1.0@dev",
+		"maslosoft/embedi": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
