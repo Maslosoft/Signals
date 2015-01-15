@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1e0cb2926ea91c889e34b5ca3a8c47b9",
+    "hash": "c8b6ed8b6a6be9d5e7b6ff4350c167c8",
     "packages": [
         {
             "name": "maslosoft/addendum",
@@ -58,6 +58,44 @@
                 "yii"
             ],
             "time": "2015-01-03 15:05:51"
+        },
+        {
+            "name": "maslosoft/embedi",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Maslosoft/EmbeDi.git",
+                "reference": "cb4dc8030e9ab6d48b9ba2c2abbf4165756b654b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Maslosoft/EmbeDi/zipball/cb4dc8030e9ab6d48b9ba2c2abbf4165756b654b",
+                "reference": "cb4dc8030e9ab6d48b9ba2c2abbf4165756b654b",
+                "shasum": ""
+            },
+            "require-dev": {
+                "maslosoft/embeditest": "dev-master",
+                "maslosoft/hedron": "~1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Maslosoft\\EmbeDi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "New BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Peter Maselkowski",
+                    "email": "pmaselkowski@gmail.com",
+                    "homepage": "http://maslosoft.com",
+                    "role": "Developer"
+                }
+            ],
+            "time": "2015-01-14 20:06:58"
         },
         {
             "name": "maslosoft/miniview",
@@ -1908,6 +1946,7 @@
     "stability-flags": {
         "yiisoft/yii": 20,
         "psr/log": 20,
+        "maslosoft/embedi": 20,
         "maslosoft/signalstest": 20,
         "maslosoft/hedron": 20
     },

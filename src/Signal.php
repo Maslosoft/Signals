@@ -37,18 +37,11 @@ class Signal implements LoggerAwareInterface
 	public $runtimePath = 'runtime';
 
 	/**
-	 * Path alias of where to store signals definitions
-	 * TODO Change it to path
-	 * @var string
-	 */
-	public $configAlias = 'autogen';
-
-	/**
 	 * This aliases will be searched for SlotFor and SignalFor annotations
-	 * TODO Change it to paths
+	 * TODO Autodetect based on composer autoload 
 	 * @var string[]
 	 */
-	public $searchAliases = [
+	public $paths = [
 		'application',
 		'vendor',
 		'maslosoft'
