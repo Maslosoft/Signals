@@ -12,12 +12,12 @@
 			"role": "Developer"
 		}
 	],
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
 	"require": {
 		"maslosoft/addendum": "~3",
-		"yiisoft/yii": "dev-master",
-		"psr/log": "~1.0@dev",
-		"maslosoft/embedi": "dev-master"
+		"yiisoft/yii": "~1",
+		"psr/log": "~1",
+		"maslosoft/embedi": "*"
 	},
 	"autoload": {
 		"psr-4": {
