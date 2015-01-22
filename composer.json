@@ -15,7 +15,6 @@
 	"minimum-stability": "stable",
 	"require": {
 		"maslosoft/addendum": "~3",
-		"yiisoft/yii": "~1",
 		"psr/log": "~1",
 		"maslosoft/embedi": "*"
 	},
