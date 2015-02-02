@@ -12,6 +12,7 @@
 
 namespace Maslosoft\Signals;
 
+use Maslosoft\EmbeDi\EmbeDi;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -65,9 +66,17 @@ class Signal implements LoggerAwareInterface
 	 */
 	private $log = null;
 
+	/**
+	 *
+	 * @var EmbeDi
+	 */
+	private $_di = null;
+
 	public function __construct()
 	{
 		$this->log = new NullLogger;
+		$this->_di = new EmbeDi();
+		$this->_di->configure($this);
 	}
 
 	public function init()
@@ -75,6 +84,10 @@ class Signal implements LoggerAwareInterface
 		if (!$this->isInitialized)
 		{
 			$this->_init();
+		}
+		if(!$this->_di->isStored($this))
+		{
+			$this->_di->store($this);
 		}
 	}
 
