@@ -14,7 +14,7 @@
 	],
 	"minimum-stability": "stable",
 	"require": {
-		"maslosoft/addendum": "~3",
+		"maslosoft/addendum": "*",
 		"psr/log": "~1",
 		"maslosoft/embedi": "*"
 	},
