@@ -1,8 +1,7 @@
 {
 	"name": "maslosoft/signals",
-	"type": "yii-extension",
-	"description": "Cross-component communication for Yii",
-	"keywords": ["signal", "signals", "event", "events", "slot", "slots", "yii"],
+	"description": "Wireless Cross-Component Communication",
+	"keywords": ["signal", "signals", "event", "events", "slot", "slots"],
 	"license": "GNU LESSER GENERAL PUBLIC LICENSE",
 	"authors": [
 		{
