@@ -13,6 +13,7 @@
 namespace Maslosoft\Signals;
 
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
+use Maslosoft\Signals\Helpers\NameNormalizer;
 
 /**
  * Signals utility class
@@ -31,9 +32,7 @@ class Utility
 		Signal::signals => [
 		]
 	];
-
 	private $signal = null;
-
 	private $log = null;
 
 	public function __construct(Signal $signal)
@@ -65,7 +64,8 @@ class Utility
 		$className = AnnotationUtility::rawAnnotate($file)['className'];
 
 		// Use fully qualified name, class must autoload
-		$fqn = str_replace('\\\\', '\\', '\\' . $namespace . '\\' . $className);
+		$fqn = $namespace . '\\' . $className;
+		NameNormalizer::normalize($fqn);
 
 		// Signals
 		$class = AnnotationUtility::rawAnnotate($file)['class'];
@@ -74,6 +74,7 @@ class Utility
 			$val = $this->_getValuesFor($class[self::signalFor]);
 			foreach ($val as $slot)
 			{
+				NameNormalizer::normalize($slot);
 				$this->_data[Signal::slots][$slot][$fqn] = true;
 			}
 		}
@@ -85,6 +86,7 @@ class Utility
 			$val = $this->_getValuesFor($class[self::slotFor]);
 			foreach ($val as $slot)
 			{
+				NameNormalizer::normalize($slot);
 				$this->_data[Signal::signals][$slot][$fqn] = true;
 			}
 		}
@@ -100,6 +102,7 @@ class Utility
 			$val = $this->_getValuesFor($method[self::slotFor]);
 			foreach ($val as $slot)
 			{
+				NameNormalizer::normalize($slot);
 				$this->_data[Signal::signals][$slot][$fqn] = sprintf('%s()', $methodName);
 			}
 		}
@@ -115,6 +118,7 @@ class Utility
 			$val = $this->_getValuesFor($method[self::slotFor]);
 			foreach ($val as $slot)
 			{
+				NameNormalizer::normalize($slot);
 				$this->_data[Signal::signals][$slot][$fqn] = sprintf('%s', $fieldName);
 			}
 		}

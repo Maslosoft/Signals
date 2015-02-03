@@ -13,6 +13,7 @@
 namespace Maslosoft\Signals;
 
 use Maslosoft\EmbeDi\EmbeDi;
+use Maslosoft\Signals\Helpers\NameNormalizer;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -104,6 +105,7 @@ class Signal implements LoggerAwareInterface
 			$signal = new $signal;
 		}
 		$name = get_class($signal);
+		NameNormalizer::normalize($name);
 		if (!isset(self::$_config[self::signals][$name]))
 		{
 			self::$_config[self::signals][$name] = [];
@@ -156,6 +158,7 @@ class Signal implements LoggerAwareInterface
 	{
 		$result = [];
 		$name = get_class($slot);
+		NameNormalizer::normalize($name);
 		if (!isset(self::$_config[self::slots][$name]))
 		{
 			self::$_config[self::slots][$name] = [];
