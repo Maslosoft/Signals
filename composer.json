@@ -24,6 +24,6 @@
 	},
 	"require-dev": {
 		"maslosoft/signalstest": "dev-master",
-		"maslosoft/hedron": "dev-master"
+		"maslosoft/hedron": "*"
 	}
 }
