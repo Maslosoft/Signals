@@ -17,7 +17,7 @@ Use composer to install
 	
 Or by hard way, download somewhere in your project and ensure autoloading works for `Maslosoft\Signals\*` and you include dep too;
 	
-Setup signals. After calling `init` any
+Setup signals. After calling `init` any further instance will be configured same as below `$signal`.
 	
 	$signal = new Maslosoft\Signals\Signal();
 	$signal->runtimePath = RUNTIME_PATH;
