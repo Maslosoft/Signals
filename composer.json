@@ -1,8 +1,15 @@
 {
 	"name": "maslosoft/signals",
 	"description": "Wireless Cross-Component Communication",
-	"keywords": ["signal", "signals", "event", "events", "slot", "slots"],
-	"license": "AGPL/Commercial",
+	"keywords": [
+		"signal",
+		"signals",
+		"event",
+		"events",
+		"slot",
+		"slots"
+	],
+	"license": "AGPL or Commercial",
 	"authors": [
 		{
 			"name": "Peter Maselkowski",
