@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6756c13d9a3aa68ea625f054ee0b5349",
+    "hash": "a77d0b22fb51eca28d72b61909c8f663",
     "packages": [
         {
             "name": "maslosoft/addendum",
-            "version": "3.0.12",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/Addendum.git",
-                "reference": "56df8f31fc004926f42f8ccacd45a1ca74ed58f5"
+                "reference": "6f790d06e4afd773db095e6c5e49eb618a420213"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/56df8f31fc004926f42f8ccacd45a1ca74ed58f5",
-                "reference": "56df8f31fc004926f42f8ccacd45a1ca74ed58f5",
+                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/6f790d06e4afd773db095e6c5e49eb618a420213",
+                "reference": "6f790d06e4afd773db095e6c5e49eb618a420213",
                 "shasum": ""
             },
             "require": {
@@ -41,7 +41,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "New BSD"
+                "AGPL or Commercial"
             ],
             "authors": [
                 {
@@ -58,7 +58,7 @@
                 "annotations",
                 "metadata"
             ],
-            "time": "2015-03-09 09:54:55"
+            "time": "2015-03-10 11:00:28"
         },
         {
             "name": "maslosoft/embedi",
