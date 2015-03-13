@@ -1,10 +1,11 @@
+<!--header-->
 #Maslosoft Signals
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master)
 <img src="https://travis-ci.org/Maslosoft/Signals.svg?branch=master" style="height:18px"/>
 [![HHVM Status](http://hhvm.h4cc.de/badge/maslosoft/signals.svg)](http://hhvm.h4cc.de/package/maslosoft/signals)
-
+<!--/header-->
 ## Wireless cross-component communication
 
 This component allows for interaction of application components, without prior or explicit assignment.
