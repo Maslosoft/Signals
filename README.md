@@ -1,10 +1,25 @@
-#Maslosoft Signals
+<!--header-->
+<!-- Auto generated do not modify between `header` and `/header` -->
 
+# <a href="http://maslosoft.com/signals/">Maslosoft Signals</a>
+<a href="http://maslosoft.com/signals/">_Wireless Cross-Component Communication_</a>
+
+<a href="https://packagist.org/packages/maslosoft/signals" title="Latest Stable Version">
+<img src="https://poser.pugx.org/maslosoft/signals/v/stable.svg" alt="Latest Stable Version" style="height: 20px;"/>
+</a>
+<a href="https://packagist.org/packages/maslosoft/signals" title="License">
+<img src="https://poser.pugx.org/maslosoft/signals/license.svg" alt="License" style="height: 20px;"/>
+</a>
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master)
-<img src="https://travis-ci.org/Maslosoft/Signals.svg?branch=master" style="height:18px"/>
-[![HHVM Status](http://hhvm.h4cc.de/badge/maslosoft/signals.svg)](http://hhvm.h4cc.de/package/maslosoft/signals)
+<img src="https://travis-ci.org/Maslosoft/Signals.svg?branch=master"/>
+<img src="https://travis-ci.org/Maslosoft/Signals.svg?branch=master"/>
 
+### Quick Install
+```bash
+	composer require maslosoft/signals:"*"
+```
+
+<!--/header-->
 ## Wireless cross-component communication
 
 This component allows for interaction of application components, without prior or explicit assignment.
