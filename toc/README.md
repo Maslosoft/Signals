@@ -16,7 +16,7 @@
 
 ### Quick Install
 ```bash
-	composer require maslosoft/signals:"*"
+composer require maslosoft/signals:"*"
 ```
 
 <!--/header-->
