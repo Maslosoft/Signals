@@ -13,6 +13,9 @@
 		"AGPL",
 		"Commercial"
 	],
+	"bin": [
+		"signals"
+	],
 	"authors": [
 		{
 			"name": "Peter Maselkowski",
@@ -29,7 +32,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Maslosoft\\Signals\\": "src/"
+			"Maslosoft\\Signals\\": "src"
 		}
 	},
 	"require-dev": {
