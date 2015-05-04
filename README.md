@@ -28,65 +28,73 @@ This component allows for interaction of application components, without prior o
 
 Use composer to install
 
-	composer require maslosoft/signals:"*"
+```bash
+composer require maslosoft/signals:"*"
+```
 	
 Or by hard way, download somewhere in your project and ensure autoloading works for `Maslosoft\Signals\*` and you include dep too;
 	
 Setup signals. After calling `init` any further instance will be configured same as below `$signal`.
-	
-	$signal = new Maslosoft\Signals\Signal();
-	$signal->runtimePath = RUNTIME_PATH;
-	$signal->paths = [
-		MODELS_PATH
-	];
-	$signal->init();
-	
+
+```php
+$signal = new Maslosoft\Signals\Signal();
+$signal->runtimePath = RUNTIME_PATH;
+$signal->paths = [
+	MODELS_PATH
+];
+$signal->init();
+```
+
 Generate signals definition, only once, hook it to your build script etc.
-		
-	$signal = new Maslosoft\Signals\Signal();
-	(new Maslosoft\Signals\Utility($signal))->generate();
-	
+
+```php
+$signal = new Maslosoft\Signals\Signal();
+(new Maslosoft\Signals\Utility($signal))->generate();
+```
+
 ## Usage
 
 ### Emiting signal
 
 Define signal:
 
-	<?php
-	namespace MyNamespace\Signals;
+```php
+namespace MyNamespace\Signals;
 
-	class AccountMenuItems extends AdminMenuItems
-	{
-		public $item = [];	
-	}
+class AccountMenuItems extends AdminMenuItems
+{
+	public $item = [];
+}
+```
 
 Define class with slot with `@SlotFor` annotation
-	
-	<?php
-	namespace Maslosoft\Ilmatar\Modules;
-	
-	class MyModule
+
+```php
+namespace Maslosoft\Ilmatar\Modules;
+
+class MyModule
+{
+	/**
+	 * @SlotFor(MyNamespace\Signals\AccountMenuItems)
+	 */
+	public function reactOnAccountMenu(MyNamespace\Signals\AccountMenuItems $signal)
 	{
-		/**
-		 * @SlotFor(MyNamespace\Signals\AccountMenuItems)
-		 */
-		public function reactOnAccountMenu(MyNamespace\Signals\AccountMenuItems $signal)
-		{
-			$signal->item = [
-				'url' => '/content/myBlog',
-				'label' => 'My blog'
-			];
-		}
+		$signal->item = [
+			'url' => '/content/myBlog',
+			'label' => 'My blog'
+		];
 	}
-	
+}
+```
 
 
 Emit signal and get results of this call:
 
-	<?php
-	$signal = new Maslosoft\Signals\Signal();
-	$result = $signal->emit(new AdminMenuItems());
-	
-	echo $result[0]->item[0]['label']; // My blog
-		
+```php
+$signal = new Maslosoft\Signals\Signal();
+$result = $signal->emit(new AdminMenuItems());
+
+echo $result[0]->item[0]['label']; // My blog
+```
+
 ### Gathering signals
