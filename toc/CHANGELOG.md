@@ -1,5 +1,17 @@
 # Change Log
 
+## [Unreleased](https://github.com/Maslosoft/Signals/tree/HEAD)
+
+[Full Changelog](https://github.com/Maslosoft/Signals/compare/1.1.2...HEAD)
+
+**Fixed bugs:**
+
+- Support for multiple slots for same signal and multiple slots [\#10](https://github.com/Maslosoft/Signals/issues/10)
+
+## [1.1.2](https://github.com/Maslosoft/Signals/tree/1.1.2) (2015-05-04)
+
+[Full Changelog](https://github.com/Maslosoft/Signals/compare/1.1.1...1.1.2)
+
 ## [1.1.1](https://github.com/Maslosoft/Signals/tree/1.1.1) (2015-03-26)
 
 [Full Changelog](https://github.com/Maslosoft/Signals/compare/1.1.0...1.1.1)
