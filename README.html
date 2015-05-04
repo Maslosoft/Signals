@@ -430,16 +430,14 @@ $signal-&gt;init();</pre>
 <a name="usage"></a><h2>Usage<a class="anchorlink" href="#usage"></a></h2>
 <a name="emiting_signal"></a><h3>Emiting signal<a class="anchorlink" href="#emiting_signal"></a></h3>
 <p>Define signal:</p>
-<pre class="prettyprint">&lt;?php
-namespace MyNamespace\Signals;
+<pre class="prettyprint">namespace MyNamespace\Signals;
 
 class AccountMenuItems extends AdminMenuItems
 {
-    public $item = [];    
+    public $item = [];
 }</pre>
 <p>Define class with slot with <code>@SlotFor</code> annotation</p>
-<pre class="prettyprint">&lt;?php
-namespace Maslosoft\Ilmatar\Modules;
+<pre class="prettyprint">namespace Maslosoft\Ilmatar\Modules;
 
 class MyModule
 {
@@ -455,8 +453,7 @@ class MyModule
     }
 }</pre>
 <p>Emit signal and get results of this call:</p>
-<pre class="prettyprint">&lt;?php
-$signal = new Maslosoft\Signals\Signal();
+<pre class="prettyprint">$signal = new Maslosoft\Signals\Signal();
 $result = $signal-&gt;emit(new AdminMenuItems());
 
 echo $result[0]-&gt;item[0][&#39;label&#39;]; // My blog</pre>

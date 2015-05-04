@@ -87,7 +87,7 @@ class Utility
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
-				$this->_data[Signal::signals][$slot][$fqn] = true;
+				$this->_data[Signal::signals][$slot][$fqn][] = true;
 			}
 		}
 
@@ -103,7 +103,7 @@ class Utility
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
-				$this->_data[Signal::signals][$slot][$fqn] = sprintf('%s()', $methodName);
+				$this->_data[Signal::signals][$slot][$fqn][] = sprintf('%s()', $methodName);
 			}
 		}
 
@@ -119,7 +119,7 @@ class Utility
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
-				$this->_data[Signal::signals][$slot][$fqn] = sprintf('%s', $fieldName);
+				$this->_data[Signal::signals][$slot][$fqn][] = sprintf('%s', $fieldName);
 			}
 		}
 	}

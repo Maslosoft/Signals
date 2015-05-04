@@ -86,7 +86,7 @@ class Signal implements LoggerAwareInterface
 		{
 			$this->_init();
 		}
-		if(!$this->_di->isStored($this))
+		if (!$this->_di->isStored($this))
 		{
 			$this->_di->store($this);
 		}
@@ -111,40 +111,43 @@ class Signal implements LoggerAwareInterface
 			self::$_config[self::signals][$name] = [];
 			$this->log->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
 		}
-		foreach (self::$_config[self::signals][$name] as $fqn => $injection)
+		foreach (self::$_config[self::signals][$name] as $fqn => $injections)
 		{
 			// Skip
-			if (false === $injection)
+			if (false === $injections || count($injections) == 0)
 			{
 				continue;
 			}
 
 			// Clone signal, as it might be modified by slot
-			$cloned = clone $signal;
-
-			// Constructor injection
-			if (true === $injection)
+			foreach ($injections as $injection)
 			{
-				new $fqn($cloned);
+				$cloned = clone $signal;
+
+				// Constructor injection
+				if (true === $injection)
+				{
+					new $fqn($cloned);
+					$result[] = $cloned;
+					continue;
+				}
+
+				// Othe type injection
+				$slot = new $fqn;
+
+				if (strstr($injection, '()'))
+				{
+					// Method injection
+					$methodName = str_replace('()', '', $injection);
+					$slot->$methodName($cloned);
+				}
+				else
+				{
+					// field injection
+					$slot->$injection = $cloned;
+				}
 				$result[] = $cloned;
-				continue;
 			}
-
-			// Othe type injection
-			$slot = new $fqn;
-
-			if (strstr($injection, '()'))
-			{
-				// Method injection
-				$methodName = str_replace('()', '', $injection);
-				$slot->$methodName($cloned);
-			}
-			else
-			{
-				// field injection
-				$slot->$injection = $cloned;
-			}
-			$result[] = $cloned;
 		}
 		return $result;
 	}
