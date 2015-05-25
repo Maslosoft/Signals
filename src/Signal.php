@@ -74,11 +74,26 @@ class Signal implements LoggerAwareInterface
 	 */
 	private $_di = null;
 
+	/**
+	 * Version
+	 * @var string
+	 */
+	private $_version = null;
+
 	public function __construct()
 	{
 		$this->log = new NullLogger;
 		$this->_di = new EmbeDi();
 		$this->_di->configure($this);
+	}
+
+	public function getVersion()
+	{
+		if (null === $this->_version)
+		{
+			$this->_version = require __DIR__ . '/version.php';
+		}
+		return $this->_version;
 	}
 
 	public function init()
