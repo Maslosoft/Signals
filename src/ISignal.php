@@ -12,11 +12,16 @@
 
 namespace Maslosoft\Signals;
 
+use Maslosoft\Signals\Interfaces\SignalInterface;
+
 /**
  * Signal interface
+ * Use Interfaces\SignalInterface instead.
+ * @see SignalInterface
+ * @deprecated since version number
  * @author Piotr
  */
 interface ISignal
 {
-	
+
 }
