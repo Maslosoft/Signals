@@ -12,10 +12,14 @@
 
 namespace Maslosoft\Signals;
 
+use Maslosoft\Signals\Interfaces\SlotInterface;
 use Maslosoft\Signals\ISignal;
 
 /**
  * Signal slot interface
+ * Use Interfaces\SlotInterface instead.
+ * @see SlotInterface
+ * @deprecated since version number
  * @author Piotr
  */
 interface ISignalSlot

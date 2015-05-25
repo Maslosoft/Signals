@@ -14,6 +14,7 @@ namespace Maslosoft\Signals;
 
 use Maslosoft\EmbeDi\EmbeDi;
 use Maslosoft\Signals\Helpers\NameNormalizer;
+use Maslosoft\Signals\Interfaces\SlotAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -40,7 +41,7 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * This aliases will be searched for SlotFor and SignalFor annotations
-	 * TODO Autodetect based on composer autoload 
+	 * TODO Autodetect based on composer autoload
 	 * @var string[]
 	 */
 	public $paths = [
@@ -124,16 +125,30 @@ class Signal implements LoggerAwareInterface
 			{
 				$cloned = clone $signal;
 
+
+
 				// Constructor injection
 				if (true === $injection)
 				{
-					new $fqn($cloned);
+					$slot = new $fqn($cloned);
+
+					// Slot aware call
+					if ($cloned instanceof SlotAwareInterface)
+					{
+						$cloned->setSlot($slot);
+					}
 					$result[] = $cloned;
 					continue;
 				}
 
 				// Othe type injection
 				$slot = new $fqn;
+
+				// Slot aware call
+				if ($cloned instanceof SlotAwareInterface)
+				{
+					$cloned->setSlot($slot);
+				}
 
 				if (strstr($injection, '()'))
 				{
