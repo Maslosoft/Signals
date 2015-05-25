@@ -23,6 +23,7 @@ use Psr\Log\NullLogger;
  * Main signals components
  *
  * @author Piotr
+ * @property LoggerInterface $logger Logger, set this to log warnings, notices errors. This is shorthand for `get/setLogger`.
  */
 class Signal implements LoggerAwareInterface
 {
@@ -66,7 +67,7 @@ class Signal implements LoggerAwareInterface
 	 * Logger
 	 * @var LoggerInterface
 	 */
-	private $log = null;
+	private $_log = null;
 
 	/**
 	 *
@@ -82,9 +83,30 @@ class Signal implements LoggerAwareInterface
 
 	public function __construct()
 	{
-		$this->log = new NullLogger;
+		$this->_log = new NullLogger;
 		$this->_di = new EmbeDi();
 		$this->_di->configure($this);
+	}
+
+	/**
+	 * Getter
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function __get($name)
+	{
+		return $this->{'get' . ucfirst($name)}();
+	}
+
+	/**
+	 * Setter
+	 * @param string $name
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	public function __set($name, $value)
+	{
+		return $this->{'set' . ucfirst($name)}($value);
 	}
 
 	public function getVersion()
@@ -125,7 +147,7 @@ class Signal implements LoggerAwareInterface
 		if (!isset(self::$_config[self::signals][$name]))
 		{
 			self::$_config[self::signals][$name] = [];
-			$this->log->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
+			$this->_log->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
 		}
 		foreach (self::$_config[self::signals][$name] as $fqn => $injections)
 		{
@@ -223,7 +245,7 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function getLogger()
 	{
-		return $this->log;
+		return $this->_log;
 	}
 
 	/**
@@ -232,7 +254,7 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function setLogger(LoggerInterface $logger)
 	{
-		$this->log = $logger;
+		$this->_log = $logger;
 	}
 
 	/**
@@ -252,7 +274,7 @@ class Signal implements LoggerAwareInterface
 		}
 		else
 		{
-			$this->log->debug('Config file "{file}" does not exists, have you generated signals config file?', ['file' => $file]);
+			$this->_log->debug('Config file "{file}" does not exists, have you generated signals config file?', ['file' => $file]);
 		}
 	}
 
