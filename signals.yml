@@ -1,0 +1,5 @@
+runtimePath: runtime
+generatedPath: generated
+paths:
+   - vendor
+   - src
