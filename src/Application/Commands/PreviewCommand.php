@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Maslosoft\Signals\Commands;
+namespace Maslosoft\Signals\Application\Commands;
 
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -18,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
+
 /**
  * PreviewCommand
  *
@@ -53,5 +54,5 @@ EOT;
 	{
 		$signal->add($this, 'hedron');
 	}
-}
 
+}

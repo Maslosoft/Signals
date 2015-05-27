@@ -28,7 +28,8 @@
 	"require": {
 		"maslosoft/addendum": "*",
 		"psr/log": "~1",
-		"maslosoft/embedi": "*"
+		"maslosoft/embedi": "*",
+		"maslosoft/cli-shared": "*"
 	},
 	"autoload": {
 		"psr-4": {

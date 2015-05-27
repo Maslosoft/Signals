@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "88e2177565247c0ab2d71afa74a77ab3",
+    "hash": "f205809af4ac6ad70d64f534c033021b",
     "packages": [
         {
             "name": "maslosoft/addendum",
@@ -61,6 +61,36 @@
                 "metadata"
             ],
             "time": "2015-05-14 10:25:35"
+        },
+        {
+            "name": "maslosoft/cli-shared",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Maslosoft/CLIShared.git",
+                "reference": "b80c0117fdaedfd6b04c967b901a96482e5c9927"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Maslosoft/CLIShared/zipball/b80c0117fdaedfd6b04c967b901a96482e5c9927",
+                "reference": "b80c0117fdaedfd6b04c967b901a96482e5c9927",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Maslosoft\\Cli\\Shared\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Peter Maselkowski",
+                    "email": "pmaselkowski@gmail.com"
+                }
+            ],
+            "description": "Shared CLI application components",
+            "time": "2015-05-27 14:55:37"
         },
         {
             "name": "maslosoft/embedi",
@@ -2013,6 +2043,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "maslosoft/cli-shared": 20,
         "maslosoft/signalstest": 20
     },
     "prefer-stable": false,

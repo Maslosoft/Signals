@@ -12,6 +12,7 @@
 
 namespace Maslosoft\Signals;
 
+use Maslosoft\Cli\Shared\ConfigReader;
 use Maslosoft\EmbeDi\EmbeDi;
 use Maslosoft\Signals\Helpers\NameNormalizer;
 use Maslosoft\Signals\Interfaces\SlotAwareInterface;
@@ -30,15 +31,36 @@ class Signal implements LoggerAwareInterface
 
 	const slots = 'slots';
 	const signals = 'signals';
+
+	/**
+	 * Generated signals name.
+	 * Name of this constant is confusing.
+	 * @internal description
+	 */
 	const ConfigFilename = 'signals-definition.php';
+
+	/**
+	 * Config file name
+	 */
+	const ConfigName = "signals";
 
 	public $configFilename = 'signals-definition.php';
 
 	/**
-	 * Runtime path
+	 * Runtime path.
+	 * This is path where config from yml will be stored.
+	 * Path is relative to project root.
 	 * @var string
 	 */
 	public $runtimePath = 'runtime';
+
+	/**
+	 * Generated path.
+	 * This is path, where signals definition will be stored.
+	 * Path is relative to project root.
+	 * @var string
+	 */
+	public $generatedPath = 'generated';
 
 	/**
 	 * This aliases will be searched for SlotFor and SignalFor annotations
@@ -46,9 +68,7 @@ class Signal implements LoggerAwareInterface
 	 * @var string[]
 	 */
 	public $paths = [
-		'application',
 		'vendor',
-		'maslosoft'
 	];
 
 	/**
@@ -81,10 +101,16 @@ class Signal implements LoggerAwareInterface
 	 */
 	private $_version = null;
 
-	public function __construct()
+	public function __construct($configName = self::ConfigName)
 	{
 		$this->_log = new NullLogger;
+
+		/**
+		 * TODO This should be made as embedi adapter, currently unsupported
+		 */
+		$config = new ConfigReader($configName);
 		$this->_di = new EmbeDi();
+		$this->_di->apply($config->toArray(), $this);
 		$this->_di->configure($this);
 	}
 

@@ -8,8 +8,8 @@
 
 namespace Maslosoft\Signals\Application;
 
-use Maslosoft\Signals\Commands\BuildCommand;
-use Maslosoft\Signals\Commands\PreviewCommand;
+use Maslosoft\Signals\Application\Commands\BuildCommand;
+use Maslosoft\Signals\Application\Commands\PreviewCommand;
 use Maslosoft\Signals\Signal;
 use Symfony\Component\Console\Application as ConsoleApplication;
 

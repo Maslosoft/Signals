@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Maslosoft\Signals\Commands;
+namespace Maslosoft\Signals\Application\Commands;
 
 use Maslosoft\Signals\Signal;
 use Maslosoft\Signals\Utility;
@@ -21,6 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class BuildCommand extends Command
 {
+
 	protected function configure()
 	{
 		$this->setName("build");
@@ -47,4 +48,5 @@ EOT;
 	{
 		$signal->add($this, 'signals');
 	}
+
 }
