@@ -14,7 +14,8 @@ namespace Maslosoft\Signals\Helpers;
 
 /**
  * This class normalize class names into consistent values.
- *
+ * @deprecated since version 1.1.4
+ * NOTE Use NameNormalize from addendum project
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 class NameNormalizer
