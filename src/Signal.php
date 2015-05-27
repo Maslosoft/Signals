@@ -12,9 +12,9 @@
 
 namespace Maslosoft\Signals;
 
+use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Cli\Shared\ConfigReader;
 use Maslosoft\EmbeDi\EmbeDi;
-use Maslosoft\Signals\Helpers\NameNormalizer;
 use Maslosoft\Signals\Interfaces\SlotAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;

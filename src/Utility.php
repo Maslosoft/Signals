@@ -13,7 +13,8 @@
 namespace Maslosoft\Signals;
 
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
-use Maslosoft\Signals\Helpers\NameNormalizer;
+use Maslosoft\Addendum\Utilities\NameNormalizer;
+use Maslosoft\Cli\Shared\Helpers\PhpExporter;
 
 /**
  * Signals utility class
@@ -49,7 +50,8 @@ class Utility
 			'SignalFor'
 		];
 		AnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $this->signal->paths);
-		$data = sprintf("<?php\n\nreturn %s;", var_export($this->_data, true));
+		$data = PhpExporter::export($this->_data, 'Auto generated, any changes will be lost');
+
 		$path = sprintf("%s/%s", $this->signal->runtimePath, $this->signal->configFilename);
 		file_put_contents($path, $data);
 	}
