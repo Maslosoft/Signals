@@ -243,6 +243,7 @@ class Signal implements LoggerAwareInterface
 		if (!isset(self::$_config[self::slots][$name]))
 		{
 			self::$_config[self::slots][$name] = [];
+			$this->_log->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
 		}
 		foreach ((array) self::$_config[self::slots][$name] as $fqn => $emit)
 		{
