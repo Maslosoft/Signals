@@ -6,3 +6,5 @@
 /runtime
 /signals/*
 /unit
+/extensions
+/test-signals
