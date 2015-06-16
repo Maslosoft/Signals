@@ -24,22 +24,25 @@ use Maslosoft\Cli\Shared\Helpers\PhpExporter;
 class Utility
 {
 
-	const slotFor = 'SlotFor';
-	const signalFor = 'SignalFor';
+	const SlotFor = 'SlotFor';
+	const SignalFor = 'SignalFor';
 
 	private $_data = [
-		Signal::slots => [
+		Signal::Slots => [
 		],
-		Signal::signals => [
+		Signal::Signals => [
 		]
 	];
+
+	/**
+	 * Signal instance
+	 * @var Signal
+	 */
 	private $signal = null;
-	private $log = null;
 
 	public function __construct(Signal $signal)
 	{
 		$this->signal = $signal;
-		$this->log = $this->signal->getLogger();
 	}
 
 	public function generate()
@@ -71,25 +74,25 @@ class Utility
 
 		// Signals
 		$class = AnnotationUtility::rawAnnotate($file)['class'];
-		if (isset($class[self::signalFor]))
+		if (isset($class[self::SignalFor]))
 		{
-			$val = $this->_getValuesFor($class[self::signalFor]);
+			$val = $this->getValuesFor($class[self::SignalFor]);
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
-				$this->_data[Signal::slots][$slot][$fqn] = true;
+				$this->_data[Signal::Slots][$slot][$fqn] = true;
 			}
 		}
 
 		// Slots
 		// For constructor injection
-		if (isset($class[self::slotFor]))
+		if (isset($class[self::SlotFor]))
 		{
-			$val = $this->_getValuesFor($class[self::slotFor]);
+			$val = $this->getValuesFor($class[self::SlotFor]);
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
-				$this->_data[Signal::signals][$slot][$fqn][] = true;
+				$this->_data[Signal::Signals][$slot][$fqn][] = true;
 			}
 		}
 
@@ -97,15 +100,15 @@ class Utility
 		$methods = AnnotationUtility::rawAnnotate($file)['methods'];
 		foreach ($methods as $methodName => $method)
 		{
-			if (!isset($method[self::slotFor]))
+			if (!isset($method[self::SlotFor]))
 			{
 				continue;
 			}
-			$val = $this->_getValuesFor($method[self::slotFor]);
+			$val = $this->getValuesFor($method[self::SlotFor]);
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
-				$this->_data[Signal::signals][$slot][$fqn][] = sprintf('%s()', $methodName);
+				$this->_data[Signal::Signals][$slot][$fqn][] = sprintf('%s()', $methodName);
 			}
 		}
 
@@ -113,20 +116,20 @@ class Utility
 		$fields = AnnotationUtility::rawAnnotate($file)['fields'];
 		foreach ($fields as $fieldName => $method)
 		{
-			if (!isset($method[self::slotFor]))
+			if (!isset($method[self::SlotFor]))
 			{
 				continue;
 			}
-			$val = $this->_getValuesFor($method[self::slotFor]);
+			$val = $this->getValuesFor($method[self::SlotFor]);
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
-				$this->_data[Signal::signals][$slot][$fqn][] = sprintf('%s', $fieldName);
+				$this->_data[Signal::Signals][$slot][$fqn][] = sprintf('%s', $fieldName);
 			}
 		}
 	}
 
-	private function _getValuesFor($src)
+	private function getValuesFor($src)
 	{
 		$value = [];
 		foreach ($src as $val)

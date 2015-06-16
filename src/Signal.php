@@ -29,8 +29,8 @@ use Psr\Log\NullLogger;
 class Signal implements LoggerAwareInterface
 {
 
-	const slots = 'slots';
-	const signals = 'signals';
+	const Slots = 'slots';
+	const Signals = 'signals';
 
 	/**
 	 * Generated signals name.
@@ -170,12 +170,12 @@ class Signal implements LoggerAwareInterface
 		}
 		$name = get_class($signal);
 		NameNormalizer::normalize($name);
-		if (!isset(self::$_config[self::signals][$name]))
+		if (!isset(self::$_config[self::Signals][$name]))
 		{
-			self::$_config[self::signals][$name] = [];
+			self::$_config[self::Signals][$name] = [];
 			$this->_log->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
 		}
-		foreach (self::$_config[self::signals][$name] as $fqn => $injections)
+		foreach (self::$_config[self::Signals][$name] as $fqn => $injections)
 		{
 			// Skip
 			if (false === $injections || count($injections) == 0)
@@ -240,12 +240,12 @@ class Signal implements LoggerAwareInterface
 		$result = [];
 		$name = get_class($slot);
 		NameNormalizer::normalize($name);
-		if (!isset(self::$_config[self::slots][$name]))
+		if (!isset(self::$_config[self::Slots][$name]))
 		{
-			self::$_config[self::slots][$name] = [];
+			self::$_config[self::Slots][$name] = [];
 			$this->_log->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
 		}
-		foreach ((array) self::$_config[self::slots][$name] as $fqn => $emit)
+		foreach ((array) self::$_config[self::Slots][$name] as $fqn => $emit)
 		{
 			if (false === $emit)
 			{

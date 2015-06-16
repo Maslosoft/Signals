@@ -9,6 +9,7 @@ matrix:
     - php:
       - nightly
 install:
+  - mkdir runtime
   - composer self-update
   - composer install --dev --prefer-dist
   - composer update maslosoft/signalstest
