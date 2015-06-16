@@ -1,1 +1,3 @@
-mklink /j vendor\maslosoft\cli-shared\src ..\CLIShared\src
+#!/bin/bash
+rm -rf vendor/maslosoft/cli-shared/src
+ln -s ../../../../CLIShared/src vendor/maslosoft/cli-shared/src
