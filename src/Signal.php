@@ -259,6 +259,12 @@ class Signal implements LoggerAwareInterface
 			{
 				continue;
 			}
+			// Check if class exists and log if doesn't
+			if (!ClassChecker::exists($fqn))
+			{
+				$this->_log->debug(sprintf("Class `%s` not found while gathering slot `%s`", $fqn, get_class($slot)));
+				continue;
+			}
 			if (null === $interface)
 			{
 				$result[] = new $fqn;
