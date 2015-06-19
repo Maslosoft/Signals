@@ -13,6 +13,7 @@
 namespace Maslosoft\Signals;
 
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
+use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Cli\Shared\Helpers\PhpExporter;
 
@@ -80,6 +81,7 @@ class Utility
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
+				$this->checkClass($slot, $fqn);
 				$this->_data[Signal::Slots][$slot][$fqn] = true;
 			}
 		}
@@ -92,6 +94,7 @@ class Utility
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
+				$this->checkClass($slot, $fqn);
 				$this->_data[Signal::Signals][$slot][$fqn][] = true;
 			}
 		}
@@ -108,6 +111,7 @@ class Utility
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
+				$this->checkClass($slot, $fqn);
 				$this->_data[Signal::Signals][$slot][$fqn][] = sprintf('%s()', $methodName);
 			}
 		}
@@ -124,6 +128,7 @@ class Utility
 			foreach ($val as $slot)
 			{
 				NameNormalizer::normalize($slot);
+				$this->checkClass($slot, $fqn);
 				$this->_data[Signal::Signals][$slot][$fqn][] = sprintf('%s', $fieldName);
 			}
 		}
@@ -149,6 +154,14 @@ class Utility
 			}
 		}
 		return array_values(array_unique($value));
+	}
+
+	private function checkClass($slot, $fqn)
+	{
+		if (!ClassChecker::exists($fqn))
+		{
+			$this->signal->getLogger()->warning(sprintf("Class `%s` not found while generating signal data for `%s`", $fqn, $slot));
+		}
 	}
 
 }
