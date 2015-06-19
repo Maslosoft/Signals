@@ -12,6 +12,7 @@
 
 namespace Maslosoft\Signals;
 
+use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Cli\Shared\ConfigReader;
 use Maslosoft\EmbeDi\EmbeDi;
@@ -204,6 +205,13 @@ class Signal implements LoggerAwareInterface
 					continue;
 				}
 
+				// Check if class exists and log if doesn't
+				if (!ClassChecker::exists($fqn))
+				{
+					$this->_log->debug(sprintf("Class `%s` not found while emiting signal `%s`", $fqn, get_class($signal)));
+					continue;
+				}
+
 				// Othe type injection
 				$slot = new $fqn;
 
@@ -297,7 +305,7 @@ class Signal implements LoggerAwareInterface
 		$file = $this->runtimePath . '/' . $this->configFilename;
 		if (file_exists($file))
 		{
-			self::$_config = require $file;
+			self::$_config = (array) require $file;
 		}
 		else
 		{
