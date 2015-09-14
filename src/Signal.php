@@ -12,7 +12,6 @@
 
 namespace Maslosoft\Signals;
 
-use Exception;
 use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Cli\Shared\ConfigReader;
@@ -322,7 +321,7 @@ class Signal implements LoggerAwareInterface
 	/**
 	 * Set Input/Output interface
 	 * @param BuilderIOInterface $io
-	 * @return \Maslosoft\Signals\Signal
+	 * @return Signal
 	 */
 	public function setIO(BuilderIOInterface $io)
 	{
