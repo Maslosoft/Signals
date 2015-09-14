@@ -8,14 +8,14 @@
 
 namespace Maslosoft\Signals\Interfaces;
 
+use Maslosoft\Signals\Signal;
+
 /**
  *
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
-interface BuilderIOInterface extends SignalAwareInterface
+interface SignalAwareInterface
 {
 
-	public function write($data);
-
-	public function read();
+	public function setSignal(Signal $signal);
 }

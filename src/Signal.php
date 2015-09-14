@@ -20,6 +20,7 @@ use Maslosoft\EmbeDi\EmbeDi;
 use Maslosoft\Signals\Builder\Addendum;
 use Maslosoft\Signals\Builder\IO\PhpFile;
 use Maslosoft\Signals\Interfaces\BuilderIOInterface;
+use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Interfaces\SlotAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -320,6 +321,24 @@ class Signal implements LoggerAwareInterface
 		}
 		$io->setSignal($this);
 		return $io;
+	}
+
+	/**
+	 *
+	 * @return ExtractorInterface
+	 */
+	public function getExtractor()
+	{
+		if (is_object($this->extractor))
+		{
+			$extractor = $this->extractor;
+		}
+		else
+		{
+			$extractor = $this->di->apply($this->extractor);
+		}
+		$extractor->setSignal($this);
+		return $extractor;
 	}
 
 	/**
