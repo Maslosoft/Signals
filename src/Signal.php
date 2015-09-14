@@ -88,7 +88,7 @@ class Signal implements LoggerAwareInterface
 	 * Configuration of signals and slots
 	 * @var string[][]
 	 */
-	private static $_config = [];
+	private static $config = [];
 
 	/**
 	 * Logger
@@ -106,7 +106,7 @@ class Signal implements LoggerAwareInterface
 	 * Version
 	 * @var string
 	 */
-	private $_version = null;
+	private $version = null;
 
 	public function __construct($configName = self::ConfigName)
 	{
@@ -144,11 +144,11 @@ class Signal implements LoggerAwareInterface
 
 	public function getVersion()
 	{
-		if (null === $this->_version)
+		if (null === $this->version)
 		{
-			$this->_version = require __DIR__ . '/version.php';
+			$this->version = require __DIR__ . '/version.php';
 		}
-		return $this->_version;
+		return $this->version;
 	}
 
 	public function init()
@@ -176,12 +176,12 @@ class Signal implements LoggerAwareInterface
 		}
 		$name = get_class($signal);
 		NameNormalizer::normalize($name);
-		if (!isset(self::$_config[self::Signals][$name]))
+		if (!isset(self::$config[self::Signals][$name]))
 		{
-			self::$_config[self::Signals][$name] = [];
+			self::$config[self::Signals][$name] = [];
 			$this->logger->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
 		}
-		foreach (self::$_config[self::Signals][$name] as $fqn => $injections)
+		foreach (self::$config[self::Signals][$name] as $fqn => $injections)
 		{
 			// Skip
 			if (false === $injections || count($injections) == 0)
@@ -251,12 +251,12 @@ class Signal implements LoggerAwareInterface
 	{
 		$name = get_class($slot);
 		NameNormalizer::normalize($name);
-		if (!isset(self::$_config[self::Slots][$name]))
+		if (!isset(self::$config[self::Slots][$name]))
 		{
-			self::$_config[self::Slots][$name] = [];
+			self::$config[self::Slots][$name] = [];
 			$this->logger->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
 		}
-		foreach ((array) self::$_config[self::Slots][$name] as $fqn => $emit)
+		foreach ((array) self::$config[self::Slots][$name] as $fqn => $emit)
 		{
 			if (false === $emit)
 			{
@@ -358,7 +358,7 @@ class Signal implements LoggerAwareInterface
 
 	private function _init()
 	{
-		self::$_config = $this->getIO()->read();
+		self::$config = $this->getIO()->read();
 	}
 
 }
