@@ -22,7 +22,7 @@ use Maslosoft\Signals\Signal;
 class Addendum implements ExtractorInterface
 {
 
-	// Data keys
+	// Data keys for annotations extraction
 	const SlotFor = 'SlotFor';
 	const SignalFor = 'SignalFor';
 	// Default annotation names
@@ -34,6 +34,11 @@ class Addendum implements ExtractorInterface
 	 * @var Signal
 	 */
 	private $signal = null;
+
+	/**
+	 * Signals and slots data
+	 * @var mixed
+	 */
 	private $data = [
 		Signal::Slots => [
 		],
