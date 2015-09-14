@@ -320,6 +320,18 @@ class Signal implements LoggerAwareInterface
 	}
 
 	/**
+	 * Set Input/Output interface
+	 * @param BuilderIOInterface $io
+	 * @return \Maslosoft\Signals\Signal
+	 */
+	public function setIO(BuilderIOInterface $io)
+	{
+		$io->setSignal($this);
+		$this->io = $io;
+		return $this;
+	}
+
+	/**
 	 *
 	 * @return ExtractorInterface
 	 */
