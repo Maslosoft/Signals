@@ -4,6 +4,7 @@
 /nbproject
 /models
 /runtime
+/generated
 /signals/*
 /unit
 /extensions

@@ -12,10 +12,14 @@
 
 namespace Maslosoft\Signals;
 
+use Exception;
 use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Cli\Shared\ConfigReader;
 use Maslosoft\EmbeDi\EmbeDi;
+use Maslosoft\Signals\Builder\Addendum;
+use Maslosoft\Signals\Builder\IO\PhpFile;
+use Maslosoft\Signals\Interfaces\BuilderIOInterface;
 use Maslosoft\Signals\Interfaces\SlotAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -45,8 +49,6 @@ class Signal implements LoggerAwareInterface
 	 */
 	const ConfigName = "signals";
 
-	public $configFilename = 'signals-definition.php';
-
 	/**
 	 * Runtime path.
 	 * This is path where config from yml will be stored.
@@ -56,14 +58,6 @@ class Signal implements LoggerAwareInterface
 	public $runtimePath = 'runtime';
 
 	/**
-	 * Generated path.
-	 * This is path, where signals definition will be stored.
-	 * Path is relative to project root.
-	 * @var string
-	 */
-	public $generatedPath = 'generated';
-
-	/**
 	 * This aliases will be searched for SlotFor and SignalFor annotations
 	 * TODO Autodetect based on composer autoload
 	 * @var string[]
@@ -71,6 +65,18 @@ class Signal implements LoggerAwareInterface
 	public $paths = [
 		'vendor',
 	];
+
+	/**
+	 * Extractor configuration
+	 * @var string|[]
+	 */
+	public $extractor = Addendum::class;
+
+	/**
+	 * Input/Output configuration
+	 * @var string|[]
+	 */
+	public $io = PhpFile::class;
 
 	/**
 	 * Whenever component is initialized
@@ -88,13 +94,13 @@ class Signal implements LoggerAwareInterface
 	 * Logger
 	 * @var LoggerInterface
 	 */
-	private $_log = null;
+	private $logger = null;
 
 	/**
 	 *
 	 * @var EmbeDi
 	 */
-	private $_di = null;
+	private $di = null;
 
 	/**
 	 * Version
@@ -104,15 +110,15 @@ class Signal implements LoggerAwareInterface
 
 	public function __construct($configName = self::ConfigName)
 	{
-		$this->_log = new NullLogger;
+		$this->logger = new NullLogger;
 
 		/**
 		 * TODO This should be made as embedi adapter, currently unsupported
 		 */
 		$config = new ConfigReader($configName);
-		$this->_di = new EmbeDi();
-		$this->_di->apply($config->toArray(), $this);
-		$this->_di->configure($this);
+		$this->di = EmbeDi::fly();
+		$this->di->apply($config->toArray(), $this);
+		$this->di->configure($this);
 	}
 
 	/**
@@ -122,6 +128,10 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function __get($name)
 	{
+		if ($name == 'configFilename')
+		{
+			throw new Exception('Unknown property ...');
+		}
 		return $this->{'get' . ucfirst($name)}();
 	}
 
@@ -151,9 +161,9 @@ class Signal implements LoggerAwareInterface
 		{
 			$this->_init();
 		}
-		if (!$this->_di->isStored($this))
+		if (!$this->di->isStored($this))
 		{
-			$this->_di->store($this);
+			$this->di->store($this);
 		}
 	}
 
@@ -173,7 +183,7 @@ class Signal implements LoggerAwareInterface
 		if (!isset(self::$_config[self::Signals][$name]))
 		{
 			self::$_config[self::Signals][$name] = [];
-			$this->_log->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
+			$this->logger->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
 		}
 		foreach (self::$_config[self::Signals][$name] as $fqn => $injections)
 		{
@@ -207,7 +217,7 @@ class Signal implements LoggerAwareInterface
 				// Check if class exists and log if doesn't
 				if (!ClassChecker::exists($fqn))
 				{
-					$this->_log->debug(sprintf("Class `%s` not found while emiting signal `%s`", $fqn, get_class($signal)));
+					$this->logger->debug(sprintf("Class `%s` not found while emiting signal `%s`", $fqn, get_class($signal)));
 					continue;
 				}
 
@@ -248,7 +258,7 @@ class Signal implements LoggerAwareInterface
 		if (!isset(self::$_config[self::Slots][$name]))
 		{
 			self::$_config[self::Slots][$name] = [];
-			$this->_log->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
+			$this->logger->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
 		}
 		foreach ((array) self::$_config[self::Slots][$name] as $fqn => $emit)
 		{
@@ -259,7 +269,7 @@ class Signal implements LoggerAwareInterface
 			// Check if class exists and log if doesn't
 			if (!ClassChecker::exists($fqn))
 			{
-				$this->_log->debug(sprintf("Class `%s` not found while gathering slot `%s`", $fqn, get_class($slot)));
+				$this->logger->debug(sprintf("Class `%s` not found while gathering slot `%s`", $fqn, get_class($slot)));
 				continue;
 			}
 			if (null === $interface)
@@ -282,7 +292,7 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function getLogger()
 	{
-		return $this->_log;
+		return $this->logger;
 	}
 
 	/**
@@ -291,7 +301,25 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function setLogger(LoggerInterface $logger)
 	{
-		$this->_log = $logger;
+		$this->logger = $logger;
+	}
+
+	/**
+	 * Get Input/Output adapter
+	 * @return BuilderIOInterface I/O Adapter
+	 */
+	public function getIO()
+	{
+		if (is_object($this->io))
+		{
+			$io = $this->io;
+		}
+		else
+		{
+			$io = $this->di->apply($this->io);
+		}
+		$io->setSignal($this);
+		return $io;
 	}
 
 	/**
@@ -304,15 +332,7 @@ class Signal implements LoggerAwareInterface
 
 	private function _init()
 	{
-		$file = $this->runtimePath . '/' . $this->configFilename;
-		if (file_exists($file))
-		{
-			self::$_config = (array) require $file;
-		}
-		else
-		{
-			$this->_log->debug('Config file "{file}" does not exists, have you generated signals config file?', ['file' => $file]);
-		}
+		self::$_config = $this->getIO()->read();
 	}
 
 }

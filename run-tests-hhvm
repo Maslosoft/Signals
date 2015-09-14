@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 rm -rf ./runtime/*
+rm -rf ./generated/*
 hhvm vendor/bin/codecept run unit --debug
