@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * SignalsCommand
  *
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
+ * @codeCoverageIgnore
  */
 class BuildCommand extends Command
 {
