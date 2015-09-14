@@ -34,6 +34,7 @@ class Memory implements BuilderIOInterface
 	public function write($data)
 	{
 		$this->data = $data;
+		return true;
 	}
 
 }

@@ -12,10 +12,8 @@ namespace Maslosoft\Signals\Interfaces;
  *
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
-interface BuilderIOInterface extends SignalAwareInterface
+interface ExtractorInterface extends SignalAwareInterface
 {
 
-	public function write($data);
-
-	public function read();
+	public function getData();
 }
