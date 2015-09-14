@@ -21,6 +21,7 @@ use Symfony\Component\Console\Application as ConsoleApplication;
  * SignalsApplication
  *
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
+ * @codeCoverageIgnore
  */
 class Application extends ConsoleApplication
 {

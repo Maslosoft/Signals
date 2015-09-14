@@ -28,6 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * PreviewCommand
  *
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
+ * @codeCoverageIgnore
  */
 class PreviewCommand extends Command
 {
