@@ -1,10 +1,10 @@
 <?php
 
 /**
- * This software package is licensed under GNU LESSER GENERAL PUBLIC LICENSE license.
+ * This software package is licensed under `AGPL, Commercial` license[s].
  *
  * @package maslosoft/signals
- * @licence GNU LESSER GENERAL PUBLIC LICENSE
+ * @license AGPL, Commercial
  *
  * @copyright Copyright (c) Peter Maselkowski <pmaselkowski@gmail.com>
  *
@@ -129,10 +129,6 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function __get($name)
 	{
-		if ($name == 'configFilename')
-		{
-			throw new Exception('Unknown property ...');
-		}
 		return $this->{'get' . ucfirst($name)}();
 	}
 
