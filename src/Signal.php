@@ -164,7 +164,6 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function emit($signal)
 	{
-		$result = [];
 		if (is_string($signal))
 		{
 			$signal = new $signal;
@@ -201,7 +200,7 @@ class Signal implements LoggerAwareInterface
 					{
 						$cloned->setSlot($slot);
 					}
-					$result[] = $cloned;
+					yield $cloned;
 					continue;
 				}
 
@@ -232,10 +231,9 @@ class Signal implements LoggerAwareInterface
 					// field injection
 					$slot->$injection = $cloned;
 				}
-				$result[] = $cloned;
+				yield $cloned;
 			}
 		}
-		return $result;
 	}
 
 	/**
@@ -245,7 +243,6 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function gather($slot, $interface = null)
 	{
-		$result = [];
 		$name = get_class($slot);
 		NameNormalizer::normalize($name);
 		if (!isset(self::$_config[self::Slots][$name]))
@@ -267,17 +264,16 @@ class Signal implements LoggerAwareInterface
 			}
 			if (null === $interface)
 			{
-				$result[] = new $fqn;
+				yield new $fqn;
 				continue;
 			}
 
 			// Check if class implements interface
 			if (isset(class_implements($fqn)[$interface]))
 			{
-				$result[] = new $fqn;
+				yield new $fqn;
 			}
 		}
-		return $result;
 	}
 
 	/**
