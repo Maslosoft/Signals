@@ -12,7 +12,8 @@
 
 namespace Maslosoft\Signals\Application\Commands;
 
-use Exception;
+use Maslosoft\Signals\Helpers\Preview;
+use Maslosoft\Signals\Signal;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,7 +48,20 @@ EOT;
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		throw new Exception('TODO');
+		$preview = new Preview();
+		$output->writeln("Following signals and slots was found:");
+
+		foreach ($preview->cli(new Signal) as $line)
+		{
+			if (!strstr($line, "\t"))
+			{
+				$output->writeln("<info>$line</info>");
+			}
+			else
+			{
+				$output->writeln($line);
+			}
+		}
 	}
 
 	/**
