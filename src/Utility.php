@@ -54,10 +54,8 @@ class Utility
 			'SignalFor'
 		];
 		AnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $this->signal->paths);
-		$data = PhpExporter::export($this->_data, 'Auto generated, any changes will be lost');
 
-		$path = sprintf("%s/%s", $this->signal->runtimePath, $this->signal->configFilename);
-		file_put_contents($path, $data);
+		$this->signal->getIO()->write($this->_data);
 	}
 
 	/**

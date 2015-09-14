@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 rm -rf ./runtime/*
+rm -rf ./generated/*
 vendor/bin/codecept run unit --coverage --html --coverage-html=. --coverage-xml=./coverage.clover
