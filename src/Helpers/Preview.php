@@ -25,7 +25,7 @@ class Preview
 		$signal->setIO(new Memory());
 		(new Utility($signal))->generate();
 		$data = $signal->getIO()->read();
-		return (new Renderer($data))->renderCli($data);
+		return (new Renderer())->renderCli($data);
 	}
 
 }

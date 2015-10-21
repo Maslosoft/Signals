@@ -17,6 +17,7 @@ use Maslosoft\Addendum\Collections\MetaAnnotation;
 /**
  * SlotForAnnotation
  * @template SlotFor(${SignalClass})
+ * @codeCoverageIgnore
  * @author Piotr
  */
 class SlotForAnnotation extends MetaAnnotation
@@ -24,7 +25,7 @@ class SlotForAnnotation extends MetaAnnotation
 
 	public function init()
 	{
-		
+
 	}
 
 }
