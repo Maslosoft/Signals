@@ -68,13 +68,13 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * Extractor configuration
-	 * @var string|[]
+	 * @var string|[]|object
 	 */
 	public $extractor = Addendum::class;
 
 	/**
 	 * Input/Output configuration
-	 * @var string|[]
+	 * @var string|[]|object
 	 */
 	public $io = PhpFile::class;
 
@@ -142,6 +142,12 @@ class Signal implements LoggerAwareInterface
 		return $this->{'set' . ucfirst($name)}($value);
 	}
 
+	/**
+	 * Get current signals version
+	 *
+	 * @codeCoverageIgnore
+	 * @return string
+	 */
 	public function getVersion()
 	{
 		if (null === $this->version)
@@ -181,6 +187,7 @@ class Signal implements LoggerAwareInterface
 			self::$config[self::Signals][$name] = [];
 			$this->logger->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
 		}
+		$result = [];
 		foreach (self::$config[self::Signals][$name] as $fqn => $injections)
 		{
 			// Skip
@@ -206,7 +213,7 @@ class Signal implements LoggerAwareInterface
 					{
 						$cloned->setSlot($slot);
 					}
-					yield $cloned;
+					$result[] = $cloned;
 					continue;
 				}
 
@@ -237,9 +244,10 @@ class Signal implements LoggerAwareInterface
 					// field injection
 					$slot->$injection = $cloned;
 				}
-				yield $cloned;
+				$result[] = $cloned;
 			}
 		}
+		return $result;
 	}
 
 	/**
@@ -256,6 +264,7 @@ class Signal implements LoggerAwareInterface
 			self::$config[self::Slots][$name] = [];
 			$this->logger->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
 		}
+		$result = [];
 		foreach ((array) self::$config[self::Slots][$name] as $fqn => $emit)
 		{
 			if (false === $emit)
@@ -270,20 +279,22 @@ class Signal implements LoggerAwareInterface
 			}
 			if (null === $interface)
 			{
-				yield new $fqn;
+				$result[] = new $fqn;
 				continue;
 			}
 
 			// Check if class implements interface
 			if (isset(class_implements($fqn)[$interface]))
 			{
-				yield new $fqn;
+				$result[] = new $fqn;
 			}
 		}
+		return $result;
 	}
 
 	/**
 	 * Get logger
+	 * @codeCoverageIgnore
 	 * @return LoggerInterface
 	 */
 	public function getLogger()
@@ -293,6 +304,7 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * Set logger
+	 * @codeCoverageIgnore
 	 * @param LoggerInterface $logger
 	 */
 	public function setLogger(LoggerInterface $logger)
@@ -302,6 +314,7 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * Get Input/Output adapter
+	 * @codeCoverageIgnore
 	 * @return BuilderIOInterface I/O Adapter
 	 */
 	public function getIO()
@@ -320,6 +333,7 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * Set Input/Output interface
+	 * @codeCoverageIgnore
 	 * @param BuilderIOInterface $io
 	 * @return Signal
 	 */
@@ -331,7 +345,7 @@ class Signal implements LoggerAwareInterface
 	}
 
 	/**
-	 *
+	 * @codeCoverageIgnore
 	 * @return ExtractorInterface
 	 */
 	public function getExtractor()

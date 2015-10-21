@@ -14,7 +14,7 @@ namespace Maslosoft\Signals;
 
 /**
  * Signals utility class
- *
+ * @codeCoverageIgnore
  * @author Piotr
  */
 class Utility
