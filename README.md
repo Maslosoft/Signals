@@ -12,7 +12,7 @@
 </a>
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master)
 <img src="https://travis-ci.org/Maslosoft/Signals.svg?branch=master"/>
-<img src="https://travis-ci.org/Maslosoft/Signals.svg?branch=master"/>
+<img src="https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/coverage.png?b=master"/>
 
 ### Quick Install
 ```bash
