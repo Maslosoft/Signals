@@ -20,6 +20,7 @@ use Maslosoft\Signals\Builder\Addendum;
 use Maslosoft\Signals\Builder\IO\PhpFile;
 use Maslosoft\Signals\Interfaces\BuilderIOInterface;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
+use Maslosoft\Signals\Interfaces\SignalAwareInterface;
 use Maslosoft\Signals\Interfaces\SlotAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -319,16 +320,7 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function getIO()
 	{
-		if (is_object($this->io))
-		{
-			$io = $this->io;
-		}
-		else
-		{
-			$io = $this->di->apply($this->io);
-		}
-		$io->setSignal($this);
-		return $io;
+		return $this->getConfigured('io');
 	}
 
 	/**
@@ -339,9 +331,7 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function setIO(BuilderIOInterface $io)
 	{
-		$io->setSignal($this);
-		$this->io = $io;
-		return $this;
+		return $this->setConfigured($io, 'io');
 	}
 
 	/**
@@ -350,16 +340,16 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function getExtractor()
 	{
-		if (is_object($this->extractor))
-		{
-			$extractor = $this->extractor;
-		}
-		else
-		{
-			$extractor = $this->di->apply($this->extractor);
-		}
-		$extractor->setSignal($this);
-		return $extractor;
+		return $this->getConfigured('extractor');
+	}
+
+	/**
+	 * @codeCoverageIgnore
+	 * @param ExtractorInterface $extractor
+	 */
+	public function setExtractor(ExtractorInterface $extractor)
+	{
+		$this->setConfigured($extractor, 'extractor');
 	}
 
 	/**
@@ -373,6 +363,41 @@ class Signal implements LoggerAwareInterface
 	private function _init()
 	{
 		self::$config = $this->getIO()->read();
+	}
+
+	/**
+	 * Get configured property
+	 * @param string $property
+	 * @return SignalAwareInterface
+	 */
+	private function getConfigured($property)
+	{
+		if (is_object($this->$property))
+		{
+			$object = $this->$property;
+		}
+		else
+		{
+			$object = $this->di->apply($this->$property);
+		}
+		if ($object instanceof SignalAwareInterface)
+		{
+			$object->setSignal($this);
+		}
+		return $object;
+	}
+
+	/**
+	 * Set signal aware property
+	 * @param SignalAwareInterface $object
+	 * @param type $property
+	 * @return Signal
+	 */
+	private function setConfigured(SignalAwareInterface $object, $property)
+	{
+		$object->setSignal($this);
+		$this->$property = $object;
+		return $this;
 	}
 
 }
