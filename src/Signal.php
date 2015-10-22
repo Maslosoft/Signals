@@ -162,7 +162,7 @@ class Signal implements LoggerAwareInterface
 	{
 		if (!$this->isInitialized)
 		{
-			$this->_init();
+			$this->reload();
 		}
 		if (!$this->di->isStored($this))
 		{
@@ -307,10 +307,12 @@ class Signal implements LoggerAwareInterface
 	 * Set logger
 	 * @codeCoverageIgnore
 	 * @param LoggerInterface $logger
+	 * @return Signal
 	 */
 	public function setLogger(LoggerInterface $logger)
 	{
 		$this->logger = $logger;
+		return $this;
 	}
 
 	/**
@@ -346,10 +348,11 @@ class Signal implements LoggerAwareInterface
 	/**
 	 * @codeCoverageIgnore
 	 * @param ExtractorInterface $extractor
+	 * @return Signal
 	 */
 	public function setExtractor(ExtractorInterface $extractor)
 	{
-		$this->setConfigured($extractor, 'extractor');
+		return $this->setConfigured($extractor, 'extractor');
 	}
 
 	/**
@@ -357,10 +360,10 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function resetCache()
 	{
-		$this->_init();
+		$this->reload();
 	}
 
-	private function _init()
+	private function reload()
 	{
 		self::$config = $this->getIO()->read();
 	}
@@ -390,7 +393,7 @@ class Signal implements LoggerAwareInterface
 	/**
 	 * Set signal aware property
 	 * @param SignalAwareInterface $object
-	 * @param type $property
+	 * @param string $property
 	 * @return Signal
 	 */
 	private function setConfigured(SignalAwareInterface $object, $property)
