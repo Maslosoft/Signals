@@ -50,18 +50,24 @@ EOT;
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$preview = new Preview();
-		$output->writeln("Following signals and slots was found:");
 
+		$output->writeln("Scanning sources...");
+		$lines = [];
 		foreach ($preview->cli(new Signal) as $line)
 		{
 			if (!strstr($line, "\t"))
 			{
-				$output->writeln("<info>$line</info>");
+				$lines[] = "<info>$line</info>";
 			}
 			else
 			{
-				$output->writeln($line);
+				$lines[] = $line;
 			}
+		}
+		$output->writeln("Following signals and slots was found:");
+		foreach ($lines as $line)
+		{
+			$output->writeln($line);
 		}
 	}
 

@@ -29,7 +29,7 @@ class Renderer
 				yield $signal;
 				foreach ($slots as $slot => $types)
 				{
-					foreach ($types as $type)
+					foreach ((array) $types as $type)
 					{
 						if ($type === true)
 						{
