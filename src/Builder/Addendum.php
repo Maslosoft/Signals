@@ -14,6 +14,7 @@ namespace Maslosoft\Signals\Builder;
 
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
 use Maslosoft\Addendum\Utilities\ClassChecker;
+use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Helpers\NameNormalizer;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Signal;
@@ -61,6 +62,7 @@ class Addendum implements ExtractorInterface
 			self::SignalFor
 		];
 		AnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $this->signal->paths);
+		DataSorter::sort($this->data);
 		return $this->data;
 	}
 
