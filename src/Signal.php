@@ -68,6 +68,18 @@ class Signal implements LoggerAwareInterface
 	];
 
 	/**
+	 * Filters configuration.
+	 * @var string[]|object[]
+	 */
+	public $filters = [];
+
+	/**
+	 * Sorters configuration.
+	 * @var string[]|object[]
+	 */
+	public $sorters = [];
+
+	/**
 	 * Extractor configuration
 	 * @var string|[]|object
 	 */
