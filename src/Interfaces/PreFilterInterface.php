@@ -16,5 +16,5 @@ namespace Maslosoft\Signals\Interfaces;
 interface PreFilterInterface
 {
 
-	public function filter($className, $slots);
+	public function filter($className, SignalInterface $signal);
 }

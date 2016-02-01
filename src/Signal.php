@@ -18,13 +18,20 @@ use Maslosoft\Cli\Shared\ConfigReader;
 use Maslosoft\EmbeDi\EmbeDi;
 use Maslosoft\Signals\Builder\Addendum;
 use Maslosoft\Signals\Builder\IO\PhpFile;
+use Maslosoft\Signals\Factories\FilterFactory;
 use Maslosoft\Signals\Factories\SlotFactory;
+use Maslosoft\Signals\Helpers\PostFilter;
+use Maslosoft\Signals\Helpers\PreFilter;
 use Maslosoft\Signals\Interfaces\BuilderIOInterface;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
+use Maslosoft\Signals\Interfaces\FilterInterface;
+use Maslosoft\Signals\Interfaces\PostFilterInterface;
+use Maslosoft\Signals\Interfaces\PreFilterInterface;
 use Maslosoft\Signals\Interfaces\SignalAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use UnexpectedValueException;
 
 /**
  * Main signals components
@@ -69,6 +76,7 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * Filters configuration.
+	 * This filters will be applied to every emit.
 	 * @var string[]|object[]
 	 */
 	public $filters = [];
@@ -120,6 +128,12 @@ class Signal implements LoggerAwareInterface
 	 * @var string
 	 */
 	private $version = null;
+
+	/**
+	 * Current filters
+	 * @var PreFilterInterface[]|PostFilterInterface[]
+	 */
+	private $currentFilters = [];
 
 	public function __construct($configName = self::ConfigName)
 	{
@@ -183,12 +197,29 @@ class Signal implements LoggerAwareInterface
 	}
 
 	/**
+	 * Apply filter to current emit.
+	 * @param FilterInterface $filter
+	 * @return Signal
+	 * @throws UnexpectedValueException
+	 */
+	public function filter(FilterInterface $filter)
+	{
+		if (!$filter instanceof PreFilterInterface || !$filter instanceof PostFilterInterface)
+		{
+			throw new UnexpectedValueException(sprintf('$filter must imlement either `%s` or `%s` interface'), PreFilterInterface::class, PostFilterInterface::class);
+		}
+		$this->currentFilters[] = $filter;
+		return $this;
+	}
+
+	/**
 	 * Emit signal to inform slots
 	 * @param object|string $signal
 	 * @return object[]
 	 */
 	public function emit($signal)
 	{
+		$result = [];
 		if (is_string($signal))
 		{
 			$signal = new $signal;
@@ -199,8 +230,9 @@ class Signal implements LoggerAwareInterface
 		{
 			self::$config[self::Signals][$name] = [];
 			$this->logger->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
+			return $result;
 		}
-		$result = [];
+
 		foreach (self::$config[self::Signals][$name] as $fqn => $injections)
 		{
 			// Skip
@@ -208,7 +240,10 @@ class Signal implements LoggerAwareInterface
 			{
 				continue;
 			}
-
+			if (!PreFilter::filter($this, $fqn, $signal))
+			{
+				continue;
+			}
 			foreach ($injections as $injection)
 			{
 				$injected = SlotFactory::create($this, $signal, $fqn, $injection);
@@ -216,9 +251,14 @@ class Signal implements LoggerAwareInterface
 				{
 					continue;
 				}
+				if (!PostFilter::filter($this, $injected, $signal))
+				{
+					continue;
+				}
 				$result[] = $injected;
 			}
 		}
+		$this->currentFilters = [];
 		return $result;
 	}
 
@@ -265,6 +305,25 @@ class Signal implements LoggerAwareInterface
 	}
 
 	/**
+	 * Get filters
+	 * @param string $interface
+	 * @return PreFilterInterface[]|PostFilterInterface[]
+	 */
+	public function getFilters($interface)
+	{
+		$filters = FilterFactory::create($this, $interface);
+		foreach ($this->currentFilters as $filter)
+		{
+			if (!$filter instanceof $interface)
+			{
+				continue;
+			}
+			$filters[] = $filter;
+		}
+		return $filters;
+	}
+
+	/**
 	 * Get logger
 	 * @codeCoverageIgnore
 	 * @return LoggerInterface
@@ -283,6 +342,21 @@ class Signal implements LoggerAwareInterface
 	public function setLogger(LoggerInterface $logger)
 	{
 		$this->logger = $logger;
+		return $this;
+	}
+
+	/**
+	 * Get dependency injection container
+	 * @return EmbeDi
+	 */
+	public function getDi()
+	{
+		return $this->di;
+	}
+
+	public function setDi(EmbeDi $di)
+	{
+		$this->di = $di;
 		return $this;
 	}
 
