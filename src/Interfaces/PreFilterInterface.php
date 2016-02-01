@@ -11,9 +11,11 @@ namespace Maslosoft\Signals\Interfaces;
 /**
  * Implement this interface to filter out signals before instantiation.
  *
+ * Pre filters will prevent instantiating a slot, as well as appearing it in results of emit.
+ *
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
-interface PreFilterInterface
+interface PreFilterInterface extends FilterInterface
 {
 
 	public function filter($className, SignalInterface $signal);
