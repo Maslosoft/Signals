@@ -198,12 +198,17 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * Apply filter to current emit.
-	 * @param FilterInterface $filter
+	 * @param FilterInterface|string|mixed $filter
 	 * @return Signal
 	 * @throws UnexpectedValueException
 	 */
-	public function filter(FilterInterface $filter)
+	public function filter($filter)
 	{
+		// Instantiate from string or array
+		if (!is_object($filter))
+		{
+			$filter = $this->di->apply($filter);
+		}
 		if (!$filter instanceof PreFilterInterface && !$filter instanceof PostFilterInterface)
 		{
 			throw new UnexpectedValueException(sprintf('$filter must implement either `%s` or `%s` interface', PreFilterInterface::class, PostFilterInterface::class));
