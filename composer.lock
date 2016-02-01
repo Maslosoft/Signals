@@ -873,11 +873,11 @@
         },
         {
             "name": "maslosoft/hedron",
-            "version": "1.1.10",
+            "version": "1.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/Hedron.git",
-                "reference": "7bdba7e5b33df887197f4212cdff0415e0b0be13",
+                "reference": "79daea18eca44e0aea1ed3d3171c883cc07527fe",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -887,8 +887,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/Hedron/zipball/7bdba7e5b33df887197f4212cdff0415e0b0be13",
-                "reference": "7bdba7e5b33df887197f4212cdff0415e0b0be13",
+                "url": "https://api.github.com/repos/Maslosoft/Hedron/zipball/79daea18eca44e0aea1ed3d3171c883cc07527fe",
+                "reference": "79daea18eca44e0aea1ed3d3171c883cc07527fe",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -926,7 +926,7 @@
             ],
             "description": "PHP source code class header applier",
             "homepage": "http://maslosoft.com/hedron/",
-            "time": "2016-01-28 15:34:30"
+            "time": "2016-02-01 12:07:28"
         },
         {
             "name": "maslosoft/signalstest",
