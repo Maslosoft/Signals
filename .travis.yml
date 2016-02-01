@@ -11,4 +11,4 @@ install:
   - composer install --dev --prefer-dist
   - composer update maslosoft/signalstest
 script:
-  - run-travis
+  - ./run-travis
