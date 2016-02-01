@@ -18,10 +18,10 @@ use Maslosoft\Cli\Shared\ConfigReader;
 use Maslosoft\EmbeDi\EmbeDi;
 use Maslosoft\Signals\Builder\Addendum;
 use Maslosoft\Signals\Builder\IO\PhpFile;
+use Maslosoft\Signals\Factories\SlotFactory;
 use Maslosoft\Signals\Interfaces\BuilderIOInterface;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Interfaces\SignalAwareInterface;
-use Maslosoft\Signals\Interfaces\SlotAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -209,55 +209,14 @@ class Signal implements LoggerAwareInterface
 				continue;
 			}
 
-			// Clone signal, as it might be modified by slot
 			foreach ($injections as $injection)
 			{
-				$cloned = clone $signal;
-
-
-
-				// Constructor injection
-				if (true === $injection)
+				$injected = SlotFactory::create($this, $signal, $fqn, $injection);
+				if (false === $injected)
 				{
-					$slot = new $fqn($cloned);
-
-					// Slot aware call
-					if ($cloned instanceof SlotAwareInterface)
-					{
-						$cloned->setSlot($slot);
-					}
-					$result[] = $cloned;
 					continue;
 				}
-
-				// Check if class exists and log if doesn't
-				if (!ClassChecker::exists($fqn))
-				{
-					$this->logger->debug(sprintf("Class `%s` not found while emiting signal `%s`", $fqn, get_class($signal)));
-					continue;
-				}
-
-				// Othe type injection
-				$slot = new $fqn;
-
-				// Slot aware call
-				if ($cloned instanceof SlotAwareInterface)
-				{
-					$cloned->setSlot($slot);
-				}
-
-				if (strstr($injection, '()'))
-				{
-					// Method injection
-					$methodName = str_replace('()', '', $injection);
-					$slot->$methodName($cloned);
-				}
-				else
-				{
-					// field injection
-					$slot->$injection = $cloned;
-				}
-				$result[] = $cloned;
+				$result[] = $injected;
 			}
 		}
 		return $result;
