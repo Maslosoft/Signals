@@ -1,0 +1,4 @@
+## Yaml with example post filter
+---
+filters:
+   - \Maslosoft\SignalsTest\Models\Filters\FalsePostFilter

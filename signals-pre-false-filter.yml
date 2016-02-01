@@ -1,0 +1,4 @@
+## Yaml with example pre filter
+---
+filters:
+   - \Maslosoft\SignalsTest\Models\Filters\FalsePreFilter

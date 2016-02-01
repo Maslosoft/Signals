@@ -143,7 +143,7 @@ class Signal implements LoggerAwareInterface
 		 * TODO This should be made as embedi adapter, currently unsupported
 		 */
 		$config = new ConfigReader($configName);
-		$this->di = EmbeDi::fly();
+		$this->di = EmbeDi::fly($configName);
 		$this->di->apply($config->toArray(), $this);
 		$this->di->configure($this);
 	}
@@ -204,9 +204,9 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function filter(FilterInterface $filter)
 	{
-		if (!$filter instanceof PreFilterInterface || !$filter instanceof PostFilterInterface)
+		if (!$filter instanceof PreFilterInterface && !$filter instanceof PostFilterInterface)
 		{
-			throw new UnexpectedValueException(sprintf('$filter must imlement either `%s` or `%s` interface'), PreFilterInterface::class, PostFilterInterface::class);
+			throw new UnexpectedValueException(sprintf('$filter must implement either `%s` or `%s` interface', PreFilterInterface::class, PostFilterInterface::class));
 		}
 		$this->currentFilters[] = $filter;
 		return $this;
