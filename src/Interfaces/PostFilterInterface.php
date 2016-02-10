@@ -23,5 +23,5 @@ namespace Maslosoft\Signals\Interfaces;
 interface PostFilterInterface extends FilterInterface
 {
 
-	public function filter(SignalInterface $signal);
+	public function filter($signal);
 }

@@ -13,7 +13,6 @@
 namespace Maslosoft\Signals\Helpers;
 
 use Maslosoft\Signals\Interfaces\PostFilterInterface;
-use Maslosoft\Signals\Interfaces\SignalInterface;
 use Maslosoft\Signals\Signal;
 
 /**
@@ -24,7 +23,7 @@ use Maslosoft\Signals\Signal;
 class PostFilter
 {
 
-	public static function filter(Signal $signals, $injected, SignalInterface $signal)
+	public static function filter(Signal $signals, $injected, $signal)
 	{
 		$preFilters = $signals->getFilters(PostFilterInterface::class);
 		foreach ($preFilters as $filter)

@@ -13,7 +13,6 @@
 namespace Maslosoft\Signals\Helpers;
 
 use Maslosoft\Signals\Interfaces\PreFilterInterface;
-use Maslosoft\Signals\Interfaces\SignalInterface;
 use Maslosoft\Signals\Signal;
 
 /**
@@ -24,7 +23,7 @@ use Maslosoft\Signals\Signal;
 class PreFilter
 {
 
-	public static function filter(Signal $signals, $fqn, SignalInterface $signal)
+	public static function filter(Signal $signals, $fqn, $signal)
 	{
 		$preFilters = $signals->getFilters(PreFilterInterface::class);
 		foreach ($preFilters as $filter)

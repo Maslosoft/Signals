@@ -22,5 +22,5 @@ namespace Maslosoft\Signals\Interfaces;
 interface PreFilterInterface extends FilterInterface
 {
 
-	public function filter($className, SignalInterface $signal);
+	public function filter($className, $signal);
 }
