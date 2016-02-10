@@ -13,7 +13,6 @@
 namespace Maslosoft\Signals\Factories;
 
 use Maslosoft\Addendum\Utilities\ClassChecker;
-use Maslosoft\Signals\Interfaces\SignalInterface;
 use Maslosoft\Signals\Interfaces\SlotAwareInterface;
 use Maslosoft\Signals\Signal;
 
@@ -25,7 +24,7 @@ use Maslosoft\Signals\Signal;
 class SlotFactory
 {
 
-	public static function create(Signal $signals, SignalInterface $signal, $fqn, $injection)
+	public static function create(Signal $signals, $signal, $fqn, $injection)
 	{
 		// Clone signal, as it might be modified by slot
 		$cloned = clone $signal;
