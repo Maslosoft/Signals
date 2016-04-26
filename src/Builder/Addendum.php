@@ -14,6 +14,7 @@ namespace Maslosoft\Signals\Builder;
 
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
 use Maslosoft\Addendum\Utilities\ClassChecker;
+use Maslosoft\Addendum\Utilities\FileWalker;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Helpers\NameNormalizer;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
@@ -110,7 +111,8 @@ class Addendum implements ExtractorInterface
 			{
 				NameNormalizer::normalize($slot);
 				$this->checkClass($slot, $fqn);
-				$this->data[Signal::Signals][$slot][$fqn][$fqn] = true;
+				$key = implode('@', [$fqn, '__construct', '()']);
+				$this->data[Signal::Signals][$slot][$fqn][$key] = true;
 			}
 		}
 
@@ -127,8 +129,8 @@ class Addendum implements ExtractorInterface
 			{
 				NameNormalizer::normalize($slot);
 				$this->checkClass($slot, $fqn);
-				$value = sprintf('%s()', $methodName);
-				$this->data[Signal::Signals][$slot][$fqn][$value] = $value;
+				$key = implode('@', [$fqn, $methodName, '()']);
+				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s()', $methodName);
 			}
 		}
 
@@ -145,8 +147,8 @@ class Addendum implements ExtractorInterface
 			{
 				NameNormalizer::normalize($slot);
 				$this->checkClass($slot, $fqn);
-				$value = sprintf('%s', $fieldName);
-				$this->data[Signal::Signals][$slot][$fqn][$value] = $value;
+				$key = implode('@', [$fqn, $fieldName]);
+				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s', $fieldName);
 			}
 		}
 	}
