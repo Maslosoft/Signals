@@ -61,7 +61,7 @@ class Addendum implements ExtractorInterface
 			self::SlotFor,
 			self::SignalFor
 		];
-		AnnotationUtility::fileWalker($annotations, [$this, 'processFile'], $this->signal->paths);
+		(new FileWalker($annotations, [$this, 'processFile'], $this->signal->paths))->walk();
 		DataSorter::sort($this->data);
 		return $this->data;
 	}
@@ -110,7 +110,7 @@ class Addendum implements ExtractorInterface
 			{
 				NameNormalizer::normalize($slot);
 				$this->checkClass($slot, $fqn);
-				$this->data[Signal::Signals][$slot][$fqn][] = true;
+				$this->data[Signal::Signals][$slot][$fqn][$fqn] = true;
 			}
 		}
 
@@ -127,7 +127,8 @@ class Addendum implements ExtractorInterface
 			{
 				NameNormalizer::normalize($slot);
 				$this->checkClass($slot, $fqn);
-				$this->data[Signal::Signals][$slot][$fqn][] = sprintf('%s()', $methodName);
+				$value = sprintf('%s()', $methodName);
+				$this->data[Signal::Signals][$slot][$fqn][$value] = $value;
 			}
 		}
 
@@ -144,7 +145,8 @@ class Addendum implements ExtractorInterface
 			{
 				NameNormalizer::normalize($slot);
 				$this->checkClass($slot, $fqn);
-				$this->data[Signal::Signals][$slot][$fqn][] = sprintf('%s', $fieldName);
+				$value = sprintf('%s', $fieldName);
+				$this->data[Signal::Signals][$slot][$fqn][$value] = $value;
 			}
 		}
 	}
