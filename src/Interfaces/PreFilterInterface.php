@@ -22,5 +22,10 @@ namespace Maslosoft\Signals\Interfaces;
 interface PreFilterInterface extends FilterInterface
 {
 
+	/**
+	 * Return true to allow this element, or false to skip it
+	 * @param string $className
+	 * @param SignalInterface $signal
+	 */
 	public function filter($className, $signal);
 }
