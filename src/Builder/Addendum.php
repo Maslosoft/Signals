@@ -53,6 +53,12 @@ class Addendum implements ExtractorInterface
 	];
 
 	/**
+	 * Scanned file paths
+	 * @var string[]
+	 */
+	private $paths = [];
+
+	/**
 	 * Get signals and slots data
 	 * @return mixed
 	 */
@@ -65,6 +71,15 @@ class Addendum implements ExtractorInterface
 		(new FileWalker($annotations, [$this, 'processFile'], $this->signal->paths))->walk();
 		DataSorter::sort($this->data);
 		return $this->data;
+	}
+
+	/**
+	 * Get scanned paths. This is available only after getData call.
+	 * @return string[]
+	 */
+	public function getPaths()
+	{
+		return $this->paths;
 	}
 
 	/**
@@ -81,6 +96,8 @@ class Addendum implements ExtractorInterface
 	 */
 	public function processFile($file)
 	{
+		$file = realpath($file);
+		$this->paths[] = $file;
 		// Remove initial `\` from namespace
 		$namespace = preg_replace('~^\\\\+~', '', AnnotationUtility::rawAnnotate($file)['namespace']);
 		$className = AnnotationUtility::rawAnnotate($file)['className'];

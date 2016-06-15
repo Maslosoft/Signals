@@ -43,7 +43,8 @@ class PreviewCommand extends ConsoleCommand
 
 		$help = <<<EOT
 The <info>preview</info> command will display list of signals and slots.
-				No files will be modified at this stage.
+No files will be modified at this stage.
+Use -vv option to also get list of processed files.
 EOT;
 		$this->setHelp($help);
 	}
@@ -55,11 +56,12 @@ EOT;
 
 		$output->writeln("Scanning sources of... ");
 		$paths = [];
-		foreach($signal->paths as $path)
+		foreach ($signal->paths as $path)
 		{
 			$paths[] = '<info>' . realpath($path) . '</info>';
 		}
 		$output->writeln(implode("\n", $paths));
+
 		$lines = [];
 		foreach ($preview->cli($signal) as $line)
 		{
@@ -72,6 +74,10 @@ EOT;
 				$lines[] = $line;
 			}
 		}
+
+		$output->writeln('Processed files:', OutputInterface::VERBOSITY_VERY_VERBOSE);
+		$output->writeln(implode("\n", $preview->getPaths()), OutputInterface::VERBOSITY_VERY_VERBOSE);
+
 		$output->writeln("Following signals and slots was found:");
 		foreach ($lines as $line)
 		{
@@ -80,7 +86,7 @@ EOT;
 	}
 
 	/**
-	 * @SlotFor(Maslosoft\Sitcom\Command)
+	 * @SlotFor(Command)
 	 * @param Command $signal
 	 */
 	public function reactOn(Command $signal)
