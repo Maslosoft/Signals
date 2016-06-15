@@ -51,10 +51,17 @@ EOT;
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$preview = new Preview();
+		$signal = new Signal;
 
-		$output->writeln("Scanning sources...");
+		$output->writeln("Scanning sources of... ");
+		$paths = [];
+		foreach($signal->paths as $path)
+		{
+			$paths[] = '<info>' . realpath($path) . '</info>';
+		}
+		$output->writeln(implode("\n", $paths));
 		$lines = [];
-		foreach ($preview->cli(new Signal) as $line)
+		foreach ($preview->cli($signal) as $line)
 		{
 			if (!strstr($line, "\t"))
 			{
