@@ -24,29 +24,31 @@ class Renderer
 
 	public function renderCli($data)
 	{
+		$result = [];
 		foreach ([Signal::Signals => 'Signals:', Signal::Slots => 'Slots:'] as $type => $name)
 		{
-			yield "$name";
-			yield "";
+			$result[] = "$name";
+			$result[] = "";
 			foreach ($data[$type] as $signal => $slots)
 			{
-				yield $signal;
+				$result[] = $signal;
 				foreach ($slots as $slot => $types)
 				{
 					foreach ((array) $types as $type)
 					{
 						if ($type === true)
 						{
-							yield sprintf("\t%s", $slot);
+							$result[] = sprintf("\t%s", $slot);
 						}
 						else
 						{
-							yield sprintf("\t%s::%s", $slot, $type);
+							$result[] = sprintf("\t%s::%s", $slot, $type);
 						}
 					}
 				}
 			}
 		}
+		return $result;
 	}
 
 }

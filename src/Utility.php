@@ -26,6 +26,12 @@ class Utility
 	 */
 	private $signal = null;
 
+	/**
+	 * Processed paths
+	 * @var string[]
+	 */
+	private $paths = [];
+
 	public function __construct(Signal $signal)
 	{
 		$this->signal = $signal;
@@ -33,9 +39,16 @@ class Utility
 
 	public function generate()
 	{
-
-		$data = $this->signal->getExtractor()->getData();
+		$extractor = $this->signal->getExtractor();
+		$data = $extractor->getData();
+		// TODO: Add if extractor instanceof PathsAwareInterface...
+		$this->paths = $extractor->getPaths();
 		$this->signal->getIO()->write($data);
+	}
+
+	public function getPaths()
+	{
+		return $this->paths;
 	}
 
 }

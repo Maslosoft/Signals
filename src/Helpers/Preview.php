@@ -24,12 +24,25 @@ use Maslosoft\Signals\Utility;
 class Preview
 {
 
+	/**
+	 * Processed paths
+	 * @var string[]
+	 */
+	private $paths = [];
+
 	public function cli(Signal $signal)
 	{
 		$signal->setIO(new Memory());
-		(new Utility($signal))->generate();
+		$utility = (new Utility($signal));
+		$utility->generate();
+		$this->paths = $utility->getPaths();
 		$data = $signal->getIO()->read();
 		return (new Renderer())->renderCli($data);
+	}
+
+	public function getPaths()
+	{
+		return $this->paths;
 	}
 
 }
