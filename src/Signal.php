@@ -231,6 +231,10 @@ class Signal implements LoggerAwareInterface
 		}
 		$name = get_class($signal);
 		NameNormalizer::normalize($name);
+		if (empty(self::$config))
+		{
+			$this->init();
+		}
 		if (!isset(self::$config[self::Signals][$name]))
 		{
 			self::$config[self::Signals][$name] = [];
@@ -276,6 +280,10 @@ class Signal implements LoggerAwareInterface
 	{
 		$name = get_class($slot);
 		NameNormalizer::normalize($name);
+		if (empty(self::$config))
+		{
+			$this->init();
+		}
 		if (!isset(self::$config[self::Slots][$name]))
 		{
 			self::$config[self::Slots][$name] = [];
