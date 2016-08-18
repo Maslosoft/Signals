@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Maslosoft\Signals\Meta;
+namespace Maslosoft\Signals\Meta\Traits;
 
 /**
  * Common meta fields for all meta types (class, property, method)

@@ -19,6 +19,9 @@ use Maslosoft\Addendum\Utilities\FileWalker;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Helpers\NameNormalizer;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
+use Maslosoft\Signals\Meta\DocumentMethodMeta;
+use Maslosoft\Signals\Meta\DocumentPropertyMeta;
+use Maslosoft\Signals\Meta\DocumentTypeMeta;
 use Maslosoft\Signals\Meta\SignalsMeta;
 use Maslosoft\Signals\Signal;
 use ReflectionClass;
@@ -150,67 +153,40 @@ class Addendum implements ExtractorInterface
 			return;
 		}
 		$meta = SignalsMeta::create($fqn);
-		var_dump($fqn);
-		exit;
+		/* @var $typeMeta DocumentTypeMeta */
+		$typeMeta = $meta->type();
 
 		// Signals
-		$class = AnnotationUtility::rawAnnotate($file)['class'];
-		if (isset($class[self::SignalFor]))
+		foreach ($typeMeta->signalFor as $slot)
 		{
-			$val = $this->getValuesFor($class[self::SignalFor]);
-			foreach ($val as $slot)
-			{
-				NameNormalizer::normalize($slot);
-				$this->checkClass($slot, $fqn);
-				$this->data[Signal::Slots][$slot][$fqn] = true;
-			}
+			$this->data[Signal::Slots][$slot][$fqn] = true;
 		}
 
 		// Slots
 		// For constructor injection
-		if (isset($class[self::SlotFor]))
+		foreach ($typeMeta->slotFor as $slot)
 		{
-			$val = $this->getValuesFor($class[self::SlotFor]);
-			foreach ($val as $slot)
-			{
-				NameNormalizer::normalize($slot);
-				$this->checkClass($slot, $fqn);
-				$key = implode('@', [$fqn, '__construct', '()']);
-				$this->data[Signal::Signals][$slot][$fqn][$key] = true;
-			}
+			$key = implode('@', [$fqn, '__construct', '()']);
+			$this->data[Signal::Signals][$slot][$fqn][$key] = true;
 		}
 
 		// For method injection
-		$methods = AnnotationUtility::rawAnnotate($file)['methods'];
-		foreach ($methods as $methodName => $method)
+		foreach ($meta->methods() as $methodName => $method)
 		{
-			if (!isset($method[self::SlotFor]))
+			/* @var $method DocumentMethodMeta */
+			foreach ($method->slotFor as $slot)
 			{
-				continue;
-			}
-			$val = $this->getValuesFor($method[self::SlotFor]);
-			foreach ($val as $slot)
-			{
-				NameNormalizer::normalize($slot);
-				$this->checkClass($slot, $fqn);
 				$key = implode('@', [$fqn, $methodName, '()']);
 				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s()', $methodName);
 			}
 		}
 
 		// For property injection
-		$fields = AnnotationUtility::rawAnnotate($file)['fields'];
-		foreach ($fields as $fieldName => $method)
+		foreach ($meta->fields() as $fieldName => $field)
 		{
-			if (!isset($method[self::SlotFor]))
+			/* @var $field DocumentPropertyMeta */
+			foreach ($field->slotFor as $slot)
 			{
-				continue;
-			}
-			$val = $this->getValuesFor($method[self::SlotFor]);
-			foreach ($val as $slot)
-			{
-				NameNormalizer::normalize($slot);
-				$this->checkClass($slot, $fqn);
 				$key = implode('@', [$fqn, $fieldName]);
 				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s', $fieldName);
 			}
@@ -227,36 +203,6 @@ class Addendum implements ExtractorInterface
 			}
 		}
 		return false;
-	}
-
-	private function getValuesFor($src)
-	{
-		$value = [];
-		foreach ($src as $val)
-		{
-			if (!array_key_exists('value', $val))
-			{
-				continue;
-			}
-			$val = $val['value'];
-			if (is_array($val))
-			{
-				$value = array_merge($value, $val);
-			}
-			elseif (is_string($val))
-			{
-				$value[] = $val;
-			}
-		}
-		return array_values(array_unique($value));
-	}
-
-	private function checkClass($slot, $fqn)
-	{
-		if (!ClassChecker::exists($fqn))
-		{
-			$this->signal->getLogger()->warning(sprintf("Class `%s` not found while generating signal data for `%s`", $fqn, $slot));
-		}
 	}
 
 }

@@ -9,6 +9,7 @@
 namespace Maslosoft\Signals\Meta;
 
 use Maslosoft\Addendum\Collections\MetaType;
+use Maslosoft\Signals\Meta\Traits\MetaCommonTrait;
 
 /**
  * Model meta container
@@ -17,5 +18,6 @@ use Maslosoft\Addendum\Collections\MetaType;
  */
 class DocumentTypeMeta extends MetaType
 {
-	
+
+	use MetaCommonTrait;
 }
