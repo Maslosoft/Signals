@@ -12,6 +12,7 @@
 
 namespace Maslosoft\Signals\Builder;
 
+use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
 use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\FileWalker;
@@ -19,6 +20,8 @@ use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Helpers\NameNormalizer;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Signal;
+use ReflectionClass;
+use UnexpectedValueException;
 
 /**
  * Addendum extractor
@@ -59,16 +62,31 @@ class Addendum implements ExtractorInterface
 	private $paths = [];
 
 	/**
-	 * Get signals and slots data
-	 * @return mixed
+	 * Annotations mathing patterns
+	 * @var string[]
 	 */
-	public function getData()
+	private $patterns = [];
+
+	public function __construct()
 	{
 		$annotations = [
 			self::SlotFor,
 			self::SignalFor
 		];
-		(new FileWalker($annotations, [$this, 'processFile'], $this->signal->paths))->walk();
+		foreach ($annotations as $annotation)
+		{
+			$annotation = preg_replace('~^@~', '', $annotation);
+			$this->patterns[] = sprintf('~@%s~', $annotation);
+		}
+	}
+
+	/**
+	 * Get signals and slots data
+	 * @return mixed
+	 */
+	public function getData()
+	{
+		(new FileWalker([], [$this, 'processFile'], $this->signal->paths))->walk();
 		DataSorter::sort($this->data);
 		return $this->data;
 	}
@@ -94,17 +112,31 @@ class Addendum implements ExtractorInterface
 	/**
 	 * @param string $file
 	 */
-	public function processFile($file)
+	public function processFile($file, $contents)
 	{
 		$file = realpath($file);
 		$this->paths[] = $file;
 		// Remove initial `\` from namespace
-		$namespace = preg_replace('~^\\\\+~', '', AnnotationUtility::rawAnnotate($file)['namespace']);
-		$className = AnnotationUtility::rawAnnotate($file)['className'];
+		$annotated = AnnotationUtility::rawAnnotate($file);
+		$namespace = preg_replace('~^\\\\+~', '', $annotated['namespace']);
+		$className = $annotated['className'];
+
 
 		// Use fully qualified name, class must autoload
 		$fqn = $namespace . '\\' . $className;
 		NameNormalizer::normalize($fqn);
+		$info = new ReflectionClass($fqn);
+		$isAnnotated = $info->implementsInterface(AnnotatedInterface::class);
+		$hasSignals = $this->hasSignals($contents);
+
+		// Old classes must now implement interface
+		// Brake BC!
+		if ($hasSignals && !$isAnnotated)
+		{
+			throw new UnexpectedValueException(sprintf('Class %s must implement %s to use signals', $fqn, AnnotatedInterface::class));
+		}
+		var_dump($fqn);
+		exit;
 
 		// Signals
 		$class = AnnotationUtility::rawAnnotate($file)['class'];
@@ -168,6 +200,18 @@ class Addendum implements ExtractorInterface
 				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s', $fieldName);
 			}
 		}
+	}
+
+	private function hasSignals($contents)
+	{
+		foreach ($this->patterns as $pattern)
+		{
+			if (preg_match($pattern, $contents))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private function getValuesFor($src)
