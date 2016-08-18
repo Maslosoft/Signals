@@ -19,6 +19,7 @@ use Maslosoft\Addendum\Utilities\FileWalker;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Helpers\NameNormalizer;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
+use Maslosoft\Signals\Meta\SignalsMeta;
 use Maslosoft\Signals\Signal;
 use ReflectionClass;
 use UnexpectedValueException;
@@ -128,13 +129,27 @@ class Addendum implements ExtractorInterface
 		$info = new ReflectionClass($fqn);
 		$isAnnotated = $info->implementsInterface(AnnotatedInterface::class);
 		$hasSignals = $this->hasSignals($contents);
+		$isAbstract = $info->isAbstract() || $info->isInterface();
 
 		// Old classes must now implement interface
 		// Brake BC!
-		if ($hasSignals && !$isAnnotated)
+		if ($hasSignals && !$isAnnotated && !$isAbstract)
 		{
 			throw new UnexpectedValueException(sprintf('Class %s must implement %s to use signals', $fqn, AnnotatedInterface::class));
 		}
+
+		// Skip not annotated class
+		if (!$isAnnotated)
+		{
+			return;
+		}
+
+		// Skip abstract classes
+		if ($isAbstract)
+		{
+			return;
+		}
+		$meta = SignalsMeta::create($fqn);
 		var_dump($fqn);
 		exit;
 

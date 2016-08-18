@@ -21,17 +21,17 @@ class SignalsMeta extends Meta
 
 	/**
 	 * Create instance of Metadata specifically designed for Manganel
-	 * @param AnnotatedInterface $component
+	 * @param string|object|AnnotatedInterface $model
 	 * @param MetaOptions $options
 	 * @return static
 	 */
-	public static function create(AnnotatedInterface $component, MetaOptions $options = null)
+	public static function create($model, MetaOptions $options = null)
 	{
 		if (null === $options)
 		{
 			$options = new SignalsMetaOptions();
 		}
-		return parent::create($component, $options);
+		return parent::create($model, $options);
 	}
 
 	/**
