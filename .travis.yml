@@ -1,14 +1,23 @@
 language: php
+sudo: false
 php:
   - 5.6
   - 5.5
+  - 7.0
   - nightly
   - hhvm
-sudo: false
+matrix:
+  allow_failures:
+    - php: nightly
+cache:
+  directories:
+    - vendor
 install:
-  - mkdir runtime
-  - composer self-update
-  - composer install --dev --prefer-dist
-  - composer update maslosoft/signalstest
+  - composer install --dev --prefer-dist --no-interaction
+  # Get fresh tests
+  - rm -rf vendor/maslosoft/signalstest
+  - git clone https://github.com/Maslosoft/SignalsTest.git vendor/maslosoft/signalstest
+before_script:
+  - cd $TRAVIS_BUILD_DIR
 script:
-  - ./run-travis
+  - bash run-travis

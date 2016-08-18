@@ -9,11 +9,11 @@
     "packages": [
         {
             "name": "maslosoft/addendum",
-            "version": "5.0.0",
+            "version": "5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/Addendum.git",
-                "reference": "d6b8a25ce690b4df411e64e8697b41373c04faf7",
+                "reference": "32efcabfc3037d2228c6b5629df75d96c8da6d38",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -23,8 +23,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/d6b8a25ce690b4df411e64e8697b41373c04faf7",
-                "reference": "d6b8a25ce690b4df411e64e8697b41373c04faf7",
+                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/32efcabfc3037d2228c6b5629df75d96c8da6d38",
+                "reference": "32efcabfc3037d2228c6b5629df75d96c8da6d38",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -75,7 +75,7 @@
                 "annotations",
                 "metadata"
             ],
-            "time": "2016-08-18 18:04:58"
+            "time": "2016-08-18 19:37:36"
         },
         {
             "name": "maslosoft/cache",
@@ -1081,7 +1081,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/SignalsTest.git",
-                "reference": "2e924ba0e90afcdb9c3815e5801a41e56cb351d5",
+                "reference": "d3f0758850e885cba5c30592441f76c959096589",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -1091,12 +1091,12 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/SignalsTest/zipball/2e924ba0e90afcdb9c3815e5801a41e56cb351d5",
-                "reference": "2e924ba0e90afcdb9c3815e5801a41e56cb351d5",
+                "url": "https://api.github.com/repos/Maslosoft/SignalsTest/zipball/d3f0758850e885cba5c30592441f76c959096589",
+                "reference": "d3f0758850e885cba5c30592441f76c959096589",
                 "shasum": "",
                 "mirrors": [
                     {
-                        "url": "http://pkg.maslosoft.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
+                        "url": "https://pkg.maslosoft.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
                         "preferred": true
                     }
                 ]
@@ -1126,7 +1126,7 @@
                 }
             ],
             "description": "Tests for signals",
-            "time": "2016-06-15 14:06:11"
+            "time": "2016-08-18 19:36:30"
         },
         {
             "name": "myclabs/deep-copy",
