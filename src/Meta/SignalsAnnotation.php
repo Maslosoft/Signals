@@ -17,5 +17,14 @@ use Maslosoft\Addendum\Collections\MetaAnnotation;
  */
 abstract class SignalsAnnotation extends MetaAnnotation
 {
-	
+
+	/**
+	 * Get entity
+	 * @return DocumentTypeMeta|DocumentPropertyMeta|DocumentMethodMeta
+	 */
+	public function getEntity()
+	{
+		return parent::getEntity();
+	}
+
 }

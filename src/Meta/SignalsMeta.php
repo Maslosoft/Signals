@@ -11,6 +11,7 @@ namespace Maslosoft\Signals\Meta;
 use Maslosoft\Addendum\Collections\Meta;
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Addendum\Options\MetaOptions;
+use Maslosoft\Signals\Options\SignalsMetaOptions;
 
 /**
  * Signals metadata container class
@@ -20,7 +21,7 @@ class SignalsMeta extends Meta
 {
 
 	/**
-	 * Create instance of Metadata specifically designed for Manganel
+	 * Create instance of Metadata specifically designed for Signals
 	 * @param string|object|AnnotatedInterface $model
 	 * @param MetaOptions $options
 	 * @return static

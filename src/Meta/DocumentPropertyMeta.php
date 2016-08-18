@@ -9,6 +9,7 @@
 namespace Maslosoft\Signals\Meta;
 
 use Maslosoft\Addendum\Collections\MetaProperty;
+use Maslosoft\Signals\Meta\Traits\MetaCommonTrait;
 
 /**
  * DocumentPropertyMeta
@@ -17,5 +18,6 @@ use Maslosoft\Addendum\Collections\MetaProperty;
  */
 class DocumentPropertyMeta extends MetaProperty
 {
-	
+
+	use MetaCommonTrait;
 }

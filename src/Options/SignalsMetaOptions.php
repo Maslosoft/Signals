@@ -19,7 +19,7 @@ use Maslosoft\Signals\SlotForAnnotation;
  *
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
-class SignalMetaOptions extends MetaOptions
+class SignalsMetaOptions extends MetaOptions
 {
 
 	/**
@@ -42,7 +42,7 @@ class SignalMetaOptions extends MetaOptions
 
 	/**
 	 * Namespaces for annotations
-	 * @var string
+	 * @var string[]
 	 */
 	public $namespaces = [
 		SlotForAnnotation::Ns
