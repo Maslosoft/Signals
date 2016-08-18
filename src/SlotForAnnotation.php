@@ -12,7 +12,7 @@
 
 namespace Maslosoft\Signals;
 
-use Maslosoft\Addendum\Collections\MetaAnnotation;
+use Maslosoft\Signals\Meta\SignalsAnnotation;
 
 /**
  * SlotForAnnotation
@@ -20,12 +20,14 @@ use Maslosoft\Addendum\Collections\MetaAnnotation;
  * @codeCoverageIgnore
  * @author Piotr
  */
-class SlotForAnnotation extends MetaAnnotation
+class SlotForAnnotation extends SignalsAnnotation
 {
+
+	const Ns = __NAMESPACE__;
 
 	public function init()
 	{
-
+		
 	}
 
 }

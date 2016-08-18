@@ -12,12 +12,16 @@
 
 namespace Maslosoft\Signals;
 
+use Maslosoft\Signals\Meta\SignalsAnnotation;
+
 /**
  * SignalForAnnotation
  * @template SignalFor(${SlotClass})
  * @author Piotr
  */
-class SignalForAnnotation
+class SignalForAnnotation extends SignalsAnnotation
 {
-	
+
+	const Ns = __NAMESPACE__;
+
 }
