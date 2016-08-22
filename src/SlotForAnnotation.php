@@ -41,7 +41,7 @@ class SlotForAnnotation extends SignalsAnnotation
 		// Log only, as it is designed as soft-fail
 		if (empty($class) || !ClassChecker::exists($class))
 		{
-			(new Signal)->getLogger()->warning(sprintf('Class not found for @SlotFor on model `%s`', $this->getMeta()->type()->name));
+			(new Signal)->getLogger()->warning(sprintf('Class not found for SlotFor annotation on model `%s`', $this->getMeta()->type()->name));
 			return;
 		}
 		NameNormalizer::normalize($class);

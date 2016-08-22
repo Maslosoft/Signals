@@ -12,9 +12,9 @@
 
 namespace Maslosoft\Signals\Builder;
 
+use Maslosoft\Addendum\Exceptions\ParseException;
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
-use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\FileWalker;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Helpers\NameNormalizer;
@@ -25,7 +25,9 @@ use Maslosoft\Signals\Meta\DocumentTypeMeta;
 use Maslosoft\Signals\Meta\SignalsMeta;
 use Maslosoft\Signals\Signal;
 use ReflectionClass;
+use ReflectionException;
 use UnexpectedValueException;
+use Exception;
 
 /**
  * Addendum extractor
@@ -121,7 +123,20 @@ class Addendum implements ExtractorInterface
 		$file = realpath($file);
 		$this->paths[] = $file;
 		// Remove initial `\` from namespace
-		$annotated = AnnotationUtility::rawAnnotate($file);
+		try
+		{
+			$annotated = AnnotationUtility::rawAnnotate($file);
+		}
+		catch (ParseException $e)
+		{
+			$this->log($e, $file);
+			return;
+		}
+		catch (UnexpectedValueException $e)
+		{
+			$this->log($e, $file);
+			return;
+		}
 		$namespace = preg_replace('~^\\\\+~', '', $annotated['namespace']);
 		$className = $annotated['className'];
 
@@ -129,7 +144,16 @@ class Addendum implements ExtractorInterface
 		// Use fully qualified name, class must autoload
 		$fqn = $namespace . '\\' . $className;
 		NameNormalizer::normalize($fqn);
-		$info = new ReflectionClass($fqn);
+
+		try
+		{
+			$info = new ReflectionClass($fqn);
+		}
+		catch (ReflectionException $e)
+		{
+			$this->log($e, $file);
+			return;
+		}
 		$isAnnotated = $info->implementsInterface(AnnotatedInterface::class);
 		$hasSignals = $this->hasSignals($contents);
 		$isAbstract = $info->isAbstract() || $info->isInterface();
@@ -152,7 +176,7 @@ class Addendum implements ExtractorInterface
 		{
 			return;
 		}
-		$meta = SignalsMeta::create($fqn);
+		$meta = @SignalsMeta::create($fqn);
 		/* @var $typeMeta DocumentTypeMeta */
 		$typeMeta = $meta->type();
 
@@ -203,6 +227,12 @@ class Addendum implements ExtractorInterface
 			}
 		}
 		return false;
+	}
+
+	private function log(Exception $e, $file)
+	{
+		$msg = sprintf('Exception: "%s" while scanning file `%s`', $e->getMessage(), $file);
+		$this->signal->getLogger()->warning($msg);
 	}
 
 }

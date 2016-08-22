@@ -12,6 +12,7 @@
 
 namespace Maslosoft\Signals\Application\Commands;
 
+use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Signals\Signal;
 use Maslosoft\Signals\Utility;
 use Maslosoft\Sitcom\Command;
@@ -25,7 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  * @codeCoverageIgnore
  */
-class BuildCommand extends ConsoleCommand
+class BuildCommand extends ConsoleCommand implements AnnotatedInterface
 {
 
 	protected function configure()
@@ -43,7 +44,8 @@ EOT;
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		(new Utility(new Signal()))->generate();
+		$signal = new Signal();
+		(new Utility($signal))->generate();
 	}
 
 	/**
