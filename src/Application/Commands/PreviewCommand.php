@@ -12,6 +12,7 @@
 
 namespace Maslosoft\Signals\Application\Commands;
 
+use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Signals\Helpers\Preview;
 use Maslosoft\Signals\Signal;
 use Maslosoft\Sitcom\Command;
@@ -31,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  * @codeCoverageIgnore
  */
-class PreviewCommand extends ConsoleCommand
+class PreviewCommand extends ConsoleCommand implements AnnotatedInterface
 {
 
 	protected function configure()

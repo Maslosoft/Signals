@@ -40,7 +40,7 @@ class SignalForAnnotation extends SignalsAnnotation
 		// Log only, as it is designed as soft-fail
 		if (empty($class) || !ClassChecker::exists($class))
 		{
-			(new Signal)->getLogger()->warning(sprintf('Class not found for @SignalFor on model `%s`', $this->getMeta()->type()->name));
+			(new Signal)->getLogger()->warning(sprintf('Class not found for SignalFor annotation on model `%s`', $this->getMeta()->type()->name));
 			return;
 		}
 		NameNormalizer::normalize($class);
