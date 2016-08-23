@@ -9,11 +9,11 @@
     "packages": [
         {
             "name": "maslosoft/addendum",
-            "version": "5.0.1",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/Addendum.git",
-                "reference": "32efcabfc3037d2228c6b5629df75d96c8da6d38",
+                "reference": "81f1969571dd10ea4043e23a2d87a5517198efb5",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -23,8 +23,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/32efcabfc3037d2228c6b5629df75d96c8da6d38",
-                "reference": "32efcabfc3037d2228c6b5629df75d96c8da6d38",
+                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/81f1969571dd10ea4043e23a2d87a5517198efb5",
+                "reference": "81f1969571dd10ea4043e23a2d87a5517198efb5",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -75,7 +75,7 @@
                 "annotations",
                 "metadata"
             ],
-            "time": "2016-08-18 19:37:36"
+            "time": "2016-08-23 08:41:14"
         },
         {
             "name": "maslosoft/cache",
