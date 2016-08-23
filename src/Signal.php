@@ -31,6 +31,7 @@ use Maslosoft\Signals\Interfaces\SignalAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use ReflectionClass;
 use UnexpectedValueException;
 
 /**
@@ -286,12 +287,16 @@ class Signal implements LoggerAwareInterface
 	/**
 	 * Call for signals from slot
 	 * @param object $slot
-	 * @param string $interface Interface, which must be implemented to get into slot
+	 * @param string $interface Interface or class name which must be implemented, instanceof or sub class of to get into slot
 	 */
 	public function gather($slot, $interface = null)
 	{
 		$name = get_class($slot);
 		NameNormalizer::normalize($name);
+		if (!empty($interface))
+		{
+			NameNormalizer::normalize($interface);
+		}
 		if (empty(self::$config))
 		{
 			$this->init();
@@ -320,10 +325,26 @@ class Signal implements LoggerAwareInterface
 				continue;
 			}
 
+			// Check if it's same as interface
+			if ($fqn === $interface)
+			{
+				$result[] = new $fqn;
+				continue;
+			}
+
 			// Check if class implements interface
 			if (isset(class_implements($fqn)[$interface]))
 			{
 				$result[] = new $fqn;
+				continue;
+			}
+
+			// Check if class is instance of interface
+			$info = new ReflectionClass($fqn);
+			if ($info->isSubclassOf($interface))
+			{
+				$result[] = new $fqn;
+				continue;
 			}
 		}
 		return $result;
