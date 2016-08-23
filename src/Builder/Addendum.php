@@ -92,7 +92,7 @@ class Addendum implements ExtractorInterface
 	 */
 	public function getData()
 	{
-		(new FileWalker([], [$this, 'processFile'], $this->signal->paths))->walk();
+		(new FileWalker([], [$this, 'processFile'], $this->signal->paths, $this->signal->ignoreDirs))->walk();
 		DataSorter::sort($this->data);
 		return $this->data;
 	}
