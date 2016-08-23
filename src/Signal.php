@@ -333,14 +333,14 @@ class Signal implements LoggerAwareInterface
 			}
 
 			// Check if class implements interface
-			if (isset(class_implements($fqn)[$interface]))
+			$info = new ReflectionClass($fqn);
+			if ($info->implementsInterface($interface))
 			{
 				$result[] = new $fqn;
 				continue;
 			}
 
 			// Check if class is instance of interface
-			$info = new ReflectionClass($fqn);
 			if ($info->isSubclassOf($interface))
 			{
 				$result[] = new $fqn;
