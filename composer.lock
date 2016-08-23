@@ -9,11 +9,11 @@
     "packages": [
         {
             "name": "maslosoft/addendum",
-            "version": "5.0.2",
+            "version": "5.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/Addendum.git",
-                "reference": "81f1969571dd10ea4043e23a2d87a5517198efb5",
+                "reference": "76d905f744c08d616eb3057ee5063075234a6fed",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -23,8 +23,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/81f1969571dd10ea4043e23a2d87a5517198efb5",
-                "reference": "81f1969571dd10ea4043e23a2d87a5517198efb5",
+                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/76d905f744c08d616eb3057ee5063075234a6fed",
+                "reference": "76d905f744c08d616eb3057ee5063075234a6fed",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -75,7 +75,7 @@
                 "annotations",
                 "metadata"
             ],
-            "time": "2016-08-23 08:41:14"
+            "time": "2016-08-23 14:30:42"
         },
         {
             "name": "maslosoft/cache",
@@ -132,11 +132,11 @@
         },
         {
             "name": "maslosoft/cli-shared",
-            "version": "0.0.9",
+            "version": "0.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/CLIShared.git",
-                "reference": "fdad1473d28ffe7a0b87e8c4ec4fe06977a2b288",
+                "reference": "77f1e3ba83fc7cc6cdce8d9453739a78f5e3c6ea",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -146,12 +146,12 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/CLIShared/zipball/fdad1473d28ffe7a0b87e8c4ec4fe06977a2b288",
-                "reference": "fdad1473d28ffe7a0b87e8c4ec4fe06977a2b288",
+                "url": "https://api.github.com/repos/Maslosoft/CLIShared/zipball/77f1e3ba83fc7cc6cdce8d9453739a78f5e3c6ea",
+                "reference": "77f1e3ba83fc7cc6cdce8d9453739a78f5e3c6ea",
                 "shasum": "",
                 "mirrors": [
                     {
-                        "url": "http://pkg.maslosoft.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
+                        "url": "https://pkg.maslosoft.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
                         "preferred": true
                     }
                 ]
@@ -181,7 +181,7 @@
                 }
             ],
             "description": "Shared CLI application components",
-            "time": "2016-07-12 18:29:59"
+            "time": "2016-08-18 20:04:06"
         },
         {
             "name": "maslosoft/embedi",
@@ -1019,11 +1019,11 @@
         },
         {
             "name": "maslosoft/hedron",
-            "version": "1.1.12",
+            "version": "1.1.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/Hedron.git",
-                "reference": "07e4f3aeab59c68bf94d663b4d15cdf2eafd4b18",
+                "reference": "144174206d6cc1c7cf79949fb3fca6f3f0f2a696",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -1033,8 +1033,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/Hedron/zipball/07e4f3aeab59c68bf94d663b4d15cdf2eafd4b18",
-                "reference": "07e4f3aeab59c68bf94d663b4d15cdf2eafd4b18",
+                "url": "https://api.github.com/repos/Maslosoft/Hedron/zipball/144174206d6cc1c7cf79949fb3fca6f3f0f2a696",
+                "reference": "144174206d6cc1c7cf79949fb3fca6f3f0f2a696",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1073,7 +1073,7 @@
             ],
             "description": "PHP source code class header applier",
             "homepage": "http://maslosoft.com/hedron/",
-            "time": "2016-06-14 13:54:23"
+            "time": "2016-08-22 18:15:39"
         },
         {
             "name": "maslosoft/signalstest",
