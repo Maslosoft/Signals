@@ -75,6 +75,16 @@ class Signal implements LoggerAwareInterface
 	];
 
 	/**
+	 * Directories to ignore while scanning
+	 * @var string[]
+	 */
+	public $ignoreDirs = [
+		'vendor', // Vendors in vendors
+		'generated', // Generated data, including signals
+		'runtime', // Runtime data
+	];
+
+	/**
 	 * Filters configuration.
 	 * This filters will be applied to every emit.
 	 * @var string[]|object[]
@@ -112,13 +122,15 @@ class Signal implements LoggerAwareInterface
 	private static $config = [];
 
 	/**
-	 * Logger
+	 * Logger instance holder
+	 * NOTE: There is property annotation with `logger` name,
+	 * thus this name is a bit longer
 	 * @var LoggerInterface
 	 */
-	private $logger = null;
+	private $loggerInstance = null;
 
 	/**
-	 *
+	 * Embedded dependency injection
 	 * @var EmbeDi
 	 */
 	private $di = null;
@@ -137,15 +149,15 @@ class Signal implements LoggerAwareInterface
 
 	public function __construct($configName = self::ConfigName)
 	{
-		$this->logger = new NullLogger;
+		$this->loggerInstance = new NullLogger;
 
 		/**
 		 * TODO This should be made as embedi adapter, currently unsupported
 		 */
 		$config = new ConfigReader($configName);
 		$this->di = EmbeDi::fly($configName);
-		$this->di->apply($config->toArray(), $this);
 		$this->di->configure($this);
+		$this->di->apply($config->toArray(), $this);
 	}
 
 	/**
@@ -238,7 +250,7 @@ class Signal implements LoggerAwareInterface
 		if (!isset(self::$config[self::Signals][$name]))
 		{
 			self::$config[self::Signals][$name] = [];
-			$this->logger->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
+			$this->loggerInstance->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
 			return $result;
 		}
 
@@ -287,7 +299,7 @@ class Signal implements LoggerAwareInterface
 		if (!isset(self::$config[self::Slots][$name]))
 		{
 			self::$config[self::Slots][$name] = [];
-			$this->logger->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
+			$this->loggerInstance->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
 		}
 		$result = [];
 		foreach ((array) self::$config[self::Slots][$name] as $fqn => $emit)
@@ -299,7 +311,7 @@ class Signal implements LoggerAwareInterface
 			// Check if class exists and log if doesn't
 			if (!ClassChecker::exists($fqn))
 			{
-				$this->logger->debug(sprintf("Class `%s` not found while gathering slot `%s`", $fqn, get_class($slot)));
+				$this->loggerInstance->debug(sprintf("Class `%s` not found while gathering slot `%s`", $fqn, get_class($slot)));
 				continue;
 			}
 			if (null === $interface)
@@ -343,7 +355,7 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function getLogger()
 	{
-		return $this->logger;
+		return $this->loggerInstance;
 	}
 
 	/**
@@ -354,7 +366,7 @@ class Signal implements LoggerAwareInterface
 	 */
 	public function setLogger(LoggerInterface $logger)
 	{
-		$this->logger = $logger;
+		$this->loggerInstance = $logger;
 		return $this;
 	}
 
