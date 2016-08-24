@@ -14,7 +14,7 @@ namespace Maslosoft\Signals;
 
 use Maslosoft\Addendum\Helpers\ParamsExpander;
 use Maslosoft\Addendum\Utilities\ClassChecker;
-use Maslosoft\Signals\Helpers\NameNormalizer;
+use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Signals\Meta\SignalsAnnotation;
 
 /**
