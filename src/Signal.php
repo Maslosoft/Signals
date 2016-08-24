@@ -313,6 +313,10 @@ class Signal implements LoggerAwareInterface
 			{
 				continue;
 			}
+			if (!PreFilter::filter($this, $fqn, $slot))
+			{
+				continue;
+			}
 			// Check if class exists and log if doesn't
 			if (!ClassChecker::exists($fqn))
 			{
@@ -321,29 +325,51 @@ class Signal implements LoggerAwareInterface
 			}
 			if (null === $interface)
 			{
-				$result[] = new $fqn;
+				$injected = new $fqn;
+				if (!PostFilter::filter($this, $injected, $slot))
+				{
+					continue;
+				}
+				$result[] = $injected;
 				continue;
 			}
 
 			// Check if it's same as interface
 			if ($fqn === $interface)
 			{
-				$result[] = new $fqn;
+				$injected = new $fqn;
+				if (!PostFilter::filter($this, $injected, $slot))
+				{
+					continue;
+				}
+				$result[] = $injected;
 				continue;
 			}
 
-			// Check if class implements interface
 			$info = new ReflectionClass($fqn);
-			if ($info->implementsInterface($interface))
-			{
-				$result[] = new $fqn;
-				continue;
-			}
 
-			// Check if class is instance of interface
+			// Check if class is instance of base class
 			if ($info->isSubclassOf($interface))
 			{
-				$result[] = new $fqn;
+				$injected = new $fqn;
+				if (!PostFilter::filter($this, $injected, $slot))
+				{
+					continue;
+				}
+				$result[] = $injected;
+				continue;
+			}
+
+			$interfaceInfo = new ReflectionClass($interface);
+			// Check if class implements interface
+			if ($interfaceInfo->isInterface() && $info->implementsInterface($interface))
+			{
+				$injected = new $fqn;
+				if (!PostFilter::filter($this, $injected, $slot))
+				{
+					continue;
+				}
+				$result[] = $injected;
 				continue;
 			}
 		}

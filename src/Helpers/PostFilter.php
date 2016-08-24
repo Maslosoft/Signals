@@ -25,8 +25,8 @@ class PostFilter
 
 	public static function filter(Signal $signals, $injected, $signal)
 	{
-		$preFilters = $signals->getFilters(PostFilterInterface::class);
-		foreach ($preFilters as $filter)
+		$filters = $signals->getFilters(PostFilterInterface::class);
+		foreach ($filters as $filter)
 		{
 			if (!$filter->filter($injected, $signal))
 			{
