@@ -15,6 +15,7 @@ use Maslosoft\Signals\Options\SignalsMetaOptions;
 
 /**
  * Signals metadata container class
+ * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 class SignalsMeta extends Meta

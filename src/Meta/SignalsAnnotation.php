@@ -12,7 +12,7 @@ use Maslosoft\Addendum\Collections\MetaAnnotation;
 
 /**
  * SignalsAnnotation
- *
+ * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 abstract class SignalsAnnotation extends MetaAnnotation

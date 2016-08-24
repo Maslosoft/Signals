@@ -43,12 +43,13 @@ class SlotFactory
 		}
 
 		// Check if class exists and log if doesn't
+		// @codeCoverageIgnoreStart
 		if (!ClassChecker::exists($fqn))
 		{
 			$signals->getLogger()->debug(sprintf("Class `%s` not found while emiting signal `%s`", $fqn, get_class($signal)));
 			return false;
 		}
-
+		// @codeCoverageIgnoreEnd
 		// Other type injection
 		$slot = new $fqn;
 
