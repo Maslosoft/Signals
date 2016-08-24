@@ -18,7 +18,7 @@ use Maslosoft\Signals\Utility;
 
 /**
  * Preview
- *
+ * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 class Preview

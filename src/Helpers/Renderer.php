@@ -16,7 +16,7 @@ use Maslosoft\Signals\Signal;
 
 /**
  * Renderer
- *
+ * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 class Renderer

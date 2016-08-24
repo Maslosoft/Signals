@@ -12,12 +12,13 @@
 
 namespace Maslosoft\Signals\Builder;
 
+use Exception;
 use Maslosoft\Addendum\Exceptions\ParseException;
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
 use Maslosoft\Addendum\Utilities\FileWalker;
+use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Signals\Helpers\DataSorter;
-use Maslosoft\Signals\Helpers\NameNormalizer;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Meta\DocumentMethodMeta;
 use Maslosoft\Signals\Meta\DocumentPropertyMeta;
@@ -27,7 +28,6 @@ use Maslosoft\Signals\Signal;
 use ReflectionClass;
 use ReflectionException;
 use UnexpectedValueException;
-use Exception;
 
 /**
  * Addendum extractor
