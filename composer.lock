@@ -1081,7 +1081,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/SignalsTest.git",
-                "reference": "d3f0758850e885cba5c30592441f76c959096589",
+                "reference": "28cda8013c4b8dc7b06ae1dda6667291de0905c8",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -1091,8 +1091,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/SignalsTest/zipball/d3f0758850e885cba5c30592441f76c959096589",
-                "reference": "d3f0758850e885cba5c30592441f76c959096589",
+                "url": "https://api.github.com/repos/Maslosoft/SignalsTest/zipball/28cda8013c4b8dc7b06ae1dda6667291de0905c8",
+                "reference": "28cda8013c4b8dc7b06ae1dda6667291de0905c8",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1126,7 +1126,7 @@
                 }
             ],
             "description": "Tests for signals",
-            "time": "2016-08-18 19:36:30"
+            "time": "2016-08-24 10:17:52"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2892,11 +2892,11 @@
         },
         {
             "name": "zordius/lightncandy",
-            "version": "v0.94",
+            "version": "v0.95",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zordius/lightncandy.git",
-                "reference": "fe90545c755e8e6f907755b186b457a8f38916c6",
+                "reference": "748cd17b2d496dbc7657b9390d918cf7dcd0101e",
                 "mirrors": [
                     {
                         "url": "peter@pkg.maslosoft.com/%package%/%normalizedUrl%.%type%",
@@ -2906,12 +2906,12 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zordius/lightncandy/zipball/fe90545c755e8e6f907755b186b457a8f38916c6",
-                "reference": "fe90545c755e8e6f907755b186b457a8f38916c6",
+                "url": "https://api.github.com/repos/zordius/lightncandy/zipball/748cd17b2d496dbc7657b9390d918cf7dcd0101e",
+                "reference": "748cd17b2d496dbc7657b9390d918cf7dcd0101e",
                 "shasum": "",
                 "mirrors": [
                     {
-                        "url": "http://pkg.maslosoft.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
+                        "url": "https://pkg.maslosoft.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
                         "preferred": true
                     }
                 ]
@@ -2923,6 +2923,11 @@
                 "phpunit/phpunit": "4.0.17"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "v0.95-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "LightnCandy\\": "src"
@@ -2947,7 +2952,7 @@
                 "php",
                 "template"
             ],
-            "time": "2016-07-05 08:39:36"
+            "time": "2016-08-23 07:07:34"
         }
     ],
     "aliases": [],

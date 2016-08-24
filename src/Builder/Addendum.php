@@ -31,7 +31,7 @@ use UnexpectedValueException;
 
 /**
  * Addendum extractor
- *
+ * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 class Addendum implements ExtractorInterface

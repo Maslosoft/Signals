@@ -18,7 +18,7 @@ use Maslosoft\Signals\Signal;
 
 /**
  * PhpFileOutput
- *
+ * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 class PhpFile implements BuilderIOInterface

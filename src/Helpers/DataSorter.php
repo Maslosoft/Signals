@@ -16,7 +16,7 @@ use Maslosoft\Signals\Signal;
 
 /**
  * DataSorter
- *
+ * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 class DataSorter

@@ -17,7 +17,7 @@ use Maslosoft\Signals\Signal;
 
 /**
  * Memory IO. It does not persist configuration.
- *
+ * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
 class Memory implements BuilderIOInterface
@@ -32,7 +32,7 @@ class Memory implements BuilderIOInterface
 
 	public function setSignal(Signal $signal)
 	{
-
+		
 	}
 
 	public function write($data)

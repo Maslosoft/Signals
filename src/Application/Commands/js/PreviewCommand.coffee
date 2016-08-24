@@ -1,4 +1,4 @@
-#
+# @codeCoverageIgnore
 # Maslosoft.Signals.Application.Commands.PreviewCommand
 #
 # 

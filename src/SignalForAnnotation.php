@@ -20,6 +20,7 @@ use Maslosoft\Signals\Meta\SignalsAnnotation;
 /**
  * SignalForAnnotation
  * @template SignalFor(${SlotClass})
+ * @codeCoverageIgnore
  * @author Piotr
  */
 class SignalForAnnotation extends SignalsAnnotation
