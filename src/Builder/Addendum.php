@@ -68,7 +68,7 @@ class Addendum implements ExtractorInterface
 	private $paths = [];
 
 	/**
-	 * Annotations mathing patterns
+	 * Annotations matching patterns
 	 * @var string[]
 	 */
 	private $patterns = [];
