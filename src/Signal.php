@@ -211,12 +211,21 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * Apply filter to current emit.
+	 *
+	 * Pass false as param to disable all filters.
+	 *
 	 * @param FilterInterface|string|mixed $filter
 	 * @return Signal
 	 * @throws UnexpectedValueException
 	 */
 	public function filter($filter)
 	{
+		// disable filters
+		if (is_bool($filter) && false === $filter)
+		{
+			$this->currentFilters = [];
+			return $this;
+		}
 		// Instantiate from string or array
 		if (!is_object($filter))
 		{
