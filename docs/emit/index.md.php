@@ -48,3 +48,5 @@ Possibly most usefull injection type. It will instantiate class containing this 
 emitted signal as it's param.
 
 ## When to use emiting
+
+Use emit when class instantiated by signal must perform some action.
