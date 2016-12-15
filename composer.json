@@ -39,5 +39,6 @@
 	"require-dev": {
 		"maslosoft/signalstest": "dev-master",
 		"maslosoft/hedron": "*"
-	}
+	},
+	"homepage": "https://maslosoft.com/signals/"
 }
