@@ -176,7 +176,21 @@ class Addendum implements ExtractorInterface
 		{
 			return;
 		}
-		$meta = @SignalsMeta::create($fqn);
+		try
+		{
+			$meta = @SignalsMeta::create($fqn);
+		}
+		catch (ParseException $e)
+		{
+			$this->log($e, $file);
+			return;
+		}
+		catch (UnexpectedValueException $e)
+		{
+			$this->log($e, $file);
+			return;
+		}
+
 		/* @var $typeMeta DocumentTypeMeta */
 		$typeMeta = $meta->type();
 
