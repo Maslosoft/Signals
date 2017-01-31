@@ -7,7 +7,7 @@
  * @license AGPL, Commercial
  *
  * @copyright Copyright (c) Peter Maselkowski <pmaselkowski@gmail.com>
- *
+ * @link https://maslosoft.com/signals/
  */
 
 namespace Maslosoft\Signals\Application;
