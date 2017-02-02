@@ -25,6 +25,7 @@ use Maslosoft\Signals\Meta\DocumentPropertyMeta;
 use Maslosoft\Signals\Meta\DocumentTypeMeta;
 use Maslosoft\Signals\Meta\SignalsMeta;
 use Maslosoft\Signals\Signal;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
 use UnexpectedValueException;
@@ -116,10 +117,20 @@ class Addendum implements ExtractorInterface
 	}
 
 	/**
+	 * Get logger
+	 * @return LoggerInterface
+	 */
+	public function getLogger()
+	{
+		return $this->signal->getLogger();
+	}
+
+	/**
 	 * @param string $file
 	 */
 	public function processFile($file, $contents)
 	{
+		$this->getLogger()->debug("Processing $file");
 		$file = realpath($file);
 		$this->paths[] = $file;
 		// Remove initial `\` from namespace
@@ -129,7 +140,7 @@ class Addendum implements ExtractorInterface
 		}
 		catch (ParseException $e)
 		{
-			$this->log($e, $file);
+			$this->err($e, $file);
 			return;
 		}
 		catch (UnexpectedValueException $e)
@@ -151,12 +162,21 @@ class Addendum implements ExtractorInterface
 		}
 		catch (ReflectionException $e)
 		{
-			$this->log($e, $file);
+			$this->getLogger()->debug("Could not autoload $fqn");
 			return;
 		}
 		$isAnnotated = $info->implementsInterface(AnnotatedInterface::class);
 		$hasSignals = $this->hasSignals($contents);
 		$isAbstract = $info->isAbstract() || $info->isInterface();
+
+		if ($isAnnotated)
+		{
+			$this->getLogger()->debug("Annotated: $info->name");
+		}
+		else
+		{
+			$this->getLogger()->debug("Not annotated: $info->name");
+		}
 
 		// Old classes must now implement interface
 		// Brake BC!
@@ -178,16 +198,20 @@ class Addendum implements ExtractorInterface
 		}
 		try
 		{
-			$meta = @SignalsMeta::create($fqn);
+			// Discard notices (might be the case when outdated cache?)
+			$level = error_reporting();
+			error_reporting(E_WARNING);
+			$meta = SignalsMeta::create($fqn);
+			error_reporting($level);
 		}
 		catch (ParseException $e)
 		{
-			$this->log($e, $file);
+			$this->err($e, $file);
 			return;
 		}
 		catch (UnexpectedValueException $e)
 		{
-			$this->log($e, $file);
+			$this->err($e, $file);
 			return;
 		}
 
@@ -197,6 +221,7 @@ class Addendum implements ExtractorInterface
 		// Signals
 		foreach ($typeMeta->signalFor as $slot)
 		{
+			$this->getLogger()->debug("Signal: $slot:$fqn");
 			$this->data[Signal::Slots][$slot][$fqn] = true;
 		}
 
@@ -204,7 +229,8 @@ class Addendum implements ExtractorInterface
 		// For constructor injection
 		foreach ($typeMeta->slotFor as $slot)
 		{
-			$key = implode('@', [$fqn, '__construct', '()']);
+			$key = implode('::', [$fqn, '__construct']) . '()';
+			$this->getLogger()->debug("Slot: $slot:$fqn$key");
 			$this->data[Signal::Signals][$slot][$fqn][$key] = true;
 		}
 
@@ -214,7 +240,8 @@ class Addendum implements ExtractorInterface
 			/* @var $method DocumentMethodMeta */
 			foreach ($method->slotFor as $slot)
 			{
-				$key = implode('@', [$fqn, $methodName, '()']);
+				$key = implode('::', [$fqn, $methodName]) . '()';
+				$this->getLogger()->debug("Slot: $slot:$fqn$key");
 				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s()', $methodName);
 			}
 		}
@@ -225,7 +252,8 @@ class Addendum implements ExtractorInterface
 			/* @var $field DocumentPropertyMeta */
 			foreach ($field->slotFor as $slot)
 			{
-				$key = implode('@', [$fqn, $fieldName]);
+				$key = implode('::$', [$fqn, $fieldName]);
+				$this->getLogger()->debug("Slot: $slot:$fqn$key");
 				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s', $fieldName);
 			}
 		}
@@ -245,8 +273,16 @@ class Addendum implements ExtractorInterface
 
 	private function log(Exception $e, $file)
 	{
-		$msg = sprintf('Exception: "%s" while scanning file `%s`', $e->getMessage(), $file);
+		$msg = sprintf('Warning: %s while scanning file `%s`', $e->getMessage(), $file);
+		$msg = $msg . PHP_EOL;
 		$this->signal->getLogger()->warning($msg);
+	}
+
+	private function err(Exception $e, $file)
+	{
+		$msg = sprintf('Error: %s while scanning file `%s`', $e->getMessage(), $file);
+		$msg = $msg . PHP_EOL;
+		$this->signal->getLogger()->error($msg);
 	}
 
 }

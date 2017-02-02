@@ -15,7 +15,9 @@ namespace Maslosoft\Signals;
 use Maslosoft\Addendum\Helpers\ParamsExpander;
 use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
+use Maslosoft\Signals\Helpers\ExceptionFormatter;
 use Maslosoft\Signals\Meta\SignalsAnnotation;
+use UnexpectedValueException;
 
 /**
  * SlotForAnnotation
@@ -38,11 +40,11 @@ class SlotForAnnotation extends SignalsAnnotation
 		{
 			$class = $data['class'];
 		}
-		// Log only, as it is designed as soft-fail
+
 		if (empty($class) || !ClassChecker::exists($class))
 		{
-			(new Signal)->getLogger()->warning(sprintf('Class not found for SlotFor annotation on model `%s`', $this->getMeta()->type()->name));
-			return;
+			$msg = ExceptionFormatter::formatForAnnotation($this, $class);
+			throw new UnexpectedValueException($msg);
 		}
 		NameNormalizer::normalize($class);
 		$this->getEntity()->slotFor[] = $class;

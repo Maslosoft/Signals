@@ -38,11 +38,10 @@ class SignalForAnnotation extends SignalsAnnotation
 		{
 			$class = $data['class'];
 		}
-		// Log only, as it is designed as soft-fail
 		if (empty($class) || !ClassChecker::exists($class))
 		{
-			(new Signal)->getLogger()->warning(sprintf('Class not found for SignalFor annotation on model `%s`', $this->getMeta()->type()->name));
-			return;
+			$msg = ExceptionFormatter::formatForAnnotation($this, $class);
+			throw new UnexpectedValueException($msg);
 		}
 		NameNormalizer::normalize($class);
 		$this->getEntity()->signalFor[] = $class;

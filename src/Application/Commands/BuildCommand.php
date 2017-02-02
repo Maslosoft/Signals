@@ -13,9 +13,11 @@
 namespace Maslosoft\Signals\Application\Commands;
 
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
+use Maslosoft\Cli\Shared\Log\Logger;
 use Maslosoft\Signals\Signal;
 use Maslosoft\Signals\Utility;
 use Maslosoft\Sitcom\Command;
+use Psr\Log\NullLogger;
 use Symfony\Component\Console\Command\Command as ConsoleCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,6 +47,14 @@ EOT;
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$signal = new Signal();
+
+		// Set default logger if not configured
+		$currentLogger = $signal->getLogger();
+		if ($currentLogger instanceof NullLogger)
+		{
+			$signal->setLogger(new Logger($output));
+		}
+
 		(new Utility($signal))->generate();
 	}
 
