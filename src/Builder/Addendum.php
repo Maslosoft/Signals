@@ -130,8 +130,17 @@ class Addendum implements ExtractorInterface
 	 */
 	public function processFile($file, $contents)
 	{
-		$this->getLogger()->debug("Processing $file");
+		$this->getLogger()->debug("Processing `$file`");
 		$file = realpath($file);
+
+		$ignoreFile = sprintf('%s/.signalignore', dirname($file));
+
+		if (file_exists($ignoreFile))
+		{
+			$this->getLogger()->notice("Skipping `$file` because of `$ignoreFile`" . PHP_EOL);
+			return;
+		}
+
 		$this->paths[] = $file;
 		// Remove initial `\` from namespace
 		try
