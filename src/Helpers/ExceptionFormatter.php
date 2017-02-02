@@ -12,7 +12,7 @@
 
 namespace Maslosoft\Signals\Helpers;
 
-use Maslosoft\Addendum\Interfaces\AnnotationInterface;
+use Maslosoft\Signals\Meta\SignalsAnnotation;
 use ReflectionClass;
 
 /**
@@ -23,7 +23,7 @@ use ReflectionClass;
 class ExceptionFormatter
 {
 
-	public static function formatForAnnotation(AnnotationInterface $annotation, $class)
+	public static function formatForAnnotation(SignalsAnnotation $annotation, $class)
 	{
 		$shortName = (new ReflectionClass($annotation))->getShortName();
 		$type = preg_replace('~Annotation$~', '', $shortName);
