@@ -109,19 +109,20 @@
         },
         {
             "name": "maslosoft/cli-shared",
-            "version": "0.0.10",
+            "version": "0.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/CLIShared.git",
-                "reference": "77f1e3ba83fc7cc6cdce8d9453739a78f5e3c6ea"
+                "reference": "cc70ac32193c3565162243b2c24dd8f707564c59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/CLIShared/zipball/77f1e3ba83fc7cc6cdce8d9453739a78f5e3c6ea",
-                "reference": "77f1e3ba83fc7cc6cdce8d9453739a78f5e3c6ea",
+                "url": "https://api.github.com/repos/Maslosoft/CLIShared/zipball/cc70ac32193c3565162243b2c24dd8f707564c59",
+                "reference": "cc70ac32193c3565162243b2c24dd8f707564c59",
                 "shasum": ""
             },
             "require": {
+                "psr/log": "^1",
                 "symfony/finder": "~3",
                 "symfony/yaml": "~3"
             },
@@ -146,7 +147,7 @@
                 }
             ],
             "description": "Shared CLI application components",
-            "time": "2016-08-18 20:04:06"
+            "time": "2017-02-02 11:08:18"
         },
         {
             "name": "maslosoft/embedi",
@@ -537,16 +538,16 @@
         },
         {
             "name": "codeception/specify",
-            "version": "0.4.5",
+            "version": "0.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Specify.git",
-                "reference": "5fb1d68a737f31155a0f7410cf47dea479b33415"
+                "reference": "21b586f503ca444aa519dd9cafb32f113a05f286"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Specify/zipball/5fb1d68a737f31155a0f7410cf47dea479b33415",
-                "reference": "5fb1d68a737f31155a0f7410cf47dea479b33415",
+                "url": "https://api.github.com/repos/Codeception/Specify/zipball/21b586f503ca444aa519dd9cafb32f113a05f286",
+                "reference": "21b586f503ca444aa519dd9cafb32f113a05f286",
                 "shasum": ""
             },
             "require": {
@@ -563,6 +564,9 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "authors": [
                 {
                     "name": "Michael Bodnarchuk",
@@ -570,7 +574,7 @@
                 }
             ],
             "description": "BDD code blocks for PHPUnit and Codeception",
-            "time": "2016-10-17 22:28:20"
+            "time": "2016-10-21 09:42:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -872,16 +876,16 @@
         },
         {
             "name": "maslosoft/hedron",
-            "version": "1.1.14",
+            "version": "1.1.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/Hedron.git",
-                "reference": "144174206d6cc1c7cf79949fb3fca6f3f0f2a696"
+                "reference": "e6df06a58570569423c05305c838a0445e583143"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/Hedron/zipball/144174206d6cc1c7cf79949fb3fca6f3f0f2a696",
-                "reference": "144174206d6cc1c7cf79949fb3fca6f3f0f2a696",
+                "url": "https://api.github.com/repos/Maslosoft/Hedron/zipball/e6df06a58570569423c05305c838a0445e583143",
+                "reference": "e6df06a58570569423c05305c838a0445e583143",
                 "shasum": ""
             },
             "require": {
@@ -891,6 +895,9 @@
                 "symfony/finder": "~3",
                 "symfony/yaml": "~3",
                 "zordius/lightncandy": "~0"
+            },
+            "require-dev": {
+                "maslosoft/addendum": "*"
             },
             "bin": [
                 "hedron"
@@ -913,8 +920,8 @@
                 }
             ],
             "description": "PHP source code class header applier",
-            "homepage": "http://maslosoft.com/hedron/",
-            "time": "2016-08-22 18:15:39"
+            "homepage": "https://maslosoft.com/hedron/",
+            "time": "2017-01-31 13:12:29"
         },
         {
             "name": "maslosoft/signalstest",
@@ -922,12 +929,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/SignalsTest.git",
-                "reference": "3c4e52c967e8ffce9604c0ae5c3c70676682b205"
+                "reference": "791faed1c79a6c4a2d194be5ef7930c3685b4aee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/SignalsTest/zipball/3c4e52c967e8ffce9604c0ae5c3c70676682b205",
-                "reference": "3c4e52c967e8ffce9604c0ae5c3c70676682b205",
+                "url": "https://api.github.com/repos/Maslosoft/SignalsTest/zipball/791faed1c79a6c4a2d194be5ef7930c3685b4aee",
+                "reference": "791faed1c79a6c4a2d194be5ef7930c3685b4aee",
                 "shasum": ""
             },
             "require": {
@@ -956,7 +963,7 @@
             ],
             "description": "Tests for signals",
             "homepage": "https://maslosoft.com/signals/",
-            "time": "2016-12-15 13:56:42"
+            "time": "2017-01-31 11:49:04"
         },
         {
             "name": "myclabs/deep-copy",
