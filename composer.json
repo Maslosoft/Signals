@@ -39,7 +39,8 @@
 	},
 	"require-dev": {
 		"maslosoft/signalstest": "dev-master",
-		"maslosoft/hedron": "*"
+		"maslosoft/hedron": "*",
+		"codeception/codeception": "*"
 	},
 	"homepage": "https://maslosoft.com/signals/"
 }
