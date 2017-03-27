@@ -38,4 +38,6 @@ vendor/bin/signals build
 
 From now on signals can be [emited](emit/) and [gathered](gather/) within your code.
 
+Check [this repository for working example of Signals](https://github.com/MaslosoftGuides/signals.quick-start)
+
 To customize available options head to [configuration](configuration/) secion.
