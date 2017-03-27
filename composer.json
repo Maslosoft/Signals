@@ -29,7 +29,8 @@
 		"maslosoft/addendum": "*",
 		"psr/log": "~1",
 		"maslosoft/embedi": "*",
-		"maslosoft/cli-shared": "*"
+		"maslosoft/cli-shared": "*",
+		"symfony/console": "^3"
 	},
 	"autoload": {
 		"psr-4": {
