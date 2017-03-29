@@ -34,6 +34,10 @@ class Utility
 
 	public function __construct(Signal $signal)
 	{
+		if(!defined('YII_DEBUG'))
+		{
+			define('YII_DEBUG', true);
+		}
 		$this->signal = $signal;
 	}
 
