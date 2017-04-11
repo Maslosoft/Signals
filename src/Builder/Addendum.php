@@ -75,8 +75,6 @@ class Addendum implements ExtractorInterface
 	 * @var string[]
 	 */
 	private $patterns = [];
-	private static $throw = false;
-	private static $found = true;
 	private static $file = '';
 
 	public function __construct()
@@ -111,11 +109,7 @@ class Addendum implements ExtractorInterface
 		}
 		if (!ClassChecker::exists($className))
 		{
-			if (self::$throw)
-			{
-				self::$found = false;
-				throw new ClassNotFoundException("Class $className not found when processing " . self::$file);
-			}
+			throw new ClassNotFoundException("Class $className not found when processing " . self::$file);
 		}
 		return false;
 	}
@@ -126,8 +120,6 @@ class Addendum implements ExtractorInterface
 	 */
 	public function getData()
 	{
-		$autoload = static::class . '::autoloadHandler';
-		spl_autoload_register($autoload);
 		(new FileWalker([], [$this, 'processFile'], $this->signal->paths, $this->signal->ignoreDirs))->walk();
 		DataSorter::sort($this->data);
 		return $this->data;
@@ -215,14 +207,14 @@ class Addendum implements ExtractorInterface
 
 		try
 		{
-			self::$throw = true;
+			// NOTE: This autloader must be registered on ReflectionClass
+			// creation ONLY! That's why register/unregister.
+			// This will detect not found depending classes
+			// (base classes,interfaces,traits etc.)
+			$autoload = static::class . '::autoloadHandler';
+			spl_autoload_register($autoload);
 			eval('$info = new ReflectionClass($fqn);');
-			self::$throw = false;
-			if (false === self::$found)
-			{
-				self::$found = true;
-				throw new ClassNotFoundException("Class $className not found");
-			}
+			spl_autoload_unregister($autoload);
 		}
 		catch (ParseError $e)
 		{
