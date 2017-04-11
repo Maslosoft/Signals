@@ -16,8 +16,10 @@ use Exception;
 use Maslosoft\Addendum\Exceptions\ParseException;
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Addendum\Utilities\AnnotationUtility;
+use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\FileWalker;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
+use Maslosoft\Signals\Exceptions\ClassNotFoundException;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Meta\DocumentMethodMeta;
@@ -25,8 +27,8 @@ use Maslosoft\Signals\Meta\DocumentPropertyMeta;
 use Maslosoft\Signals\Meta\DocumentTypeMeta;
 use Maslosoft\Signals\Meta\SignalsMeta;
 use Maslosoft\Signals\Signal;
+use ParseError;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
 use ReflectionException;
 use UnexpectedValueException;
 
@@ -73,6 +75,9 @@ class Addendum implements ExtractorInterface
 	 * @var string[]
 	 */
 	private $patterns = [];
+	private static $throw = false;
+	private static $found = true;
+	private static $file = '';
 
 	public function __construct()
 	{
@@ -88,11 +93,41 @@ class Addendum implements ExtractorInterface
 	}
 
 	/**
+	 * Handler for class not found errors
+	 *
+	 * @internal This must be public, but should not be used anywhere else
+	 * @param string $className
+	 */
+	public static function autoloadHandler($className)
+	{
+		// These are loaded in some other way...
+		if ($className === 'PHP_Invoker')
+		{
+			return false;
+		}
+		if (stripos($className, 'phpunit') !== false)
+		{
+			return false;
+		}
+		if (!ClassChecker::exists($className))
+		{
+			if (self::$throw)
+			{
+				self::$found = false;
+				throw new ClassNotFoundException("Class $className not found when processing " . self::$file);
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Get signals and slots data
 	 * @return mixed
 	 */
 	public function getData()
 	{
+		$autoload = static::class . '::autoloadHandler';
+		spl_autoload_register($autoload);
 		(new FileWalker([], [$this, 'processFile'], $this->signal->paths, $this->signal->ignoreDirs))->walk();
 		DataSorter::sort($this->data);
 		return $this->data;
@@ -133,6 +168,8 @@ class Addendum implements ExtractorInterface
 		$this->getLogger()->debug("Processing `$file`");
 		$file = realpath($file);
 
+		self::$file = $file;
+
 		$ignoreFile = sprintf('%s/.signalignore', dirname($file));
 
 		if (file_exists($ignoreFile))
@@ -147,6 +184,11 @@ class Addendum implements ExtractorInterface
 		{
 			$annotated = AnnotationUtility::rawAnnotate($file);
 		}
+		catch (ClassNotFoundException $e)
+		{
+			$this->log($e, $file);
+			return;
+		}
 		catch (ParseException $e)
 		{
 			$this->err($e, $file);
@@ -154,9 +196,15 @@ class Addendum implements ExtractorInterface
 		}
 		catch (UnexpectedValueException $e)
 		{
-			$this->log($e, $file);
+			$this->err($e, $file);
 			return;
 		}
+		catch (Exception $e)
+		{
+			$this->err($e, $file);
+			return;
+		}
+
 		$namespace = preg_replace('~^\\\\+~', '', $annotated['namespace']);
 		$className = $annotated['className'];
 
@@ -167,11 +215,28 @@ class Addendum implements ExtractorInterface
 
 		try
 		{
-			$info = new ReflectionClass($fqn);
+			self::$throw = true;
+			eval('$info = new ReflectionClass($fqn);');
+			self::$throw = false;
+			if (false === self::$found)
+			{
+				self::$found = true;
+				throw new ClassNotFoundException("Class $className not found");
+			}
+		}
+		catch (ParseError $e)
+		{
+			$this->err($e, $file);
+			return;
+		}
+		catch (ClassNotFoundException $e)
+		{
+			$this->log($e, $file);
+			return;
 		}
 		catch (ReflectionException $e)
 		{
-			$this->getLogger()->debug("Could not autoload $fqn");
+			$this->err($e, $file);
 			return;
 		}
 		$isAnnotated = $info->implementsInterface(AnnotatedInterface::class);
@@ -216,6 +281,11 @@ class Addendum implements ExtractorInterface
 		catch (ParseException $e)
 		{
 			$this->err($e, $file);
+			return;
+		}
+		catch (ClassNotFoundException $e)
+		{
+			$this->log($e, $file);
 			return;
 		}
 		catch (UnexpectedValueException $e)
