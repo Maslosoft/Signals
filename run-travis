@@ -8,9 +8,10 @@ if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "nightly" ]
 	vendor/bin/codecept run unit --coverage --html --coverage-html=. --coverage-xml=./coverage.clover
 	status=$?
 fi;
-wget --no-check-certificate https://scrutinizer-ci.com/ocular.phar
 if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "nightly" ]; then
+	wget --no-check-certificate https://scrutinizer-ci.com/ocular.phar
 	php ocular.phar code-coverage:upload --revision=`git rev-parse HEAD` --format=php-clover ./tests/_output/coverage.clover
 fi;
 rm ocular.phar
+echo "$status"
 exit $status
