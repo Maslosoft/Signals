@@ -38,9 +38,10 @@
 		}
 	},
 	"require-dev": {
-		"maslosoft/signalstest": "dev-master",
+		"codeception/codeception": "*",
 		"maslosoft/hedron": "*",
-		"codeception/codeception": "*"
+		"maslosoft/signalstest": "dev-master",
+		"maslosoft/zamm": "*"
 	},
 	"homepage": "https://maslosoft.com/signals/"
 }
