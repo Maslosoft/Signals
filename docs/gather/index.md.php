@@ -1,4 +1,4 @@
-<title>Gather</title>
+<title>4. Gather</title>
 
 # Gather signals
 
