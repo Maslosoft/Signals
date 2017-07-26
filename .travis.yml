@@ -15,8 +15,8 @@ cache:
   directories:
     - vendor
 install:
-  - composer install --dev --prefer-dist --no-interaction
   - composer update
+  - composer install --dev --prefer-dist --no-interaction
   # Get fresh tests
   - rm -rf vendor/maslosoft/signalstest
   - git clone https://github.com/Maslosoft/SignalsTest.git vendor/maslosoft/signalstest
