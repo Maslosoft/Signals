@@ -15,11 +15,11 @@ composer require "maslosoft/signals"
 
 ### Required directories
 
-Signals require writable directory `generated` in application root. This directory should be commited
+Signals require writable directory `generated` in application root. This directory should be committed
 together with codebase. Another required writable directory is `runtime` for temporary files, this should
-not be commited, and it's contents can be safely cleared.
+not be committed, and it's contents can be safely cleared.
 
-##### Summary/tldr
+##### In Short Summary
 
 Required writable directories:
 
@@ -36,8 +36,12 @@ To [generate](generate/) issue command:
 vendor/bin/signals build
 ```
 
-From now on signals can be [emited](emit/) and [gathered](gather/) within your code.
+From now on signals can be [emitted](emit/) and [gathered](gather/) within
+your code.
 
-Check [this repository for working example of Signals](https://github.com/MaslosoftGuides/signals.quick-start)
+Check [this repository for working example of Signals][repo]
 
 To customize available options head to [configuration](configuration/) secion.
+
+
+[repo]: https://github.com/MaslosoftGuides/signals.quick-start
