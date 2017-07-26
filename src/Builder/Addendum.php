@@ -120,7 +120,18 @@ class Addendum implements ExtractorInterface
 	 */
 	public function getData()
 	{
-		(new FileWalker([], [$this, 'processFile'], $this->signal->paths, $this->signal->ignoreDirs))->walk();
+		$paths = [];
+		foreach($this->signal->paths as $path)
+		{
+			$real = realpath($path);
+			if(false === $real)
+			{
+				$this->signal->getLogger()->warning("Directory $path could not be resolved to absolute path");
+				continue;
+			}
+			$paths[] = $real;
+		}
+		(new FileWalker([], [$this, 'processFile'], $paths, $this->signal->ignoreDirs))->walk();
 		DataSorter::sort($this->data);
 		return $this->data;
 	}
