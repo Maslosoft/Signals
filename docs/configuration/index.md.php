@@ -42,7 +42,7 @@ file in project root.
 
 Example configuration file:
 
-```
+```yaml
 <?= file_get_contents(__DIR__ . '/signals.yml'); ?>
 ```
 
