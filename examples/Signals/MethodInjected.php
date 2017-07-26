@@ -11,7 +11,7 @@ namespace Maslosoft\SignalsExamples\Signals;
 
 use Maslosoft\Signals\Interfaces\SignalInterface;
 
-class ConstructorInjected implements SignalInterface
+class MethodInjected implements SignalInterface
 {
 	public $emitted = false;
 }

@@ -10,18 +10,21 @@ namespace Maslosoft\SignalsExamples;
 
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\SignalsExamples\Signals\ConstructorInjected;
+use Maslosoft\SignalsExamples\Signals\MethodInjected;
 
 /**
- * Model with constructor injection
- * @SlotFor(ConstructorInjected)
+ * Model with method injection
  *
- * @see ConstructorInjected
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
-class WithConstructorInjection implements AnnotatedInterface
+class WithMethodInjection implements AnnotatedInterface
 {
 
-	public function __construct(ConstructorInjected $signal)
+	/**
+	 * @SlotFor(MethodInjected)
+	 * @param MethodInjected $signal
+	 */
+	public function reactOn(MethodInjected $signal)
 	{
 		$signal->emitted = true;
 	}
