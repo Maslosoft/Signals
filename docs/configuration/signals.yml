@@ -1,0 +1,14 @@
+# Default configuration file
+extractor:
+   class: Maslosoft\Signals\Builder\Addendum
+   
+# Builder extractor configuration
+# Input output configuration
+io:
+   class: Maslosoft\Signals\Builder\IO\PhpFile
+   runtimePath: runtime
+   generatedPath: generated
+# Paths to search for signals
+paths:
+   - vendor
+   - src

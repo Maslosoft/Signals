@@ -25,15 +25,21 @@ class PhpFile implements BuilderIOInterface
 {
 
 	/**
-	 * Generated path.
-	 * This is path, where signals definition will be stored.
+	 * Generated path is directory, where signals definition will be stored.
 	 * Path is relative to project root.
+	 *
+	 * **This directory must be writable by command line user**
+	 *
+	 * **This directory should be committed and distributed along with the project code**
+	 *
 	 * @var string
 	 */
 	public $generatedPath = 'generated';
 
 	/**
-	 * File name for file containing signals definitions.
+	 * File name for file containing signals definitions, in most cases
+	 * leaving default value is fine.
+	 *
 	 * @var string
 	 */
 	public $configFilename = 'signals-definition.php';
