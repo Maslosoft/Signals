@@ -2,11 +2,12 @@
 
 use Maslosoft\Ilmatar\Components\Helpers\EnumBase;
 use Maslosoft\Ilmatar\Widgets\Messages\MessageType;
+use Maslosoft\SignalsExamples\WithConstructorInjection;
 use Maslosoft\SignalsTest\Models\ModelWithConstructorInjection;
 use Maslosoft\Zamm\Source;
 use Maslosoft\Zamm\Capture;
 ?>
-<title>Emit</title>
+<title>3. Emit</title>
 
 # Emit signal
 
@@ -32,21 +33,22 @@ of this class and pass emitted signal as constructor param.
 Example:
 
 <?php
-//echo (new Source(ModelWithConstructorInjection::class))->cssClasses()->md;
+echo (new Source(WithConstructorInjection::class))->cssClasses()->md;
 ?>
 
 When emitting this is equivalent of following code:
+
 <?php
 Capture::open();
-//new ModelWithConstructorInjection(new ConstructorInjected);
+new WithConstructorInjection(new ConstructorInjected);
 echo Capture::close()->md;
 ?>
 
 ### Method injection
 
-Possibly most usefull injection type. It will instantiate class containing this method and pass
+Possibly most useful injection type. It will instantiate class containing this method and pass
 emitted signal as it's param.
 
-## When to use emiting
+## When to use emitting
 
 Use emit when class instantiated by signal must perform some action.

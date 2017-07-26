@@ -34,7 +34,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Maslosoft\\Signals\\": "src"
+			"Maslosoft\\Signals\\": "src",
+			"Maslosoft\\SignalsExamples\\": "examples"
 		}
 	},
 	"require-dev": {
