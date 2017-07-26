@@ -52,6 +52,11 @@
       <path value="$PROJECT_DIR$/vendor/sebastian/version" />
       <path value="$PROJECT_DIR$/vendor/maslosoft/addendum" />
       <path value="$PROJECT_DIR$/vendor/maslosoft/embedi" />
+      <path value="$PROJECT_DIR$/vendor/maslosoft/zamm" />
+      <path value="$PROJECT_DIR$/vendor/maslosoft/miniview" />
+      <path value="$PROJECT_DIR$/vendor/erusev/parsedown" />
+      <path value="$PROJECT_DIR$/vendor/maslosoft/staple" />
+      <path value="$PROJECT_DIR$/vendor/masterexploder/phpthumb" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />
