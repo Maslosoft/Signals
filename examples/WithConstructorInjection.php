@@ -1,13 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: peter
- * Date: 26.07.17
- * Time: 19:15
- */
-
-namespace Maslosoft\SignalsExamples;
-<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
