@@ -59,16 +59,21 @@ class Signal implements LoggerAwareInterface
 	const ConfigName = "signals";
 
 	/**
-	 * Runtime path.
-	 * This is path where config from yml will be stored.
-	 * Path is relative to project root.
+	 * Runtime path is directory where config cache from yml file will
+	 * be stored. Path is relative to project root. This must be writable
+	 * by command line user.
+	 *
 	 * @var string
 	 */
 	public $runtimePath = 'runtime';
 
 	/**
-	 * This aliases will be searched for SlotFor and SignalFor annotations
+	 * This paths will be searched for `SlotFor` and `SignalFor` annotations.
+	 *
+	 *
+	 *
 	 * TODO Autodetect based on composer autoload
+	 *
 	 * @var string[]
 	 */
 	public $paths = [
@@ -87,7 +92,8 @@ class Signal implements LoggerAwareInterface
 
 	/**
 	 * Filters configuration.
-	 * This filters will be applied to every emit.
+	 * This filters will be applied to every emit. This property
+	 * should contain array of class names implementing filters.
 	 * @var string[]|object[]
 	 */
 	public $filters = [];
@@ -105,7 +111,12 @@ class Signal implements LoggerAwareInterface
 	public $extractor = Addendum::class;
 
 	/**
-	 * Input/Output configuration
+	 * Input/Output configuration, at minimum it should
+	 * contain class name for builder input output interface.
+	 * It can also contain array [configurable options for IO class](php-io/).
+	 *
+	 *
+	 *
 	 * @var string|[]|object
 	 */
 	public $io = PhpFile::class;
@@ -114,7 +125,7 @@ class Signal implements LoggerAwareInterface
 	 * Whenever component is initialized
 	 * @var bool
 	 */
-	public $isInitialized = false;
+	private $isInitialized = false;
 
 	/**
 	 * Configuration of signals and slots
