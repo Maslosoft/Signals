@@ -50,7 +50,8 @@ class WithConstructorInjection implements AnnotatedInterface
 ...
 ```
 
-When emitting this is equivalent of following code for each class containing annotation `@SlotFor(ConstructorInjected)`:
+When emitting this is equivalent of following code for each class containing
+annotation `@SlotFor(ConstructorInjected)`:
 
 <?php
 Capture::open();
@@ -102,7 +103,7 @@ $model->reactOn(new MethodInjected());
 echo Capture::close()->md;
 ?>
 
-Emitting this signal will yield array of `MethodInjected` signals. Live evaluation results ara available here:
+Emitting this signal will yield array of `MethodInjected` signals. Live evaluation results are available here:
 
 <?php
 Capture::open();
