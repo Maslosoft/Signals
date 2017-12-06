@@ -353,15 +353,17 @@ class Addendum implements ExtractorInterface
 		return false;
 	}
 
-	private function log(Exception $e, $file)
+	private function log($e, $file)
 	{
+		/* @var $e ParseError|Exception */
 		$msg = sprintf('Warning: %s while scanning file `%s`', $e->getMessage(), $file);
 		$msg = $msg . PHP_EOL;
 		$this->signal->getLogger()->warning($msg);
 	}
 
-	private function err(Exception $e, $file)
+	private function err($e, $file)
 	{
+		/* @var $e ParseError|Exception */
 		$msg = sprintf('Error: %s while scanning file `%s`', $e->getMessage(), $file);
 		$msg = $msg . PHP_EOL;
 		$this->signal->getLogger()->error($msg);
