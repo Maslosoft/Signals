@@ -27,21 +27,28 @@
 	"minimum-stability": "stable",
 	"require": {
 		"maslosoft/addendum": "*",
-		"psr/log": "~1",
+		"psr/log": "^1",
 		"maslosoft/embedi": "*",
 		"maslosoft/cli-shared": "*",
-		"symfony/console": "^3"
+		"symfony/console": ">=2.7 <5.0"
 	},
 	"autoload": {
 		"psr-4": {
 			"Maslosoft\\Signals\\": "src",
-			"Maslosoft\\SignalsExamples\\": "examples"
+			"Maslosoft\\SignalsExamples\\": "examples",
+			"Maslosoft\\SignalsTest\\Extensions\\": "tests/extensions"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Maslosoft\\SignalsTest\\Signals\\": "tests/signals",
+			"Maslosoft\\SignalsTest\\Models\\": "tests/models"
 		}
 	},
 	"require-dev": {
 		"codeception/codeception": "*",
+		"codeception/specify": "*",
 		"maslosoft/hedron": "*",
-		"maslosoft/signalstest": "dev-master",
 		"maslosoft/zamm": "*"
 	},
 	"homepage": "https://maslosoft.com/signals/"
