@@ -6,6 +6,7 @@ php:
   - 5.5
   - 7.0
   - 7.1
+  - 7.2
   - nightly
   - hhvm
 matrix:
@@ -15,11 +16,9 @@ cache:
   directories:
     - vendor
 install:
+  - bash -c 'if [ -e "vendor/maslosoft/signalstest" ]; then rm -rf "vendor/maslosoft/signalstest"; fi;'
   - composer update
   - composer install --dev --prefer-dist --no-interaction
-  # Get fresh tests
-  - rm -rf vendor/maslosoft/signalstest
-  - git clone https://github.com/Maslosoft/SignalsTest.git vendor/maslosoft/signalstest
 before_script:
   - cd $TRAVIS_BUILD_DIR
 script:

@@ -1,9 +1,9 @@
 actor: Tester
 paths:
-    tests: vendor/maslosoft/signalstest/tests
+    tests: tests
     log: tests/_output
-    data: vendor/maslosoft/signalstest/tests/_data
-    helpers: vendor/maslosoft/signalstest/tests/_support
+    data: tests/_data
+    helpers: tests/_support
 settings:
     bootstrap: _bootstrap.php
     colors: true
