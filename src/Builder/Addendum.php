@@ -237,7 +237,6 @@ class Addendum implements ExtractorInterface
 			spl_autoload_register($autoload);
 			eval('$info = new ReflectionClass($fqn);');
 			spl_autoload_unregister($autoload);
-			echo "$file\n";
 		}
 		catch (ParseError $e)
 		{
