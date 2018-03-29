@@ -134,6 +134,12 @@ class Signal implements LoggerAwareInterface
 	private static $config = [];
 
 	/**
+	 * Extra configurations of signals and slots
+	 * @var array
+	 */
+	private static $configs = [];
+
+	/**
 	 * Logger instance holder
 	 * NOTE: There is property annotation with `logger` name,
 	 * thus this name is a bit longer
@@ -217,6 +223,20 @@ class Signal implements LoggerAwareInterface
 		if (!$this->di->isStored($this))
 		{
 			$this->di->store($this);
+		}
+	}
+
+	/**
+	 * Attach additional signals and slots configuration
+	 * @param      $config
+	 * @param bool $reload
+	 */
+	public function attach($config, $reload = true)
+	{
+		self::$configs[] = $config;
+		if($reload)
+		{
+			$this->reload();
 		}
 	}
 
@@ -503,6 +523,11 @@ class Signal implements LoggerAwareInterface
 	private function reload()
 	{
 		self::$config = $this->getIO()->read();
+
+		foreach(self::$configs as $config)
+		{
+			self::$config = array_replace_recursive(self::$config, $config);
+		}
 	}
 
 	/**
