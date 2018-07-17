@@ -1,9 +1,13 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This software package is licensed under `AGPL-3.0-only, proprietary` license[s].
+ *
+ * @package maslosoft/signals
+ * @license AGPL-3.0-only, proprietary
+ *
+ * @copyright Copyright (c) Peter Maselkowski <pmaselkowski@gmail.com>
+ * @link https://maslosoft.com/signals/
  */
 
 namespace Maslosoft\SignalsExamples;
