@@ -12,6 +12,7 @@
 
 namespace Maslosoft\Signals;
 
+use function is_object;
 use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Cli\Shared\ConfigReader;
@@ -327,10 +328,13 @@ class Signal implements LoggerAwareInterface
 	/**
 	 * Call for signals from slot
 	 * @param object $slot
-	 * @param string $interface Interface or class name which must be implemented, instanceof or sub class of to get into slot
+	 * @param string $interface Interface or class name which must be implemented, instanceof or sub class of to get
+	 *                          into slot
+	 * @return array
 	 */
 	public function gather($slot, $interface = null)
 	{
+		assert(is_object($slot), 'Parameter `$slot` must be object');
 		$name = get_class($slot);
 		NameNormalizer::normalize($name);
 		if (!empty($interface))
@@ -513,7 +517,7 @@ class Signal implements LoggerAwareInterface
 	}
 
 	/**
-	 * Reloads signals cache and reinitializes component.
+	 * Reloads signals cache and re-initializes component.
 	 */
 	public function resetCache()
 	{
