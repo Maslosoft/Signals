@@ -29,7 +29,7 @@ class SignalsMeta extends Meta
 	 * Create instance of Metadata specifically designed for Signals
 	 * @param string|object|AnnotatedInterface $model
 	 * @param MetaOptions $options
-	 * @return static
+	 * @return SignalsMeta
 	 */
 	public static function create($model, MetaOptions $options = null)
 	{
@@ -37,7 +37,9 @@ class SignalsMeta extends Meta
 		{
 			$options = new SignalsMetaOptions();
 		}
-		return parent::create($model, $options);
+		$meta = parent::create($model, $options);
+		assert($meta instanceof SignalsMeta);
+		return $meta;
 	}
 
 	/**
@@ -47,7 +49,9 @@ class SignalsMeta extends Meta
 	 */
 	public function field($name)
 	{
-		return parent::field($name);
+		$meta = parent::field($name);
+		assert($meta instanceof DocumentPropertyMeta);
+		return $meta;
 	}
 
 	/**
@@ -56,7 +60,9 @@ class SignalsMeta extends Meta
 	 */
 	public function type()
 	{
-		return parent::type();
+		$meta = parent::type();
+		assert($meta instanceof DocumentTypeMeta);
+		return $meta;
 	}
 
 }

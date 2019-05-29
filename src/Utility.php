@@ -12,6 +12,8 @@
 
 namespace Maslosoft\Signals;
 
+use Maslosoft\Signals\Interfaces\PathsAwareInterface;
+
 /**
  * Signals utility class
  * @codeCoverageIgnore
@@ -45,8 +47,11 @@ class Utility
 	{
 		$extractor = $this->signal->getExtractor();
 		$data = $extractor->getData();
-		// TODO: Add if extractor instanceof PathsAwareInterface...
-		$this->paths = $extractor->getPaths();
+
+		if($extractor instanceof PathsAwareInterface)
+		{
+			$this->paths = $extractor->getPaths();
+		}
 		$this->signal->getIO()->write($data);
 	}
 

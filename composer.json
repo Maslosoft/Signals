@@ -49,7 +49,8 @@
 		"codeception/codeception": "*",
 		"codeception/specify": "*",
 		"maslosoft/hedron": "*",
-		"maslosoft/zamm": "*"
+		"maslosoft/zamm": "*",
+		"maslosoft/sitcom": "*"
 	},
 	"homepage": "https://maslosoft.com/signals/"
 }

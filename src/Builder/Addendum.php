@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUndefinedClassInspection */
 
 /**
  * This software package is licensed under `AGPL-3.0-only, proprietary` license[s].
@@ -23,6 +23,7 @@ use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Signals\Exceptions\ClassNotFoundException;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
+use Maslosoft\Signals\Interfaces\PathsAwareInterface;
 use Maslosoft\Signals\Meta\DocumentMethodMeta;
 use Maslosoft\Signals\Meta\DocumentPropertyMeta;
 use Maslosoft\Signals\Meta\DocumentTypeMeta;
@@ -39,7 +40,7 @@ use UnexpectedValueException;
  * @codeCoverageIgnore
  * @author Piotr Maselkowski <pmaselkowski at gmail.com>
  */
-class Addendum implements ExtractorInterface
+class Addendum implements ExtractorInterface, PathsAwareInterface
 {
 
 	// Data keys for annotations extraction
@@ -97,6 +98,7 @@ class Addendum implements ExtractorInterface
 	 *
 	 * @internal This must be public, but should not be used anywhere else
 	 * @param string $className
+	 * @return bool
 	 */
 	public static function autoloadHandler($className)
 	{
@@ -124,7 +126,7 @@ class Addendum implements ExtractorInterface
 	 * Get signals and slots data
 	 * @return mixed
 	 */
-	public function getData()
+	public function getData(): array
 	{
 		$paths = [];
 		foreach($this->signal->paths as $path)
@@ -146,7 +148,7 @@ class Addendum implements ExtractorInterface
 	 * Get scanned paths. This is available only after getData call.
 	 * @return string[]
 	 */
-	public function getPaths()
+	public function getPaths():array
 	{
 		return $this->paths;
 	}
@@ -171,8 +173,9 @@ class Addendum implements ExtractorInterface
 
 	/**
 	 * @param string $file
+	 * @param        $contents
 	 */
-	public function processFile($file, $contents)
+	public function processFile(string $file, string $contents)
 	{
 		$this->getLogger()->debug("Processing `$file`");
 		$file = realpath($file);
@@ -372,14 +375,6 @@ class Addendum implements ExtractorInterface
 		$msg = sprintf('Warning: %s while scanning file `%s`', $e->getMessage(), $file);
 		$msg = $msg . PHP_EOL;
 		$this->signal->getLogger()->warning($msg);
-	}
-
-	private function debug($e, $file)
-	{
-		/* @var $e ParseError|Exception */
-		$msg = sprintf('Warning: %s while scanning file `%s`', $e->getMessage(), $file);
-		$msg = $msg . PHP_EOL;
-		$this->signal->getLogger()->debug($msg);
 	}
 
 	private function err($e, $file)

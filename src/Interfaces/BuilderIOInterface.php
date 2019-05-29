@@ -3,11 +3,11 @@
 /**
  * This software package is licensed under `AGPL-3.0-only, proprietary` license[s].
  *
- * @package maslosoft/signals
- * @license AGPL-3.0-only, proprietary
+ * @package   maslosoft/signals
+ * @license   AGPL-3.0-only, proprietary
  *
  * @copyright Copyright (c) Peter Maselkowski <pmaselkowski@gmail.com>
- * @link https://maslosoft.com/signals/
+ * @link      https://maslosoft.com/signals/
  */
 
 namespace Maslosoft\Signals\Interfaces;
@@ -19,7 +19,7 @@ namespace Maslosoft\Signals\Interfaces;
 interface BuilderIOInterface extends SignalAwareInterface
 {
 
-	public function write($data);
+	public function write($data): bool;
 
-	public function read();
+	public function read(): array;
 }

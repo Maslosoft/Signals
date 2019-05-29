@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpDeprecationInspection */
 
 /**
  * This software package is licensed under `AGPL-3.0-only, proprietary` license[s].

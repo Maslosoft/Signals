@@ -19,5 +19,5 @@ namespace Maslosoft\Signals\Interfaces;
 interface ExtractorInterface extends SignalAwareInterface
 {
 
-	public function getData();
+	public function getData(): array;
 }

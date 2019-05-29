@@ -59,7 +59,7 @@ EOT;
 	}
 
 	/**
-	 * @SlotFor(Maslosoft\Sitcom\Command)
+	 * @SlotFor(Command)
 	 * @param Command $signal
 	 */
 	public function reactOn(Command $signal)

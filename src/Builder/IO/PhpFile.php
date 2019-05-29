@@ -1,13 +1,13 @@
-<?php
+<?php /** @noinspection PhpIncludeInspection */
 
 /**
  * This software package is licensed under `AGPL-3.0-only, proprietary` license[s].
  *
- * @package maslosoft/signals
- * @license AGPL-3.0-only, proprietary
+ * @package   maslosoft/signals
+ * @license   AGPL-3.0-only, proprietary
  *
  * @copyright Copyright (c) Peter Maselkowski <pmaselkowski@gmail.com>
- * @link https://maslosoft.com/signals/
+ * @link      https://maslosoft.com/signals/
  */
 
 namespace Maslosoft\Signals\Builder\IO;
@@ -50,17 +50,18 @@ class PhpFile implements BuilderIOInterface
 	 */
 	private $signal = null;
 
-	public function read()
+	public function read(): array
 	{
 		$file = $this->generatedPath . '/' . $this->configFilename;
 		if (file_exists($file))
 		{
-			return (array) require $file;
+			return (array)require $file;
 		}
 		else
 		{
 			$this->signal->getLogger()->debug('Config file "{file}" does not exists, have you generated signals config file?', ['file' => $file]);
 		}
+		return [];
 	}
 
 	public function setSignal(Signal $signal)
@@ -69,7 +70,7 @@ class PhpFile implements BuilderIOInterface
 		return $this;
 	}
 
-	public function write($data)
+	public function write($data): bool
 	{
 		$path = sprintf("%s/%s", $this->generatedPath, $this->configFilename);
 

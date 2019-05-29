@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpDeprecationInspection */
 
 /**
  * This software package is licensed under `AGPL-3.0-only, proprietary` license[s].
@@ -13,7 +13,6 @@
 namespace Maslosoft\Signals;
 
 use Maslosoft\Signals\Interfaces\SlotInterface;
-use Maslosoft\Signals\ISignal;
 
 /**
  * Signal slot interface

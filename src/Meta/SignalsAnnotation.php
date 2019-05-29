@@ -28,7 +28,13 @@ abstract class SignalsAnnotation extends MetaAnnotation
 	 */
 	public function getEntity()
 	{
-		return parent::getEntity();
+		$entity = parent::getEntity();
+		assert(
+			$entity instanceof DocumentTypeMeta ||
+			$entity instanceof DocumentPropertyMeta ||
+			$entity instanceof DocumentMethodMeta
+		);
+		return $entity;
 	}
 
 }
