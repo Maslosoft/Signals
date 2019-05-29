@@ -170,9 +170,6 @@ class Signal implements LoggerAwareInterface
 	{
 		$this->loggerInstance = new NullLogger;
 
-		/**
-		 * TODO This should be made as embedi adapter, currently unsupported
-		 */
 		$config = new ConfigReader($configName);
 		$this->di = EmbeDi::fly($configName);
 		$this->di->configure($this);
@@ -537,7 +534,7 @@ class Signal implements LoggerAwareInterface
 	/**
 	 * Get configured property
 	 * @param string $property
-	 * @return SignalAwareInterface
+	 * @return SignalAwareInterface|ExtractorInterface|BuilderIOInterface
 	 */
 	private function getConfigured($property)
 	{

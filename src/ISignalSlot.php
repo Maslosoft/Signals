@@ -26,7 +26,7 @@ interface ISignalSlot
 {
 
 	/**
-	 * Set signal comming from application
+	 * Set signal coming from application
 	 * @param ISignal $signal
 	 */
 	public function setSignal(ISignal $signal);

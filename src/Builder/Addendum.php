@@ -385,18 +385,6 @@ class Addendum implements ExtractorInterface
 	private function err($e, $file)
 	{
 		// Uncomment for debugging
-//		if(strstr($e->getMessage(), 'PHP_Invoker'))
-//		{
-//			$traces = [];
-//			foreach(debug_backtrace() as $trace)
-//			{
-//				$file = @$trace['file'];
-//				$line = @$trace['line'];
-//				$traces[] = "$file: $line";
-//			}
-//			print_r($traces);
-//			exit;
-//		}
 		/* @var $e ParseError|Exception */
 		$msg = sprintf('Error: %s while scanning file `%s`', $e->getMessage(), $file);
 		$msg = $msg . PHP_EOL;
