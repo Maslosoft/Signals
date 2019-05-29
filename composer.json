@@ -30,7 +30,8 @@
 		"psr/log": "^1",
 		"maslosoft/embedi": "*",
 		"maslosoft/cli-shared": "*",
-		"symfony/console": ">=2.7 <5.0"
+		"symfony/console": ">=2.7 <5.0",
+		"php": ">=7"
 	},
 	"autoload": {
 		"psr-4": {
