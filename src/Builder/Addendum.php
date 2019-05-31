@@ -12,7 +12,10 @@
 
 namespace Maslosoft\Signals\Builder;
 
+use function class_implements;
 use Exception;
+use function implode;
+use function is_a;
 use Maslosoft\Addendum\Exceptions\NoClassInFileException;
 use Maslosoft\Addendum\Exceptions\ParseException;
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
@@ -24,6 +27,8 @@ use Maslosoft\Signals\Exceptions\ClassNotFoundException;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Interfaces\PathsAwareInterface;
+use Maslosoft\Signals\ISignal;
+use Maslosoft\Signals\ISignalSlot;
 use Maslosoft\Signals\Meta\DocumentMethodMeta;
 use Maslosoft\Signals\Meta\DocumentPropertyMeta;
 use Maslosoft\Signals\Meta\DocumentTypeMeta;
@@ -33,6 +38,7 @@ use ParseError;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
+use function sprintf;
 use UnexpectedValueException;
 
 /**
@@ -319,6 +325,10 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		// Signals
 		foreach ($typeMeta->signalFor as $slot)
 		{
+			if(is_a($slot, ISignal::class, true))
+			{
+				$this->getLogger()->error(sprintf('Slot `%s` is used as signal on `%s`', $slot, $fqn));
+			}
 			$this->getLogger()->debug("Signal: $slot:$fqn");
 			$this->data[Signal::Slots][$slot][$fqn] = true;
 		}
@@ -327,6 +337,10 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		// For constructor injection
 		foreach ($typeMeta->slotFor as $slot)
 		{
+			if(is_a($slot, ISignalSlot::class, true))
+			{
+				$this->getLogger()->error(sprintf('Signal `%s` is used as slot on `%s`', $slot, $fqn));
+			}
 			$key = implode('::', [$fqn, '__construct']) . '()';
 			$this->getLogger()->debug("Slot: $slot:$fqn$key");
 			$this->data[Signal::Signals][$slot][$fqn][$key] = true;
@@ -339,6 +353,10 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 			foreach ($method->slotFor as $slot)
 			{
 				$key = implode('::', [$fqn, $methodName]) . '()';
+				if(is_a($slot, ISignalSlot::class, true))
+				{
+					$this->getLogger()->error(sprintf('Signal `%s` is used as slot on `%s`', $slot, $key));
+				}
 				$this->getLogger()->debug("Slot: $slot:$fqn$key");
 				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s()', $methodName);
 			}
@@ -351,6 +369,10 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 			foreach ($field->slotFor as $slot)
 			{
 				$key = implode('::$', [$fqn, $fieldName]);
+				if(is_a($slot, ISignalSlot::class, true))
+				{
+					$this->getLogger()->error(sprintf('Signal `%s` is used as slot on `%s`', $slot, $key));
+				}
 				$this->getLogger()->debug("Slot: $slot:$fqn$key");
 				$this->data[Signal::Signals][$slot][$fqn][$key] = sprintf('%s', $fieldName);
 			}
