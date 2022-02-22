@@ -7,6 +7,7 @@ use Maslosoft\Addendum\Addendum;
 use Maslosoft\Addendum\Collections\MatcherConfig;
 use Maslosoft\Addendum\Matcher\AnnotationsMatcher;
 use Maslosoft\Addendum\Reflection\ReflectionAnnotatedMethod;
+use Maslosoft\Addendum\Utilities\UseResolver;
 use Maslosoft\Signals\Meta\SignalsMeta;
 use Maslosoft\Signals\Signal;
 use Maslosoft\SignalsTest\Models\Model2WithMethodInjection;
@@ -28,8 +29,8 @@ class MethodInjectionTest extends Test
 	{
 
 		$m = new ReflectionAnnotatedMethod(Model2WithMethodInjection::class, 'on');
-		\Maslosoft\Addendum\Utilities\UseResolver::resolve($m, 'Maslosoft\SignalsTest\Signals\MethodInjected');
-		$resolved = \Maslosoft\Addendum\Utilities\UseResolver::resolve($m, 'Maslosoft\SignalsTest\Signals\MethodInjected');
+		UseResolver::resolve($m, 'Maslosoft\SignalsTest\Signals\MethodInjected');
+		$resolved = UseResolver::resolve($m, 'Maslosoft\SignalsTest\Signals\MethodInjected');
 
 		$parser = new AnnotationsMatcher;
 		$data = [];

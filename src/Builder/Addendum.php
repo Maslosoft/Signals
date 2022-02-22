@@ -12,7 +12,8 @@
 
 namespace Maslosoft\Signals\Builder;
 
-use function class_implements;
+use Maslosoft\Signals\Interfaces\SignalInterface;
+use Maslosoft\Signals\Interfaces\SlotInterface;
 use Exception;
 use function implode;
 use function is_a;
@@ -27,8 +28,6 @@ use Maslosoft\Signals\Exceptions\ClassNotFoundException;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Interfaces\PathsAwareInterface;
-use Maslosoft\Signals\ISignal;
-use Maslosoft\Signals\ISignalSlot;
 use Maslosoft\Signals\Meta\DocumentMethodMeta;
 use Maslosoft\Signals\Meta\DocumentPropertyMeta;
 use Maslosoft\Signals\Meta\DocumentTypeMeta;
@@ -50,17 +49,17 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 {
 
 	// Data keys for annotations extraction
-	const SlotFor = 'SlotFor';
-	const SignalFor = 'SignalFor';
+	public const SlotFor = 'SlotFor';
+	public const SignalFor = 'SignalFor';
 	// Default annotation names
-	const SlotName = 'SlotFor';
-	const SignalName = 'SignalFor';
+	public const SlotName = 'SlotFor';
+	public const SignalName = 'SignalFor';
 
 	/**
 	 * Signal instance
 	 * @var Signal
 	 */
-	private $signal = null;
+	private ?Signal $signal = null;
 
 	/**
 	 * Signals and slots data
@@ -163,7 +162,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 	 * Set signal instance
 	 * @param Signal $signal
 	 */
-	public function setSignal(Signal $signal)
+	public function setSignal(Signal $signal): void
 	{
 		$this->signal = $signal;
 	}
@@ -172,16 +171,16 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 	 * Get logger
 	 * @return LoggerInterface
 	 */
-	public function getLogger()
+	public function getLogger(): LoggerInterface
 	{
 		return $this->signal->getLogger();
 	}
 
 	/**
 	 * @param string $file
-	 * @param        $contents
+	 * @param string $contents
 	 */
-	public function processFile(string $file, string $contents)
+	public function processFile(string $file, string $contents): void
 	{
 		$this->getLogger()->debug("Processing `$file`");
 		$file = realpath($file);
@@ -325,7 +324,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		// Signals
 		foreach ($typeMeta->signalFor as $slot)
 		{
-			if(is_a($slot, ISignal::class, true))
+			if(is_a($slot, SignalInterface::class, true))
 			{
 				$this->getLogger()->error(sprintf('Slot `%s` is used as signal on `%s`', $slot, $fqn));
 			}
@@ -337,7 +336,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		// For constructor injection
 		foreach ($typeMeta->slotFor as $slot)
 		{
-			if(is_a($slot, ISignalSlot::class, true))
+			if(is_a($slot, SlotInterface::class, true))
 			{
 				$this->getLogger()->error(sprintf('Signal `%s` is used as slot on `%s`', $slot, $fqn));
 			}
@@ -353,7 +352,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 			foreach ($method->slotFor as $slot)
 			{
 				$key = implode('::', [$fqn, $methodName]) . '()';
-				if(is_a($slot, ISignalSlot::class, true))
+				if(is_a($slot, SlotInterface::class, true))
 				{
 					$this->getLogger()->error(sprintf('Signal `%s` is used as slot on `%s`', $slot, $key));
 				}
@@ -369,7 +368,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 			foreach ($field->slotFor as $slot)
 			{
 				$key = implode('::$', [$fqn, $fieldName]);
-				if(is_a($slot, ISignalSlot::class, true))
+				if(is_a($slot, SlotInterface::class, true))
 				{
 					$this->getLogger()->error(sprintf('Signal `%s` is used as slot on `%s`', $slot, $key));
 				}
@@ -379,7 +378,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		}
 	}
 
-	private function hasSignals($contents)
+	private function hasSignals($contents): bool
 	{
 		foreach ($this->patterns as $pattern)
 		{
@@ -391,15 +390,15 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		return false;
 	}
 
-	private function log($e, $file)
+	private function log($e, $file): void
 	{
 		/* @var $e ParseError|Exception */
 		$msg = sprintf('Warning: %s while scanning file `%s`', $e->getMessage(), $file);
-		$msg = $msg . PHP_EOL;
+		$msg .= PHP_EOL;
 		$this->signal->getLogger()->warning($msg);
 	}
 
-	private function err($e, $file)
+	private function err($e, $file): void
 	{
 		// Uncomment for debugging
 		/* @var $e ParseError|Exception */

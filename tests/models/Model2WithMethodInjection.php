@@ -9,6 +9,7 @@
 namespace Maslosoft\SignalsTest\Models;
 
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
+use Maslosoft\Signals\Interfaces\SignalInterface;
 use Maslosoft\Signals\ISignal;
 
 /**
@@ -23,9 +24,9 @@ class Model2WithMethodInjection implements AnnotatedInterface
 	 * @SlotFor(Maslosoft\SignalsTest\Signals\MethodInjected)
 	 * @SlotFor(Maslosoft\SignalsTest\Signals\MethodInjected2)
 	 * 
-	 * @param ISignal $signal
+	 * @param SignalInterface $signal
 	 */
-	public function on(ISignal $signal)
+	public function on(SignalInterface $signal)
 	{
 		$signal->emited = true;
 	}
