@@ -10,7 +10,6 @@ namespace Maslosoft\SignalsTest\Models;
 
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Signals\Interfaces\SignalInterface;
-use Maslosoft\Signals\ISignal;
 
 /**
  * ModelWithMethodInjection
