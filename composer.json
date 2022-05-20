@@ -27,7 +27,7 @@
 	"minimum-stability": "stable",
 	"require": {
 		"maslosoft/addendum": "^7",
-		"psr/log": "^1",
+		"psr/log": "^1|^2|^3",
 		"maslosoft/embedi": "^2",
 		"maslosoft/cli-shared": "^1 | ^2",
 		"symfony/console": ">=2.7 <5.0",
