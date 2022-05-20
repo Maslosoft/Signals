@@ -450,12 +450,10 @@ class Signal implements LoggerAwareInterface
 	 * Set logger
 	 * @codeCoverageIgnore
 	 * @param LoggerInterface $logger
-	 * @return Signal
 	 */
-	public function setLogger(LoggerInterface $logger)
+	public function setLogger(LoggerInterface $logger): void
 	{
 		$this->loggerInstance = $logger;
-		return $this;
 	}
 
 	/**
