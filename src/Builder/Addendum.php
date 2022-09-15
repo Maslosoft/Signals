@@ -1,6 +1,8 @@
-<?php /** @noinspection PhpUndefinedClassInspection */
+<?php
 
 /**
+ * Wireless Cross-Component Communication
+ *
  * This software package is licensed under `AGPL-3.0-only, proprietary` license[s].
  *
  * @package maslosoft/signals
