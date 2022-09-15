@@ -10,15 +10,39 @@
 <a href="https://packagist.org/packages/maslosoft/signals" title="License">
 <img src="https://poser.pugx.org/maslosoft/signals/license.svg" alt="License" style="height: 20px;"/>
 </a>
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master)
-<img src="https://travis-ci.org/Maslosoft/Signals.svg?branch=master"/>
-<img src="http://hhvm.h4cc.de/badge/maslosoft/signals.svg?style=flat"/>
+<a href="https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master">
+	<img src="https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"/>
+</a>
+<a href="https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master">
+	<img src="https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/coverage.png?b=master" alt="Code Coverage" />
+</a>
 
 ### Quick Install
 ```bash
 composer require maslosoft/signals
 ```
+
+### Documentation
+
+<a href="https://maslosoft.com/signals/docs/">Full Signals Documentation</a>
+
+
+
+
+
+# Connecting components
+
+Various application components must be connected to each other.
+This should be made in a soft manner, so that when adding
+or removing component code will not require to change.
+
+### Wireless connection
+
+Signals provide somthing like wireless connection between
+components. On of them emit signal, the other receives it.
+This can be done other way around. That one application
+component sends signal, and several components listen
+to that signal.
 
 <!--/header-->
 ## Wireless cross-component communication
