@@ -1,7 +1,7 @@
 <!--header-->
 <!-- Auto generated do not modify between `header` and `/header` -->
 
-# <a href="https://maslosoft.com/signals/">Maslosoft Signals</a>
+# <a href="https://maslosoft.com/signals/"><img src="https://maslosoft.com/signals/signals.svg" style="height:24px;" alt="Signals Logo"></a> <a href="https://maslosoft.com/signals/">Maslosoft Signals</a>
 <a href="https://maslosoft.com/signals/">_Wireless Cross-Component Communication_</a>
 
 <a href="https://packagist.org/packages/maslosoft/signals" title="Latest Stable Version">
