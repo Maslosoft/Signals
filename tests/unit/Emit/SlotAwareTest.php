@@ -2,7 +2,7 @@
 
 namespace Emit;
 
-use Codeception\TestCase\Test;
+use Codeception\Test\Unit;
 use Maslosoft\Signals\Signal;
 use Maslosoft\SignalsTest\Models\ModelWithSlotAwareSignal;
 use Maslosoft\SignalsTest\Models\ModelWithSlotAwareSignalOnConstructor;
@@ -10,7 +10,7 @@ use Maslosoft\SignalsTest\Signals\SlotAwareSignal;
 use Maslosoft\SignalsTest\Signals\SlotAwareSignalForContructor;
 use UnitTester;
 
-class SlotAwareTest extends Test
+class SlotAwareTest extends Unit
 {
 
 	/**

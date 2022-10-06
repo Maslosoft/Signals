@@ -2,13 +2,14 @@
 
 namespace Filter;
 
+use Codeception\Test\Unit;
 use Maslosoft\Signals\Signal;
 use Maslosoft\SignalsTest\Models\Filters\FalsePostFilter;
 use Maslosoft\SignalsTest\Models\ForFilters\ModelWithInstantiatedMarker;
 use Maslosoft\SignalsTest\Signals\ForFilters\MethodInjectedPost;
 use UnitTester;
 
-class PostTest extends \Codeception\TestCase\Test
+class PostTest extends Unit
 {
 
 	/**

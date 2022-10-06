@@ -2,7 +2,7 @@
 
 namespace Emit;
 
-use Codeception\TestCase\Test;
+use Codeception\Test\Unit;
 use Maslosoft\Addendum\Addendum;
 use Maslosoft\Addendum\Collections\MatcherConfig;
 use Maslosoft\Addendum\Matcher\AnnotationsMatcher;
@@ -16,7 +16,7 @@ use Maslosoft\SignalsTest\Signals\MethodInjected2;
 use Maslosoft\SignalsTest\Signals\MethodInjected3;
 use UnitTester;
 
-class MethodInjectionTest extends Test
+class MethodInjectionTest extends Unit
 {
 
 	/**

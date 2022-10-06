@@ -2,11 +2,11 @@
 
 namespace Generator;
 
-use Codeception\TestCase\Test;
+use Codeception\Test\Unit;
 use Maslosoft\Signals\Signal;
 use UnitTester;
 
-class GeneratedTest extends Test
+class GeneratedTest extends Unit
 {
 
 	/**

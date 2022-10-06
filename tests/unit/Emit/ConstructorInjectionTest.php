@@ -2,12 +2,12 @@
 
 namespace Emit;
 
-use Codeception\TestCase\Test;
+use Codeception\Test\Unit;
 use Maslosoft\Signals\Signal;
 use Maslosoft\SignalsTest\Signals\ConstructorInjected;
 use UnitTester;
 
-class ConstructorInjectionTest extends Test
+class ConstructorInjectionTest extends Unit
 {
 
 	/**

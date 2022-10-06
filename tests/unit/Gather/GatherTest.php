@@ -2,7 +2,7 @@
 
 namespace Emit;
 
-use Codeception\TestCase\Test;
+use Codeception\Test\Unit;
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Signals\Signal;
 use Maslosoft\SignalsTest\Models\Gather\BaseClassForModelWithBaseClass;
@@ -13,7 +13,7 @@ use Maslosoft\SignalsTest\Models\Gather\ModelWithSlotAndInterface;
 use Maslosoft\SignalsTest\Signals\Slots\GatherSlot;
 use UnitTester;
 
-class GatherTest extends Test
+class GatherTest extends Unit
 {
 
 	/**

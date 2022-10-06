@@ -14,8 +14,8 @@ if (defined('PHP_WINDOWS_VERSION_MAJOR'))
 {
 	require __DIR__ . '/misc/Invoker.php';
 }
-
-$config = require __DIR__ . '/config.php';
+const TESTS_CONFIG_PATH = __DIR__ . '/config.php';
+$config = require TESTS_CONFIG_PATH;
 
 const RUNTIME_PATH = __DIR__ . '/runtime';
 const MODELS_PATH = __DIR__ . '/models';
@@ -26,6 +26,10 @@ $addendum->namespaces[] = 'Maslosoft\\Signals';
 $addendum->init();
 
 $signal = new Signal();
+
+echo "Signals " . $signal->getVersion() . PHP_EOL;
+echo "Using config: " . TESTS_CONFIG_PATH . PHP_EOL;
+
 $signal->runtimePath = RUNTIME_PATH;
 $signal->paths = [
 	MODELS_PATH

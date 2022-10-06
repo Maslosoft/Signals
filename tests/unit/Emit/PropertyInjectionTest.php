@@ -2,13 +2,13 @@
 
 namespace Emit;
 
-use Codeception\TestCase\Test;
+use Codeception\Test\Unit;
 use Maslosoft\Signals\Signal;
 use Maslosoft\SignalsTest\Signals\PropertyInjected;
 use Maslosoft\SignalsTest\Signals\PropertyInjected2;
 use UnitTester;
 
-class PropertyInjectionTest extends Test
+class PropertyInjectionTest extends Unit
 {
 
 	/**

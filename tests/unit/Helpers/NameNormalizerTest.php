@@ -2,14 +2,12 @@
 
 namespace Helpers;
 
-use Codeception\TestCase\Test;
+use Codeception\Test\Unit;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
 use UnitTester;
 
-class NameNormalizerTest extends Test
+class NameNormalizerTest extends Unit
 {
-
-	use \Codeception\Specify;
 
 	/**
 	 * @var UnitTester
@@ -27,10 +25,11 @@ class NameNormalizerTest extends Test
 	}
 
 	// tests
+
 	/**
 	 * TODO Move to addendum project
 	 */
-	public function testIfWillNormalizeClassName()
+	public function testIfWillNormalizeClassName(): void
 	{
 		$config = [
 			'Some\\Namespace\\' => '\\Some\\Namespace',
@@ -44,11 +43,8 @@ class NameNormalizerTest extends Test
 		foreach ($config as $src => $dest)
 		{
 			$title = sprintf('Namespace `%s` should be `%s`', $src, $dest);
-			$this->specify($title, function() use($src, $dest)
-			{
-				NameNormalizer::normalize($src);
-				$this->assertSame($dest, $src);
-			});
+			NameNormalizer::normalize($src);
+			$this->assertSame($dest, $src, $title);
 		}
 	}
 

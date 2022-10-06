@@ -2,13 +2,14 @@
 
 namespace Filter;
 
+use Codeception\Test\Unit;
 use Maslosoft\Signals\Signal;
 use Maslosoft\SignalsTest\Models\Filters\FalsePreFilter;
 use Maslosoft\SignalsTest\Models\ForFilters\ModelWithInstantiatedMarker;
 use Maslosoft\SignalsTest\Signals\ForFilters\MethodInjectedPre;
 use UnitTester;
 
-class PreTest extends \Codeception\TestCase\Test
+class PreTest extends Unit
 {
 
 	/**
