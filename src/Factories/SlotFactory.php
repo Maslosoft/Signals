@@ -17,6 +17,7 @@ namespace Maslosoft\Signals\Factories;
 use Maslosoft\Addendum\Utilities\ClassChecker;
 use Maslosoft\Signals\Interfaces\SlotAwareInterface;
 use Maslosoft\Signals\Signal;
+use function method_exists;
 
 /**
  * SlotFactory
@@ -44,7 +45,7 @@ class SlotFactory
 			return $cloned;
 		}
 
-		// Check if class exists and log if doesn't
+		// Check if class exists and log if it doesn't
 		// @codeCoverageIgnoreStart
 		if (!ClassChecker::exists($fqn))
 		{
@@ -61,11 +62,14 @@ class SlotFactory
 			$cloned->setSlot($slot);
 		}
 
-		if (strstr($injection, '()'))
+		if (strpos($injection, '()') !== false)
 		{
 			// Method injection
 			$methodName = str_replace('()', '', $injection);
-			$slot->$methodName($cloned);
+			if(method_exists($slot, $methodName))
+			{
+				$slot->$methodName($cloned);
+			}
 		}
 		else
 		{
