@@ -28,7 +28,7 @@ use Symfony\Component\Console\Application as ConsoleApplication;
 class Application extends ConsoleApplication
 {
 
-	const Logo = <<<LOGO
+	public const Logo = <<<LOGO
    _____ _                   __
   / ___/(_)___ _____  ____ _/ /____
   \__ \/ / __ `/ __ \/ __ `/ / ___/
@@ -45,7 +45,7 @@ LOGO;
 		$this->add(new PreviewCommand());
 	}
 
-	public function getHelp()
+	public function getHelp(): string
 	{
 		return self::Logo . parent::getHelp();
 	}
