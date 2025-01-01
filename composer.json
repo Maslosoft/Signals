@@ -1,57 +1,58 @@
 {
-	"name": "maslosoft/signals",
-	"description": "Wireless Cross-Component Communication",
-	"keywords": [
-		"signal",
-		"signals",
-		"event",
-		"events",
-		"slot",
-		"slots"
-	],
-	"license": [
-		"AGPL-3.0-only",
-		"proprietary"
-	],
-	"bin": [
-		"signals"
-	],
-	"authors": [
-		{
-			"name": "Peter Maselkowski",
-			"email": "pmaselkowski@gmail.com",
-			"homepage": "http://maslosoft.com",
-			"role": "Developer"
-		}
-	],
-	"minimum-stability": "stable",
-	"require": {
-		"maslosoft/addendum": "^7@dev",
-		"psr/log": "^1|^2|^3",
-		"maslosoft/embedi": "^2|^3",
-		"maslosoft/cli-shared": "^1|^2|^3",
-		"symfony/console": ">=2.7",
-		"php": ">=7.4"
-	},
-	"autoload": {
-		"psr-4": {
-			"Maslosoft\\Signals\\": "src",
-			"Maslosoft\\SignalsExamples\\": "examples",
-			"Maslosoft\\SignalsTest\\Extensions\\": "tests/extensions"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Maslosoft\\SignalsTest\\Signals\\": "tests/signals",
-			"Maslosoft\\SignalsTest\\Models\\": "tests/models"
-		}
-	},
-	"require-dev": {
-		"roave/security-advisories": "dev-latest",
-		"codeception/codeception": "^5",
-		"codeception/module-asserts": "^3",
-		"maslosoft/sitcom": "^1|^2|^3",
-		"maslosoft/zamm": "^1|^2|^3"
-	},
-	"homepage": "https://maslosoft.com/signals/"
+    "name": "maslosoft/signals",
+    "version": "4.0.6",
+    "description": "Wireless Cross-Component Communication",
+    "keywords": [
+        "signal",
+        "signals",
+        "event",
+        "events",
+        "slot",
+        "slots"
+    ],
+    "license": [
+        "AGPL-3.0-only",
+        "proprietary"
+    ],
+    "bin": [
+        "signals"
+    ],
+    "authors": [
+        {
+            "name": "Peter Maselkowski",
+            "email": "pmaselkowski@gmail.com",
+            "homepage": "http://maslosoft.com",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "maslosoft/addendum": "^7@dev",
+        "psr/log": "^1|^2|^3",
+        "maslosoft/embedi": "^2|^3",
+        "maslosoft/cli-shared": "^1|^2|^3",
+        "symfony/console": ">=2.7",
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Maslosoft\\Signals\\": "src",
+            "Maslosoft\\SignalsExamples\\": "examples",
+            "Maslosoft\\SignalsTest\\Extensions\\": "tests/extensions"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Maslosoft\\SignalsTest\\Signals\\": "tests/signals",
+            "Maslosoft\\SignalsTest\\Models\\": "tests/models"
+        }
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "codeception/codeception": "^5",
+        "codeception/module-asserts": "^3",
+        "maslosoft/sitcom": "^1|^2|^3",
+        "maslosoft/zamm": "^1|^2|^3"
+    },
+    "homepage": "https://maslosoft.com/signals/"
 }
