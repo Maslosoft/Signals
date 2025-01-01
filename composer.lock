@@ -4,43 +4,44 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "22c9a2612f8fdbef43541ac209ee20ff",
+    "content-hash": "d731089b33d25e9b32b64876d2a4b7da",
     "packages": [
         {
             "name": "maslosoft/addendum",
-            "version": "7.0.5",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maslosoft/Addendum.git",
-                "reference": "7854e7cd8f6887fc65a917b12ce37cc9904452da"
+                "reference": "8c7dfce1b153867ea35f4d177f24a8d8a8d72281"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/7854e7cd8f6887fc65a917b12ce37cc9904452da",
-                "reference": "7854e7cd8f6887fc65a917b12ce37cc9904452da",
+                "url": "https://api.github.com/repos/Maslosoft/Addendum/zipball/8c7dfce1b153867ea35f4d177f24a8d8a8d72281",
+                "reference": "8c7dfce1b153867ea35f4d177f24a8d8a8d72281",
                 "shasum": ""
             },
             "require": {
-                "maslosoft/cache": "*",
-                "maslosoft/cli-shared": "^1 | ^2",
-                "maslosoft/embedi": "^2",
-                "maslosoft/gazebo": "^2",
+                "maslosoft/cache": "^2|^3",
+                "maslosoft/cli-shared": "^2|^3",
+                "maslosoft/embedi": "^2|^3",
+                "maslosoft/gazebo": "^2|^3",
                 "php": ">=7.4",
                 "psr/log": "^1|^2|^3"
             },
             "require-dev": {
                 "codeception/codeception": "^5",
                 "codeception/module-asserts": "^3",
-                "codeception/specify": "^2",
+                "codeception/specify": "^2|^3",
                 "maslosoft/signals": "*@dev",
-                "maslosoft/zamm": "^1 || ^2",
-                "monolog/monolog": "^2",
+                "maslosoft/zamm": "^2|^3",
+                "monolog/monolog": "^2|^3",
                 "roave/security-advisories": "dev-latest"
             },
             "suggest": {
                 "maslosoft/signals": "Collect annotation namespaces with signals",
                 "monolog/monolog": "Sends your logs to files, sockets, inboxes, databases and various web services"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -74,9 +75,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Maslosoft/Addendum/issues",
-                "source": "https://github.com/Maslosoft/Addendum/tree/7.0.5"
+                "source": "https://github.com/Maslosoft/Addendum/tree/master"
             },
-            "time": "2023-11-22T14:12:47+00:00"
+            "time": "2025-01-01T20:30:17+00:00"
         },
         {
             "name": "maslosoft/cache",

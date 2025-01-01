@@ -27,7 +27,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "maslosoft/addendum": "^7@dev",
+        "maslosoft/addendum": "^7|*@dev",
         "psr/log": "^1|^2|^3",
         "maslosoft/embedi": "^2|^3",
         "maslosoft/cli-shared": "^1|^2|^3",
