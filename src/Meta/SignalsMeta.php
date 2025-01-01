@@ -30,10 +30,10 @@ class SignalsMeta extends Meta
 	/**
 	 * Create instance of Metadata specifically designed for Signals
 	 * @param string|object|AnnotatedInterface $model
-	 * @param MetaOptions $options
+	 * @param MetaOptions|null                 $options
 	 * @return SignalsMeta
 	 */
-	public static function create($model, MetaOptions $options = null)
+	public static function create($model, ?MetaOptions $options = null)
 	{
 		if (null === $options)
 		{

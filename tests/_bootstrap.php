@@ -37,3 +37,5 @@ $signal->paths = [
 $signal->init();
 (new Utility($signal))->generate();
 $signal->resetCache();
+
+error_reporting(E_ALL);

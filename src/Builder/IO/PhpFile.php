@@ -15,6 +15,7 @@
 namespace Maslosoft\Signals\Builder\IO;
 
 use Maslosoft\Cli\Shared\Helpers\PhpExporter;
+use Maslosoft\Cli\Shared\Io;
 use Maslosoft\Signals\Interfaces\BuilderIOInterface;
 use Maslosoft\Signals\Signal;
 
@@ -80,7 +81,7 @@ class PhpFile implements BuilderIOInterface
 		$dir = dirname($path);
 		if (!is_dir($dir))
 		{
-			mkdir($dir, 0777, true);
+			Io::mkdir($dir);
 		}
 		return file_put_contents($path, PhpExporter::export($data, 'Auto generated, any changes will be lost'));
 	}

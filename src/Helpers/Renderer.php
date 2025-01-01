@@ -36,9 +36,9 @@ class Renderer
 				$result[] = $signal;
 				foreach ($slots as $slot => $types)
 				{
-					foreach ((array) $types as $type)
+					foreach ((array) $types as $stype)
 					{
-						if ($type === true)
+						if ($stype === true)
 						{
 							$result[] = sprintf("\t%s", $slot);
 						}

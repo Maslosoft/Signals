@@ -298,7 +298,7 @@ class Signal implements LoggerAwareInterface
 		foreach (self::$config[self::Signals][$name] as $fqn => $injections)
 		{
 			// Skip
-			if (false === $injections || count($injections) == 0)
+			if (false === $injections || count($injections) === 0)
 			{
 				continue;
 			}

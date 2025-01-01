@@ -86,6 +86,7 @@ EOT;
 		{
 			$output->writeln($line);
 		}
+		return 0;
 	}
 
 	/**
