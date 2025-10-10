@@ -1,6 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.VcsRoot   // <- base interface
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.vcs.VcsRoot
 
 class PhpCi(
     name: String,
@@ -13,7 +13,6 @@ class PhpCi(
         param("env.PHP_IMAGE", "php:${php}-cli")
         param("env.COMPOSER_IMAGE", "composer:2")
         param("env.COMPOSER_CACHE", "%teamcity.agent.work.dir%/composer-cache")
-        // Optional: make steps explicitly use the checkout dir
         param("env.WORKDIR", "%teamcity.build.checkoutDir%")
     }
 
@@ -50,9 +49,7 @@ class PhpCi(
 
     triggers { vcs {} }
 
-    requirements {
-        exists("docker.server.version")
-    }
+    requirements { exists("docker.server.version") }
 
     artifactRules = """
         tests/_output/coverage => coverage_html
