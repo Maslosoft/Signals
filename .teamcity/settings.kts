@@ -1,66 +1,22 @@
 // .teamcity/settings.kts
 import jetbrains.buildServer.configs.kotlin.*
-import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.vcs.DslContext
+import jetbrains.buildServer.configs.kotlin.buildSteps.script
 
 version = "2025.07"
 
 project {
-    val phpVersions = listOf("7.4","8.0","8.1","8.2","8.3","8.4")
-
-    phpVersions.forEach { v ->
-        buildType(phpBuild(v))
-    }
+    buildType(Sanity)
 }
 
-fun phpBuild(php: String) = BuildType({
-    name = "CI (PHP $php)"
+object Sanity : BuildType({
+    name = "Sanity"
 
-    params {
-        param("env.PHP_IMAGE", "php:${php}-cli")
-        param("env.COMPOSER_IMAGE", "composer:2")
-        param("env.COMPOSER_CACHE", "%teamcity.agent.work.dir%/composer-cache")
-        param("env.WORKDIR", "%teamcity.build.checkoutDir%")
-    }
-
-    vcs {
-        // use the same VCS root that stores this DSL — no custom GitVcsRoot needed
-        root(DslContext.settingsRoot)
-        cleanCheckout = true
-    }
-
+    vcs { root(DslContext.settingsRoot) }  // no custom VCS root
     steps {
         script {
-            name = "Composer install"
-            workingDir = "%env.WORKDIR%"
-            scriptContent = """
-                set -e
-                composer --version
-                composer install --no-interaction --prefer-dist
-            """.trimIndent()
-            dockerImage = "%env.COMPOSER_IMAGE%"
-            dockerRunParameters = "-e COMPOSER_CACHE_DIR=/c -v %env.COMPOSER_CACHE%:/c"
-        }
-
-        script {
-            name = "run-ci"
-            workingDir = "%env.WORKDIR%"
-            scriptContent = """
-                set -e
-                php -v
-                bash run-ci
-            """.trimIndent()
-            dockerImage = "%env.PHP_IMAGE%"
-            dockerRunParameters = "-e COMPOSER_CACHE_DIR=/c -v %env.COMPOSER_CACHE%:/c"
+            name = "Echo"
+            scriptContent = "echo hello"
         }
     }
-
-    triggers { vcs {} }
-    requirements { exists("docker.server.version") }
-
-    artifactRules = """
-        tests/_output/coverage => coverage_html
-        coverage.clover
-        tests/_output/coverage.clover
-    """.trimIndent()
 })
