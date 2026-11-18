@@ -1,24 +1,4 @@
-#!/bin/bash
-rm -rf runtime/*
-
-version=`php -v`
-
-coverage=false
-if [[ $version =~ .*Xdebug.* ]];
-then
-	coverage=true
-fi
-
-if $coverage; then
-	echo "Have coverage";
-	vendor/bin/codecept run unit --coverage --html --coverage-html=. --coverage-xml=./coverage.clover
-	status=$?
-	wget --no-check-certificate https://scrutinizer-ci.com/ocular.phar
-	php ocular.phar code-coverage:upload --revision=`git rev-parse HEAD` --format=php-clover ./tests/_output/coverage.clover
-	rm ocular.phar
-else
-	echo "No code coverage available"
-	vendor/bin/codecept run unit
-	status=$?
-fi
-exit $status
+#!/usr/bin/env sh
+set -eu
+cd "$(dirname "$0")"
+exec composer check -- "$@"

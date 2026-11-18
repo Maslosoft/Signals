@@ -30,19 +30,27 @@ class Preview
 	 * Processed paths
 	 * @var string[]
 	 */
-	private $paths = [];
+	private array $paths = [];
 
-	public function cli(Signal $signal)
+	public function cli(Signal $signal): array
 	{
-		$signal->setIO(new Memory());
-		$utility = (new Utility($signal));
-		$utility->generate();
-		$this->paths = $utility->getPaths();
-		$data = $signal->getIO()->read();
-		return (new Renderer())->renderCli($data);
+		$this->paths = [];
+		$originalIO = $signal->io;
+		try
+		{
+			$signal->setIO(new Memory());
+			$utility = new Utility($signal);
+			$utility->generate();
+			$this->paths = $utility->getPaths();
+			return (new Renderer())->renderCli($signal->getIO()->read());
+		}
+		finally
+		{
+			$signal->io = $originalIO;
+		}
 	}
 
-	public function getPaths()
+	public function getPaths(): array
 	{
 		return $this->paths;
 	}

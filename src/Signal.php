@@ -1,24 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Wireless Cross-Component Communication
- *
- * This software package is licensed under `AGPL-3.0-only, proprietary` license[s].
- *
  * @package maslosoft/signals
  * @license AGPL-3.0-only, proprietary
- *
  * @copyright Copyright (c) Peter Maselkowski <pmaselkowski@gmail.com>
- * @link https://maslosoft.com/signals/
  */
 
 namespace Maslosoft\Signals;
 
-use function is_object;
-use Maslosoft\Addendum\Utilities\ClassChecker;
+use InvalidArgumentException;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
-use Maslosoft\Cli\Shared\ConfigReader;
+use Maslosoft\Signals\Helpers\Configuration;
 use Maslosoft\EmbeDi\EmbeDi;
+use Maslosoft\Light\Context;
 use Maslosoft\Signals\Builder\Addendum;
 use Maslosoft\Signals\Builder\IO\PhpFile;
 use Maslosoft\Signals\Factories\FilterFactory;
@@ -34,536 +31,322 @@ use Maslosoft\Signals\Interfaces\SignalAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use ReflectionClass;
 use UnexpectedValueException;
 
 /**
- * Main signals components
- *
- * @author Piotr
- * @property LoggerInterface $logger Logger, set this to log warnings, notices errors. This is shorthand for `get/setLogger`.
+ * Dispatch signals using definitions owned by this instance.
+ * @property LoggerInterface $logger
+ * @phpstan-consistent-constructor
  */
 class Signal implements LoggerAwareInterface
 {
+    public const string Slots = 'slots';
+    public const string Signals = 'signals';
+    public const string ConfigFilename = 'signals-definition.php';
+    public const string ConfigName = 'signals';
 
-	const Slots = 'slots';
-	const Signals = 'signals';
+    private const string ContextKey = 'maslosoft.signals.instances';
 
-	/**
-	 * Generated signals name.
-	 * Name of this constant is confusing.
-	 * @internal description
-	 */
-	const ConfigFilename = 'signals-definition.php';
+    public string $runtimePath = 'runtime';
 
-	/**
-	 * Config file name
-	 */
-	const ConfigName = "signals";
+    /** @var list<string> Paths searched for SlotFor and SignalFor annotations. */
+    public array $paths = ['vendor'];
 
-	/**
-	 * Runtime path is directory where config cache from yml file will
-	 * be stored. Path is relative to project root. This must be writable
-	 * by command line user.
-	 *
-	 * @var string
-	 */
-	public $runtimePath = 'runtime';
+    /** @var list<string> Directory names excluded during scanning. */
+    public array $ignoreDirs = ['vendor', 'generated', 'runtime'];
 
-	/**
-	 * This paths will be searched for `SlotFor` and `SignalFor` annotations.
-	 *
-	 *
-	 *
-	 * TODO Autodetect based on composer autoload
-	 *
-	 * @var string[]
-	 */
-	public $paths = [
-		'vendor',
-	];
+    /** @var array<array|string|FilterInterface> Filters applied to every dispatch. */
+    public array $filters = [];
 
-	/**
-	 * Directories to ignore while scanning
-	 * @var string[]
-	 */
-	public $ignoreDirs = [
-		'vendor', // Vendors in vendors
-		'generated', // Generated data, including signals
-		'runtime', // Runtime data
-	];
+    /** @var array Kept for configuration compatibility; sorting is not implemented. */
+    public array $sorters = [];
 
-	/**
-	 * Filters configuration.
-	 * This filters will be applied to every emit. This property
-	 * should contain array of class names implementing filters.
-	 * @var string[]|object[]
-	 */
-	public $filters = [];
+    public string|array|ExtractorInterface $extractor = Addendum::class;
+    public string|array|BuilderIOInterface $io = PhpFile::class;
 
-	/**
-	 * Sorters configuration.
-	 * @var string[]|object[]
-	 */
-	public $sorters = [];
+    private bool $isInitialized = false;
+    private array $config = [];
+    private array $configs = [];
+    /** @var array<string, array{definition: string|array, instance: BuilderIOInterface|ExtractorInterface}> */
+    private array $configured = [];
+    private LoggerInterface $loggerInstance;
+    private EmbeDi $di;
+    private ?string $version = null;
 
-	/**
-	 * Extractor configuration
-	 * @var string|[]|object
-	 */
-	public $extractor = Addendum::class;
+    /** @var list<PreFilterInterface|PostFilterInterface> Filters for the next dispatch. */
+    private array $currentFilters = [];
 
-	/**
-	 * Input/Output configuration, at minimum it should
-	 * contain class name for builder input output interface.
-	 * It can also contain array [configurable options for IO class](php-io/).
-	 *
-	 *
-	 *
-	 * @var string|[]|object
-	 */
-	public $io = PhpFile::class;
+    /** @var list<list<PreFilterInterface|PostFilterInterface>> Nested dispatch frames. */
+    private array $filterStack = [];
 
-	/**
-	 * Whenever component is initialized
-	 * @var bool
-	 */
-	private $isInitialized = false;
+    public function __construct(string $configName = self::ConfigName)
+    {
+        $this->loggerInstance = new NullLogger();
+        $this->di = EmbeDi::fly($configName);
+        $this->di->configure($this);
+        $this->di->apply(Configuration::read($configName, $this->runtimePath), $this);
+    }
 
-	/**
-	 * Configuration of signals and slots
-	 * @var string[][]
-	 */
-	private static $config = [];
+    /** Reuse one dispatcher per class and configuration name in the current Light context. */
+    public static function fly(string $configName = self::ConfigName): static
+    {
+        $instances = Context::get(self::ContextKey) ?? [];
+        if (!isset($instances[static::class][$configName])) {
+            $instance = new static($configName);
+            // Construction may configure other dispatchers; retain those entries.
+            $instances = Context::get(self::ContextKey) ?? [];
+            $instances[static::class][$configName] = $instance;
+            Context::put(self::ContextKey, $instances);
+        }
+        return $instances[static::class][$configName];
+    }
 
-	/**
-	 * Extra configurations of signals and slots
-	 * @var array
-	 */
-	private static $configs = [];
+    /** Forget Signals flyweights in this context, preserving other Light users. */
+    public static function reset(): void
+    {
+        Context::delete(self::ContextKey);
+    }
 
-	/**
-	 * Logger instance holder
-	 * NOTE: There is property annotation with `logger` name,
-	 * thus this name is a bit longer
-	 * @var LoggerInterface
-	 */
-	private $loggerInstance = null;
+    public function __get(string $name): mixed
+    {
+        $method = 'get' . ucfirst($name);
+        if (!method_exists($this, $method)) {
+            throw new InvalidArgumentException(sprintf('Unknown Signals property `%s`.', $name));
+        }
+        return $this->$method();
+    }
 
-	/**
-	 * Embedded dependency injection
-	 * @var EmbeDi
-	 */
-	private $di = null;
+    public function __set(string $name, mixed $value): void
+    {
+        $method = 'set' . ucfirst($name);
+        if (!method_exists($this, $method)) {
+            throw new InvalidArgumentException(sprintf('Unknown or read-only Signals property `%s`.', $name));
+        }
+        $this->$method($value);
+    }
 
-	/**
-	 * Version
-	 * @var string
-	 */
-	private $version = null;
+    public function getVersion(): string
+    {
+        return $this->version ??= require __DIR__ . '/version.php';
+    }
 
-	/**
-	 * Current filters
-	 * @var PreFilterInterface[]|PostFilterInterface[]
-	 */
-	private $currentFilters = [];
+    public function init(): void
+    {
+        if (!$this->isInitialized) {
+            $this->reload();
+        }
+        if (!$this->di->isStored($this)) {
+            $this->di->store($this);
+        }
+    }
 
-	public function __construct($configName = self::ConfigName)
-	{
-		$this->loggerInstance = new NullLogger;
+    /** Attach an overlay to this instance; later overlays replace matching definitions. */
+    public function attach(array $config, bool $reload = true): void
+    {
+        $this->configs[] = $config;
+        if ($reload) {
+            $this->reload();
+        }
+    }
 
-		$config = new ConfigReader($configName);
-		$this->di = EmbeDi::fly($configName);
-		$this->di->configure($this);
-		$this->di->apply($config->toArray(), $this);
-	}
+    /** Queue a filter for the next emit/gather; false clears only queued filters. */
+    public function filter(array|string|FilterInterface|false $filter): static
+    {
+        if ($filter === false) {
+            $this->currentFilters = [];
+            return $this;
+        }
+        if (!is_object($filter)) {
+            $filter = $this->di->apply($filter);
+        }
+        if (!$filter instanceof PreFilterInterface && !$filter instanceof PostFilterInterface) {
+            throw new UnexpectedValueException(sprintf('Filter must implement %s or %s.', PreFilterInterface::class, PostFilterInterface::class));
+        }
+        $this->currentFilters[] = $filter;
+        return $this;
+    }
 
-	/**
-	 * Getter
-	 * @param string $name
-	 * @return mixed
-	 */
-	public function __get($name)
-	{
-		return $this->{'get' . ucfirst($name)}();
-	}
+    /** @return list<object> A separate signal clone for every successful injection. */
+    public function emit(object|string $signal): array
+    {
+        $this->beginDispatch();
+        try {
+            if (is_string($signal)) {
+                $signal = new $signal();
+            }
+            $name = $signal::class;
+            NameNormalizer::normalize($name);
+            $this->init();
+            if (!isset($this->config[self::Signals][$name])) {
+                $this->loggerInstance->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
+                return [];
+            }
+            $result = [];
+            foreach ($this->config[self::Signals][$name] as $fqn => $injections) {
+                if ($injections === false || $injections === []) {
+                    continue;
+                }
+                if (!PreFilter::filter($this, $fqn, $signal)) {
+                    continue;
+                }
+                foreach ($injections as $injection) {
+                    $injected = SlotFactory::create($this, $signal, $fqn, $injection);
+                    if ($injected !== false && PostFilter::filter($this, $injected, $signal)) {
+                        $result[] = $injected;
+                    }
+                }
+            }
+            return $result;
+        } finally {
+            $this->endDispatch();
+        }
+    }
 
-	/**
-	 * Setter
-	 * @param string $name
-	 * @param mixed $value
-	 * @return mixed
-	 */
-	public function __set($name, $value)
-	{
-		return $this->{'set' . ucfirst($name)}($value);
-	}
+    /** @return list<object> Providers registered for the slot, optionally restricted by type. */
+    public function gather(object $slot, ?string $interface = null): array
+    {
+        $this->beginDispatch();
+        try {
+            $name = $slot::class;
+            NameNormalizer::normalize($name);
+            $this->init();
+            if (!isset($this->config[self::Slots][$name])) {
+                $this->loggerInstance->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
+                return [];
+            }
+            $result = [];
+            foreach ($this->config[self::Slots][$name] as $fqn => $emit) {
+                if ($emit === false || !PreFilter::filter($this, $fqn, $slot)) {
+                    continue;
+                }
+                if (!class_exists($fqn)) {
+                    $this->loggerInstance->debug('Class `{class}` not found while gathering slot `{slot}`', ['class' => $fqn, 'slot' => $name]);
+                    continue;
+                }
+                if ($interface !== null && !is_a($fqn, $interface, true)) {
+                    continue;
+                }
+                $injected = new $fqn();
+                if (PostFilter::filter($this, $injected, $slot)) {
+                    $result[] = $injected;
+                }
+            }
+            return $result;
+        } finally {
+            $this->endDispatch();
+        }
+    }
 
-	/**
-	 * Get current signals version
-	 *
-	 * @codeCoverageIgnore
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		if (null === $this->version)
-		{
-			$this->version = require __DIR__ . '/version.php';
-		}
-		return $this->version;
-	}
+    /** @return list<PreFilterInterface|PostFilterInterface> */
+    public function getFilters(string $interface): array
+    {
+        $filters = FilterFactory::create($this, $interface);
+        $temporary = $this->filterStack === [] ? $this->currentFilters : $this->filterStack[array_key_last($this->filterStack)];
+        foreach ($temporary as $filter) {
+            if ($filter instanceof $interface) {
+                $filters[] = $filter;
+            }
+        }
+        return $filters;
+    }
 
-	public function init()
-	{
-		if (!$this->isInitialized)
-		{
-			$this->reload();
-		}
-		if (!$this->di->isStored($this))
-		{
-			$this->di->store($this);
-		}
-	}
+    public function getLogger(): LoggerInterface
+    {
+        return $this->loggerInstance;
+    }
 
-	/**
-	 * Attach additional signals and slots configuration
-	 * @param      $config
-	 * @param bool $reload
-	 */
-	public function attach($config, $reload = true)
-	{
-		self::$configs[] = $config;
-		if($reload)
-		{
-			$this->reload();
-		}
-	}
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->loggerInstance = $logger;
+    }
 
-	/**
-	 * Apply filter to current emit.
-	 *
-	 * Pass false as param to disable all filters.
-	 *
-	 * @param FilterInterface|string|mixed $filter
-	 * @return Signal
-	 * @throws UnexpectedValueException
-	 */
-	public function filter($filter)
-	{
-		// disable filters
-		if (is_bool($filter) && false === $filter)
-		{
-			$this->currentFilters = [];
-			return $this;
-		}
-		// Instantiate from string or array
-		if (!is_object($filter))
-		{
-			$filter = $this->di->apply($filter);
-		}
-		if (!$filter instanceof PreFilterInterface && !$filter instanceof PostFilterInterface)
-		{
-			throw new UnexpectedValueException(sprintf('$filter must implement either `%s` or `%s` interface', PreFilterInterface::class, PostFilterInterface::class));
-		}
-		$this->currentFilters[] = $filter;
-		return $this;
-	}
+    public function getDi(): EmbeDi
+    {
+        return $this->di;
+    }
 
-	/**
-	 * Emit signal to inform slots
-	 * @param object|string $signal
-	 * @return object[]
-	 */
-	public function emit($signal)
-	{
-		$result = [];
-		if (is_string($signal))
-		{
-			$signal = new $signal;
-		}
-		$name = get_class($signal);
-		NameNormalizer::normalize($name);
-		if (empty(self::$config))
-		{
-			$this->init();
-		}
-		if (!isset(self::$config[self::Signals][$name]))
-		{
-			self::$config[self::Signals][$name] = [];
-			$this->loggerInstance->debug('No slots found for signal `{name}`, skipping', ['name' => $name]);
-			return $result;
-		}
+    public function setDi(EmbeDi $di): static
+    {
+        $this->di = $di;
+        return $this;
+    }
 
-		foreach (self::$config[self::Signals][$name] as $fqn => $injections)
-		{
-			// Skip
-			if (false === $injections || count($injections) === 0)
-			{
-				continue;
-			}
-			if (!PreFilter::filter($this, $fqn, $signal))
-			{
-				continue;
-			}
-			foreach ($injections as $injection)
-			{
-				$injected = SlotFactory::create($this, $signal, $fqn, $injection);
-				if (false === $injected)
-				{
-					continue;
-				}
-				if (!PostFilter::filter($this, $injected, $signal))
-				{
-					continue;
-				}
-				$result[] = $injected;
-			}
-		}
-		$this->currentFilters = [];
-		return $result;
-	}
+    public function getIO(): BuilderIOInterface
+    {
+        return $this->getConfigured('io');
+    }
 
-	/**
-	 * Call for signals from slot
-	 * @param object $slot
-	 * @param string $interface Interface or class name which must be implemented, instanceof or sub class of to get
-	 *                          into slot
-	 * @return array
-	 */
-	public function gather($slot, $interface = null)
-	{
-		assert(is_object($slot), 'Parameter `$slot` must be object');
-		$name = get_class($slot);
-		NameNormalizer::normalize($name);
-		if (!empty($interface))
-		{
-			NameNormalizer::normalize($interface);
-		}
-		if (empty(self::$config))
-		{
-			$this->init();
-		}
-		if (!isset(self::$config[self::Slots][$name]))
-		{
-			self::$config[self::Slots][$name] = [];
-			$this->loggerInstance->debug('No signals found for slot `{name}`, skipping', ['name' => $name]);
-		}
-		$result = [];
-		foreach ((array) self::$config[self::Slots][$name] as $fqn => $emit)
-		{
-			if (false === $emit)
-			{
-				continue;
-			}
-			if (!PreFilter::filter($this, $fqn, $slot))
-			{
-				continue;
-			}
-			// Check if class exists and log if doesn't
-			if (!ClassChecker::exists($fqn))
-			{
-				$this->loggerInstance->debug(sprintf("Class `%s` not found while gathering slot `%s`", $fqn, get_class($slot)));
-				continue;
-			}
-			if (null === $interface)
-			{
-				$injected = new $fqn;
-				if (!PostFilter::filter($this, $injected, $slot))
-				{
-					continue;
-				}
-				$result[] = $injected;
-				continue;
-			}
+    public function setIO(BuilderIOInterface $io): static
+    {
+        $this->isInitialized = false;
+        return $this->setConfigured($io, 'io');
+    }
 
-			// Check if it's same as interface
-			if ($fqn === $interface)
-			{
-				$injected = new $fqn;
-				if (!PostFilter::filter($this, $injected, $slot))
-				{
-					continue;
-				}
-				$result[] = $injected;
-				continue;
-			}
+    public function getExtractor(): ExtractorInterface
+    {
+        return $this->getConfigured('extractor');
+    }
 
-			$info = new ReflectionClass($fqn);
+    public function setExtractor(ExtractorInterface $extractor): static
+    {
+        return $this->setConfigured($extractor, 'extractor');
+    }
 
-			// Check if class is instance of base class
-			if ($info->isSubclassOf($interface))
-			{
-				$injected = new $fqn;
-				if (!PostFilter::filter($this, $injected, $slot))
-				{
-					continue;
-				}
-				$result[] = $injected;
-				continue;
-			}
+    /** Reload this instance's definitions, retaining attached overlays. */
+    public function resetCache(): void
+    {
+        $this->reload();
+    }
 
-			$interfaceInfo = new ReflectionClass($interface);
-			// Check if class implements interface
-			if ($interfaceInfo->isInterface() && $info->implementsInterface($interface))
-			{
-				$injected = new $fqn;
-				if (!PostFilter::filter($this, $injected, $slot))
-				{
-					continue;
-				}
-				$result[] = $injected;
-				continue;
-			}
-		}
-		return $result;
-	}
+    private function reload(): void
+    {
+        $config = $this->getIO()->read();
+        foreach ($this->configs as $overlay) {
+            $config = array_replace_recursive($config, $overlay);
+        }
+        $this->config = $config;
+        $this->isInitialized = true;
+    }
 
-	/**
-	 * Get filters
-	 * @param string $interface
-	 * @return PreFilterInterface[]|PostFilterInterface[]
-	 */
-	public function getFilters($interface)
-	{
-		$filters = FilterFactory::create($this, $interface);
-		foreach ($this->currentFilters as $filter)
-		{
-			if (!$filter instanceof $interface)
-			{
-				continue;
-			}
-			$filters[] = $filter;
-		}
-		return $filters;
-	}
+    private function getConfigured(string $property): BuilderIOInterface|ExtractorInterface
+    {
+        $definition = $this->$property;
+        if (is_object($definition)) {
+            $object = $definition;
+        } elseif (isset($this->configured[$property]) && $this->configured[$property]['definition'] === $definition) {
+            $object = $this->configured[$property]['instance'];
+        } else {
+            $object = $this->di->apply($definition);
+        }
+        $interface = $property === 'io' ? BuilderIOInterface::class : ExtractorInterface::class;
+        if (!$object instanceof $interface) {
+            throw new UnexpectedValueException(sprintf('%s must implement %s.', $property, $interface));
+        }
+        $object->setSignal($this);
+        if (!is_object($definition)) {
+            $this->configured[$property] = ['definition' => $definition, 'instance' => $object];
+        }
+        return $object;
+    }
 
-	/**
-	 * Get logger
-	 * @codeCoverageIgnore
-	 * @return LoggerInterface
-	 */
-	public function getLogger()
-	{
-		return $this->loggerInstance;
-	}
+    private function setConfigured(SignalAwareInterface $object, string $property): static
+    {
+        $object->setSignal($this);
+        $this->$property = $object;
+        unset($this->configured[$property]);
+        return $this;
+    }
 
-	/**
-	 * Set logger
-	 * @codeCoverageIgnore
-	 * @param LoggerInterface $logger
-	 */
-	public function setLogger(LoggerInterface $logger): void
-	{
-		$this->loggerInstance = $logger;
-	}
+    private function beginDispatch(): void
+    {
+        $this->filterStack[] = $this->currentFilters;
+        $this->currentFilters = [];
+    }
 
-	/**
-	 * Get dependency injection container
-	 * @return EmbeDi
-	 */
-	public function getDi()
-	{
-		return $this->di;
-	}
-
-	public function setDi(EmbeDi $di)
-	{
-		$this->di = $di;
-		return $this;
-	}
-
-	/**
-	 * Get Input/Output adapter
-	 * @codeCoverageIgnore
-	 * @return BuilderIOInterface I/O Adapter
-	 */
-	public function getIO()
-	{
-		return $this->getConfigured('io');
-	}
-
-	/**
-	 * Set Input/Output interface
-	 * @codeCoverageIgnore
-	 * @param BuilderIOInterface $io
-	 * @return Signal
-	 */
-	public function setIO(BuilderIOInterface $io)
-	{
-		return $this->setConfigured($io, 'io');
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 * @return ExtractorInterface
-	 */
-	public function getExtractor()
-	{
-		return $this->getConfigured('extractor');
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 * @param ExtractorInterface $extractor
-	 * @return Signal
-	 */
-	public function setExtractor(ExtractorInterface $extractor)
-	{
-		return $this->setConfigured($extractor, 'extractor');
-	}
-
-	/**
-	 * Reloads signals cache and re-initializes component.
-	 */
-	public function resetCache()
-	{
-		$this->reload();
-	}
-
-	private function reload()
-	{
-		self::$config = $this->getIO()->read();
-
-		foreach(self::$configs as $config)
-		{
-			self::$config = array_replace_recursive(self::$config, $config);
-		}
-	}
-
-	/**
-	 * Get configured property
-	 * @param string $property
-	 * @return SignalAwareInterface|ExtractorInterface|BuilderIOInterface
-	 */
-	private function getConfigured($property)
-	{
-		if (is_object($this->$property))
-		{
-			$object = $this->$property;
-		}
-		else
-		{
-			$object = $this->di->apply($this->$property);
-		}
-		if ($object instanceof SignalAwareInterface)
-		{
-			$object->setSignal($this);
-		}
-		return $object;
-	}
-
-	/**
-	 * Set signal aware property
-	 * @param SignalAwareInterface $object
-	 * @param string $property
-	 * @return Signal
-	 */
-	private function setConfigured(SignalAwareInterface $object, $property)
-	{
-		$object->setSignal($this);
-		$this->$property = $object;
-		return $this;
-	}
-
+    private function endDispatch(): void
+    {
+        array_pop($this->filterStack);
+        // A queued filter created by a failed/finished handler must not leak into another request.
+        $this->currentFilters = [];
+    }
 }

@@ -1,28 +1,70 @@
-<title>4. Gather</title>
+<title>Gathering providers</title>
 
-# Gather signals
+# Gathering providers
 
-Before gathering signals, [signal definition](../generate/) must be generated.
+`gather($slot)` finds classes declared with `@SignalFor` for the slot's exact class
+and constructs each matching provider without arguments. It returns provider
+objects; it does not emit messages or call receiver methods.
 
-Gathering is a process somewhat opposite to [emitting signals](../emit/). 
-In this scenario, we treat signals as a beacons and `gather` method call
-as a receiver for those beacons. Gather more like listens to signals, 
-without taking any action by signals.
+## Declare a discovery point
 
-As mentioned above to gather signals, call `gather` method.
+Place each class in its own Composer-autoloadable file. For an `App\` mapping
+to `src/`, use `src/Slots/Exporters.php`:
 
-## Setup classes
+```php
+namespace App\Slots;
 
-First create slot class implementing SlotInterface. This will be passed to gather method.
+use Maslosoft\Signals\Interfaces\SlotInterface;
 
-To allow class to be gathered, two criteria must be met:
+final class Exporters implements SlotInterface
+{
+}
+```
 
-* Class (or it's partial) must have `@SignalFor` annotation with corresponding slot
-* Class (or it's partial) must implement AnnotatedInterface or it will not even be parsed by annotations engine.
+In `src/Export/CsvExporter.php`:
 
+```php
+namespace App\Export;
 
-## When to use gathering
+use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 
-Gathering is especially usefull fo collecting types, without their interaction. 
-This is espacially usefull to place `@SignalFor` on some interface, thus allowing to collect all
-implementation in entire application.
+/** @SignalFor(\App\Slots\Exporters) */
+final class CsvExporter implements AnnotatedInterface
+{
+    public function extension(): string
+    {
+        return 'csv';
+    }
+}
+```
+
+After [generating the definition](../generate/):
+
+```php
+use App\Slots\Exporters;
+use Maslosoft\Signals\Signal;
+
+foreach (Signal::fly()->gather(new Exporters()) as $exporter) {
+    echo $exporter->extension(), PHP_EOL;
+}
+```
+
+Gatherable classes must implement `AnnotatedInterface` and be concrete. Their
+constructors must accept zero arguments. Metadata can be inherited from annotated
+parents/interfaces, but it is the discovered concrete classes that are constructed.
+Ensure those implementations are in the scan paths and can autoload.
+
+## Restrict returned types
+
+The optional second argument selects providers matching a class or interface:
+
+```php
+$providers = Signal::fly()->gather(new Exporters(), App\Export\CsvExporter::class);
+```
+
+The restriction can be a concrete class, base class, or interface. Nonmatching
+providers are not constructed. A slot with no registered providers returns `[]`.
+
+[Pre-filters](../filters/) inspect the candidate provider class and the slot before
+construction. Post-filters receive the constructed provider and can omit it from
+the returned array. Constructor side effects have already happened at that point.

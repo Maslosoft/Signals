@@ -46,7 +46,7 @@ class PreviewCommand extends ConsoleCommand implements AnnotatedInterface
 
 		$help = <<<EOT
 The <info>preview</info> command will display list of signals and slots.
-No files will be modified at this stage.
+The generated definition file is not modified; the configuration cache may be refreshed.
 Use -vv option to also get list of processed files.
 EOT;
 		$this->setHelp($help);

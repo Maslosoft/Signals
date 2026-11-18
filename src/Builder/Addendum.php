@@ -12,6 +12,8 @@
  * @link https://maslosoft.com/signals/
  */
 
+declare(strict_types=1);
+
 namespace Maslosoft\Signals\Builder;
 
 use Maslosoft\Signals\Interfaces\SignalInterface;
@@ -22,25 +24,22 @@ use function is_a;
 use Maslosoft\Addendum\Exceptions\NoClassInFileException;
 use Maslosoft\Addendum\Exceptions\ParseException;
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
-use Maslosoft\Addendum\Utilities\AnnotationUtility;
-use Maslosoft\Addendum\Utilities\ClassChecker;
+use Maslosoft\Addendum\Builder\DocComment;
 use Maslosoft\Addendum\Utilities\FileWalker;
 use Maslosoft\Addendum\Utilities\NameNormalizer;
 use Maslosoft\Signals\Exceptions\ClassNotFoundException;
 use Maslosoft\Signals\Helpers\DataSorter;
 use Maslosoft\Signals\Interfaces\ExtractorInterface;
 use Maslosoft\Signals\Interfaces\PathsAwareInterface;
-use Maslosoft\Signals\Meta\DocumentMethodMeta;
-use Maslosoft\Signals\Meta\DocumentPropertyMeta;
 use Maslosoft\Signals\Meta\DocumentTypeMeta;
 use Maslosoft\Signals\Meta\SignalsMeta;
 use Maslosoft\Signals\Signal;
-use ParseError;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
-use ReflectionException;
 use function sprintf;
 use UnexpectedValueException;
+use LogicException;
+use Throwable;
 
 /**
  * Addendum extractor
@@ -65,9 +64,9 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 
 	/**
 	 * Signals and slots data
-	 * @var mixed
+	 * @var array
 	 */
-	private $data = [
+	private array $data = [
 		Signal::Slots => [
 		],
 		Signal::Signals => [
@@ -78,14 +77,13 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 	 * Scanned file paths
 	 * @var string[]
 	 */
-	private $paths = [];
+	private array $paths = [];
 
 	/**
 	 * Annotations matching patterns
 	 * @var string[]
 	 */
-	private $patterns = [];
-	private static $file = '';
+	private array $patterns = [];
 
 	public function __construct()
 	{
@@ -101,45 +99,22 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 	}
 
 	/**
-	 * Handler for class not found errors
-	 *
-	 * @internal This must be public, but should not be used anywhere else
-	 * @param string $className
-	 * @return bool
-	 */
-	public static function autoloadHandler($className)
-	{
-		// These are loaded in some other way...
-		if ($className === 'PHP_Invoker')
-		{
-			return false;
-		}
-		if ($className === '\PHP_Invoker')
-		{
-			return false;
-		}
-		if (stripos($className, 'phpunit') !== false)
-		{
-			return false;
-		}
-		if (!ClassChecker::exists($className))
-		{
-			throw new ClassNotFoundException("Class $className not found when processing " . self::$file);
-		}
-		return false;
-	}
-
-	/**
 	 * Get signals and slots data
-	 * @return mixed
+	 * @return array
 	 */
 	public function getData(): array
 	{
+		if ($this->signal === null)
+		{
+			throw new LogicException('Set the Signal instance before extracting definitions.');
+		}
+		$this->data = [Signal::Slots => [], Signal::Signals => []];
+		$this->paths = [];
 		$paths = [];
 		foreach($this->signal->paths as $path)
 		{
 			$real = realpath($path);
-			if(false === $real)
+			if(false === $real || !is_dir($real))
 			{
 				$this->signal->getLogger()->warning("Directory $path could not be resolved to absolute path");
 				continue;
@@ -175,6 +150,10 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 	 */
 	public function getLogger(): LoggerInterface
 	{
+		if ($this->signal === null)
+		{
+			throw new LogicException('Set the Signal instance before extracting definitions.');
+		}
 		return $this->signal->getLogger();
 	}
 
@@ -185,9 +164,13 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 	public function processFile(string $file, string $contents): void
 	{
 		$this->getLogger()->debug("Processing `$file`");
-		$file = realpath($file);
-
-		self::$file = $file;
+		$real = realpath($file);
+		if ($real === false || !is_file($real))
+		{
+			$this->getLogger()->warning('Cannot scan missing file {file}', ['file' => $file]);
+			return;
+		}
+		$file = $real;
 
 		$ignoreFile = sprintf('%s/.signalignore', dirname($file));
 
@@ -201,7 +184,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		// Remove initial `\` from namespace
 		try
 		{
-			$annotated = AnnotationUtility::rawAnnotate($file);
+			$annotated = (new DocComment())->forFile($file);
 		}
 		catch(NoClassInFileException $e)
 		{
@@ -239,35 +222,16 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 
 		try
 		{
-			// NOTE: This autoloader must be registered on ReflectionClass
-			// creation ONLY! That's why register/unregister.
-			// This will detect not found depending classes
-			// (base classes,interfaces,traits etc.)
-			$autoload = static::class . '::autoloadHandler';
-			spl_autoload_register($autoload);
-			eval('$info = new ReflectionClass($fqn);');
-			spl_autoload_unregister($autoload);
+			$info = new ReflectionClass($fqn);
 		}
-		catch (ParseError $e)
+		catch (Throwable $e)
 		{
 			$this->err($e, $file);
 			return;
 		}
-		catch (ClassNotFoundException $e)
-		{
-			$this->log($e, $file);
-			return;
-		}
-		catch (ReflectionException $e)
-		{
-			$this->err($e, $file);
-			return;
-		}
-		// $info is created in `eval`
-		/* @var $info ReflectionClass */
 		$isAnnotated = $info->implementsInterface(AnnotatedInterface::class);
 		$hasSignals = $this->hasSignals($contents);
-		$isAbstract = $info->isAbstract() || $info->isInterface();
+		$isAbstract = $info->isAbstract() || $info->isInterface() || $info->isTrait();
 
 		if ($isAnnotated)
 		{
@@ -298,11 +262,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		}
 		try
 		{
-			// Discard notices (might be the case when outdated cache?)
-			$level = error_reporting();
-			error_reporting(E_WARNING);
 			$meta = SignalsMeta::create($fqn);
-			error_reporting($level);
 		}
 		catch (ParseException $e)
 		{
@@ -350,7 +310,6 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		// For method injection
 		foreach ($meta->methods() as $methodName => $method)
 		{
-			/* @var $method DocumentMethodMeta */
 			foreach ($method->slotFor as $slot)
 			{
 				$key = implode('::', [$fqn, $methodName]) . '()';
@@ -366,7 +325,6 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		// For property injection
 		foreach ($meta->fields() as $fieldName => $field)
 		{
-			/* @var $field DocumentPropertyMeta */
 			foreach ($field->slotFor as $slot)
 			{
 				$key = implode('::$', [$fqn, $fieldName]);
@@ -380,7 +338,7 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		}
 	}
 
-	private function hasSignals($contents): bool
+	private function hasSignals(string $contents): bool
 	{
 		foreach ($this->patterns as $pattern)
 		{
@@ -392,18 +350,16 @@ class Addendum implements ExtractorInterface, PathsAwareInterface
 		return false;
 	}
 
-	private function log($e, $file): void
+	private function log(Throwable $e, string $file): void
 	{
-		/* @var $e ParseError|Exception */
 		$msg = sprintf('Warning: %s while scanning file `%s`', $e->getMessage(), $file);
 		$msg .= PHP_EOL;
 		$this->signal->getLogger()->warning($msg);
 	}
 
-	private function err($e, $file): void
+	private function err(Throwable $e, string $file): void
 	{
 		// Uncomment for debugging
-		/* @var $e ParseError|Exception */
 		$msg = sprintf('Error: %s while scanning file `%s`', $e->getMessage(), $file);
 		$msg = $msg . PHP_EOL;
 

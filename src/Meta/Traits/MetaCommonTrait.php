@@ -26,12 +26,12 @@ trait MetaCommonTrait
 	 *
 	 * @var string[]
 	 */
-	public $slotFor = [];
+	public array $slotFor = [];
 
 	/**
 	 *
 	 * @var string[]
 	 */
-	public $signalFor = [];
+	public array $signalFor = [];
 
 }

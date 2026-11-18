@@ -23,18 +23,18 @@ use UnexpectedValueException;
 
 /**
  * SlotForAnnotation
- * @template SlotFor(${SignalClass})
+ * Annotation syntax: SlotFor(SignalClass)
  * @codeCoverageIgnore
  * @author Piotr
  */
 class SlotForAnnotation extends SignalsAnnotation
 {
 
-	const Ns = __NAMESPACE__;
+	public const Ns = __NAMESPACE__;
 
-	public $value;
+	public mixed $value = null;
 
-	public function init()
+	public function init(): void
 	{
 		$data = ParamsExpander::expand($this, ['class']);
 		$class = '';

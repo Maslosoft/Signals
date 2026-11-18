@@ -27,7 +27,7 @@ use Maslosoft\SignalsExamples\Signals\ConstructorInjected;
 class WithConstructorInjection implements AnnotatedInterface
 {
 
-	public function __construct(ConstructorInjected $signal = null)
+	public function __construct(?ConstructorInjected $signal = null)
 	{
 		if(!empty($signal))
 		{

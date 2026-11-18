@@ -6,7 +6,6 @@ extractor:
 # Input output configuration
 io:
    class: Maslosoft\Signals\Builder\IO\PhpFile
-   runtimePath: runtime
    generatedPath: generated
 # Paths to search for signals
 paths:

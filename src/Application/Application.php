@@ -41,8 +41,8 @@ LOGO;
 	public function __construct()
 	{
 		parent::__construct('Signals', (new Signal)->getVersion());
-		$this->add(new BuildCommand());
-		$this->add(new PreviewCommand());
+		$this->addCommand(new BuildCommand());
+		$this->addCommand(new PreviewCommand());
 	}
 
 	public function getHelp(): string

@@ -1,47 +1,64 @@
-<title>Documentation</title>
+<title>Signals</title>
 
-# About
+# Signals
 
-Signals are a kind of connector between scattered application components.
-These components are supposed to be dynamically linked, mostly by installing them via composer.
+Signals connects application components discovered through annotations. An emitter
+does not need to know which packages receive its message. A gatherer can discover
+the concrete classes offered by installed packages.
 
-## Quick start
-
-Install via composer:
+Signals requires **PHP 8.5 or newer**. Install it with Composer:
 
 ```shell
-composer require "maslosoft/signals"
+composer require maslosoft/signals
 ```
 
-### Required directories
+## Two ways to connect components
 
-Signals require writable directory `generated` in application root. This directory should be committed
-together with codebase. Another required writable directory is `runtime` for temporary files, this should
-not be committed, and it's contents can be safely cleared.
+| Operation | Declaration | Result |
+| --- | --- | --- |
+| `emit($message)` | Receiver uses `@SlotFor(MessageClass)` | One cloned message per injection, after the receiver runs |
+| `gather($slot)` | Provider uses `@SignalFor(SlotClass)` | Newly constructed provider objects |
 
-##### In Short Summary
+Dispatch is synchronous. Exceptions from receivers and filters propagate to the
+caller. Signals does not provide queues, retries, or transactions. Each dispatch
+uses the exact message or slot class in the generated definition; inheritance
+alone does not register additional runtime keys.
 
-Required writable directories:
+## Build before dispatching
 
- * `generated` - commit this
- * `runtime` - do not commit this
+Configure directories containing Composer-autoloadable classes in `signals.yml`:
 
-### Generate signals
+```yaml
+paths:
+  - src
+io:
+  class: Maslosoft\Signals\Builder\IO\PhpFile
+  generatedPath: generated
+```
 
-Before use codebase need to be [scanned for signals and slots](generate/). 
-
-To [generate](generate/) issue command:
+After adding [receivers](emit/) or [gatherable providers](gather/), run from the
+application root:
 
 ```shell
+composer dump-autoload
 vendor/bin/signals build
 ```
 
-From now on signals can be [emitted](emit/) and [gathered](gather/) within
-your code.
+Deploy `generated/signals-definition.php` alongside the matching application code.
+It can be committed or produced as a build artifact. The build user needs write
+access to its destination; request handlers only need read access. CLI YAML
+configuration also produces a cache under `runtime/`; see
+[configuration](configuration/) for its deployment requirements.
 
-Check [this repository for working example of Signals][repo]
+At runtime, load Composer's autoloader and reuse a dispatcher within the current
+execution context:
 
-To customize available options head to [configuration](configuration/) secion.
+```php
+use Maslosoft\Signals\Signal;
 
+$signals = Signal::fly();
+```
 
-[repo]: https://github.com/MaslosoftGuides/signals.quick-start
+Use [filters](filters/) to select participants,
+[generation](generate/) to manage discovery and deployment, and
+[application servers](application-servers/) to choose request lifetimes.

@@ -23,18 +23,18 @@ use UnexpectedValueException;
 
 /**
  * SignalForAnnotation
- * @template SignalFor(${SlotClass})
+ * Annotation syntax: SignalFor(SlotClass)
  * @codeCoverageIgnore
  * @author Piotr
  */
 class SignalForAnnotation extends SignalsAnnotation
 {
 
-	const Ns = __NAMESPACE__;
+	public const Ns = __NAMESPACE__;
 
-	public $value;
+	public mixed $value = null;
 
-	public function init()
+	public function init(): void
 	{
 		$data = ParamsExpander::expand($this, ['class']);
 		$class = '';

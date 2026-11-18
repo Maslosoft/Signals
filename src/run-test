@@ -1,4 +1,4 @@
-#!/bin/bash
-cd ..
-rm -rf runtime/*
-./run-test $@
+#!/usr/bin/env sh
+set -eu
+cd "$(dirname "$0")/.."
+exec composer test -- "$@"

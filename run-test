@@ -1,4 +1,4 @@
-#!/bin/bash
-rm -rf ./runtime/*
-rm -rf ./generated/*
-vendor/bin/codecept run unit "$@"Test.php --debug
+#!/usr/bin/env sh
+set -eu
+cd "$(dirname "$0")"
+exec composer test -- "$@"

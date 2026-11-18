@@ -1,125 +1,65 @@
-<!--header-->
-<!-- Auto generated do not modify between `header` and `/header` -->
+# Maslosoft Signals
 
-# <a href="https://maslosoft.com/signals/"><img src="https://maslosoft.com/signals/signals.svg" style="height:24px;" alt="Signals Logo"></a> <a href="https://maslosoft.com/signals/">Maslosoft Signals</a>
-<a href="https://maslosoft.com/signals/">_Wireless Cross-Component Communication_</a>
+Signals connects PHP application components through generated annotation metadata.
+Use `emit()` to send a cloned message to each registered receiver, or `gather()` to
+instantiate providers registered for a discovery slot.
 
-<a href="https://packagist.org/packages/maslosoft/signals" title="Latest Stable Version">
-<img src="https://poser.pugx.org/maslosoft/signals/v/stable.svg" alt="Latest Stable Version" style="height: 20px;"/>
-</a>
-<a href="https://packagist.org/packages/maslosoft/signals" title="License">
-<img src="https://poser.pugx.org/maslosoft/signals/license.svg" alt="License" style="height: 20px;"/>
-</a>
-<a href="https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master">
-	<img src="https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"/>
-</a>
-<a href="https://scrutinizer-ci.com/g/Maslosoft/Signals/?branch=master">
-	<img src="https://scrutinizer-ci.com/g/Maslosoft/Signals/badges/coverage.png?b=master" alt="Code Coverage" />
-</a>
+Requires **PHP 8.5 or newer**, EmbeDi 3.0.1 or newer, and Maslosoft Light 2.
 
-### Quick Install
-```bash
+```shell
 composer require maslosoft/signals
 ```
 
-### Documentation
+Make participating classes Composer-autoloadable, configure their source paths in
+`signals.yml`, and build the connection definition:
 
-<a href="https://maslosoft.com/signals/docs/">Full Signals Documentation</a>
-
-
-
-
-
-# Connecting components
-
-Various application components must be connected to each other.
-This should be made in a soft manner, so that when adding
-or removing component code will not require to change.
-
-### Wireless connection
-
-Signals provide somthing like wireless connection between
-components. On of them emit signal, the other receives it.
-This can be done other way around. That one application
-component sends signal, and several components listen
-to that signal.
-
-<!--/header-->
-## Wireless cross-component communication
-
-This component allows for interaction of application components, without prior or explicit assignment.
-
-## Setup
-
-Use composer to install
-
-```bash
-composer require maslosoft/signals:"*"
+```yaml
+paths:
+  - src
+io:
+  class: Maslosoft\Signals\Builder\IO\PhpFile
+  generatedPath: generated
 ```
-	
-Or by hard way, download somewhere in your project and ensure autoloading works for `Maslosoft\Signals\*` and you include dep too;
-	
-Setup signals. After calling `init` any further instance will be configured same as below `$signal`.
+
+```shell
+composer dump-autoload
+vendor/bin/signals build
+```
+
+After loading Composer's autoloader, obtain a dispatcher in the current execution
+context and dispatch your application's message:
 
 ```php
-$signal = new Maslosoft\Signals\Signal();
-$signal->runtimePath = RUNTIME_PATH;
-$signal->paths = [
-	MODELS_PATH
-];
-$signal->init();
+use Maslosoft\Signals\Signal;
+
+$messages = Signal::fly()->emit(new App\Messages\MenuItems());
 ```
 
-Generate signals definition, only once, hook it to your build script etc.
+Receivers implement Addendum's `AnnotatedInterface` and declare
+`@SlotFor(\App\Messages\MenuItems)` on a class, public method, or public property.
+The [emission guide](docs/emit/index.md.php) contains complete message and receiver
+examples. [Gathering](docs/gather/index.md.php) uses `@SignalFor` to discover providers.
 
-```php
-$signal = new Maslosoft\Signals\Signal();
-(new Maslosoft\Signals\Utility($signal))->generate();
+Definitions and overlays belong to individual dispatcher objects.
+`Signal::fly()` deliberately reuses a dispatcher within the current Light context.
+Sequential workers must end that lifetime explicitly; see
+[application servers](docs/application-servers/index.md.php).
+
+Read [configuration](docs/configuration/index.md.php),
+[generation and deployment](docs/generate/index.md.php),
+[filters](docs/filters/index.md.php), and
+[migration](docs/migration/index.md.php) for details.
+
+For development:
+
+```shell
+composer install
+composer check
 ```
 
-## Usage
+Repository guidance is in [AGENTS.md](AGENTS.md) and the
+[development guide](docs/development/index.md.php). Application integration and
+library maintenance skills live in [.agents/signals](.agents/signals/SKILL.md) and
+[.agents/signals-dev](.agents/signals-dev/SKILL.md).
 
-### Emiting signal
-
-Define signal:
-
-```php
-namespace MyNamespace\Signals;
-
-class AccountMenuItems extends AdminMenuItems
-{
-	public $item = [];
-}
-```
-
-Define class with slot with `@SlotFor` annotation
-
-```php
-namespace Maslosoft\Ilmatar\Modules;
-
-class MyModule
-{
-	/**
-	 * @SlotFor(MyNamespace\Signals\AccountMenuItems)
-	 */
-	public function reactOnAccountMenu(MyNamespace\Signals\AccountMenuItems $signal)
-	{
-		$signal->item = [
-			'url' => '/content/myBlog',
-			'label' => 'My blog'
-		];
-	}
-}
-```
-
-
-Emit signal and get results of this call:
-
-```php
-$signal = new Maslosoft\Signals\Signal();
-$result = $signal->emit(new AdminMenuItems());
-
-echo $result[0]->item[0]['label']; // My blog
-```
-
-### Gathering signals
+Licensed under AGPL-3.0-only or a proprietary license; see the license files.

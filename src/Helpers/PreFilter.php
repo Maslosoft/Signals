@@ -25,7 +25,7 @@ use Maslosoft\Signals\Signal;
 class PreFilter
 {
 
-	public static function filter(Signal $signals, $fqn, $signal)
+	public static function filter(Signal $signals, string $fqn, object $signal): bool
 	{
 		$preFilters = $signals->getFilters(PreFilterInterface::class);
 		foreach ($preFilters as $filter)

@@ -1,6 +1,5 @@
 {
     "name": "maslosoft/signals",
-    "version": "4.0.7",
     "description": "Wireless Cross-Component Communication",
     "keywords": [
         "signal",
@@ -27,32 +26,64 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "maslosoft/addendum": "^7|*@dev",
-        "psr/log": "^1|^2|^3",
-        "maslosoft/embedi": "^2|^3",
-        "maslosoft/cli-shared": "^1|^2|^3",
-        "symfony/console": ">=2.7",
-        "php": ">=7.4"
+        "php": ">=8.5",
+        "maslosoft/addendum": "^7.0.6",
+        "maslosoft/cli-shared": "^2.0.5",
+        "maslosoft/embedi": "^3.0.1",
+        "maslosoft/light": "^2.0",
+        "psr/log": "^3.0",
+        "symfony/console": "^8.0",
+        "symfony/finder": "^8.0",
+        "symfony/yaml": "^8.0"
     },
     "autoload": {
         "psr-4": {
-            "Maslosoft\\Signals\\": "src",
-            "Maslosoft\\SignalsExamples\\": "examples",
-            "Maslosoft\\SignalsTest\\Extensions\\": "tests/extensions"
+            "Maslosoft\\Signals\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Maslosoft\\SignalsTest\\Signals\\": "tests/signals",
-            "Maslosoft\\SignalsTest\\Models\\": "tests/models"
+            "Maslosoft\\SignalsTest\\Models\\": "tests/models",
+            "Maslosoft\\SignalsExamples\\": "examples/"
         }
     },
     "require-dev": {
+        "codeception/codeception": "^5.3.7",
+        "codeception/module-asserts": "^3.3",
+        "maslosoft/sitcom": "^2.0.1",
+        "phpstan/phpstan": "^2.1.32",
+        "phpunit/phpunit": "^13.0",
         "roave/security-advisories": "dev-latest",
-        "codeception/codeception": "^5",
-        "codeception/module-asserts": "^3",
-        "maslosoft/sitcom": "^1|^2|^3",
-        "maslosoft/zamm": "^1|^2|^3"
+        "symfony/css-selector": "^8.0",
+        "symfony/event-dispatcher": "^8.0",
+        "symfony/event-dispatcher-contracts": "^3.6",
+        "symfony/var-dumper": "^8.0"
     },
-    "homepage": "https://maslosoft.com/signals/"
+    "homepage": "https://maslosoft.com/signals/",
+    "suggest": {
+        "ext-swoole": "Coroutine-local Signal flyweights on a PHP 8.5-compatible Swoole release.",
+        "ext-openswoole": "Coroutine-local Signal flyweights on a PHP 8.5-compatible OpenSwoole release."
+    },
+    "scripts": {
+        "lint": "@php tools/lint.php",
+        "analyse": "@php vendor/bin/phpstan analyse --no-progress --memory-limit=512M",
+        "test:build": "@php -d register_argc_argv=1 vendor/bin/codecept build",
+        "test": [
+            "@test:build @no_additional_args",
+            "@php -d register_argc_argv=1 -d error_reporting=-1 vendor/bin/codecept run unit"
+        ],
+        "test:coverage": [
+            "@test:build @no_additional_args",
+            "@php -d register_argc_argv=1 vendor/bin/codecept run unit --coverage --coverage-html --coverage-xml"
+        ],
+        "check": [
+            "@lint",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    }
 }

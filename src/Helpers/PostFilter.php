@@ -25,7 +25,7 @@ use Maslosoft\Signals\Signal;
 class PostFilter
 {
 
-	public static function filter(Signal $signals, $injected, $signal)
+	public static function filter(Signal $signals, object $injected, object $signal): bool
 	{
 		$filters = $signals->getFilters(PostFilterInterface::class);
 		foreach ($filters as $filter)

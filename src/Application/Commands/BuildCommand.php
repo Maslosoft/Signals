@@ -17,6 +17,7 @@ namespace Maslosoft\Signals\Application\Commands;
 use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
 use Maslosoft\Cli\Shared\Log\Logger;
 use Maslosoft\Signals\Signal;
+use Maslosoft\Signals\Helpers\Configuration;
 use Maslosoft\Signals\Utility;
 use Maslosoft\Sitcom\Command;
 use Psr\Log\NullLogger;
@@ -58,7 +59,12 @@ EOT;
 		}
 
 		(new Utility($signal))->generate();
-		return 1;
+		Configuration::write(
+			Signal::ConfigName,
+			$signal->runtimePath,
+			Configuration::read(Signal::ConfigName, $signal->runtimePath)
+		);
+		return self::SUCCESS;
 	}
 
 	/**

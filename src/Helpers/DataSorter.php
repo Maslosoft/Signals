@@ -24,13 +24,14 @@ use Maslosoft\Signals\Signal;
 class DataSorter
 {
 
-	public static function sort(&$data)
+	public static function sort(array &$data): void
 	{
+		$data += [Signal::Signals => [], Signal::Slots => []];
 		self::_sort($data[Signal::Signals]);
 		self::_sort($data[Signal::Slots]);
 	}
 
-	private static function _sort(&$data)
+	private static function _sort(array &$data): void
 	{
 		ksort($data);
 		foreach ($data as &$values)

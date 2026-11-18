@@ -12,6 +12,8 @@
  * @link https://maslosoft.com/signals/
  */
 
+declare(strict_types=1);
+
 namespace Maslosoft\Signals\Builder\IO;
 
 use Maslosoft\Signals\Interfaces\BuilderIOInterface;
@@ -25,20 +27,24 @@ use Maslosoft\Signals\Signal;
 class Memory implements BuilderIOInterface
 {
 
-	private $data = null;
+	private array $data = [];
 
 	public function read(): array
 	{
 		return $this->data;
 	}
 
-	public function setSignal(Signal $signal)
+	public function setSignal(Signal $signal): void
 	{
 
 	}
 
 	public function write($data): bool
 	{
+		if (!is_array($data))
+		{
+			throw new \InvalidArgumentException('Signals definitions must be an array.');
+		}
 		$this->data = $data;
 		return true;
 	}

@@ -1,14 +1,15 @@
-# Default configuration file
-extractor:
-   class: Maslosoft\Signals\Builder\Addendum
-   
-# Builder extractor configuration
-# Input output configuration
-io:
-   class: Maslosoft\Signals\Builder\IO\PhpFile
-   runtimePath: runtime
-   generatedPath: generated
-# Paths to search for signals
+# Source directories containing Composer-autoloadable participants.
 paths:
-   - vendor
-   - src
+  - src
+  - vendor
+ignoreDirs:
+  - vendor
+  - generated
+  - runtime
+extractor:
+  class: Maslosoft\Signals\Builder\Addendum
+io:
+  class: Maslosoft\Signals\Builder\IO\PhpFile
+  generatedPath: generated
+  configFilename: signals-definition.php
+filters: []

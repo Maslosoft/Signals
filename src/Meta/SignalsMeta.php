@@ -31,16 +31,15 @@ class SignalsMeta extends Meta
 	 * Create instance of Metadata specifically designed for Signals
 	 * @param string|object|AnnotatedInterface $model
 	 * @param MetaOptions|null                 $options
-	 * @return SignalsMeta
+	 * @return static
 	 */
-	public static function create($model, ?MetaOptions $options = null)
+	public static function create($model, ?MetaOptions $options = null): static
 	{
 		if (null === $options)
 		{
 			$options = new SignalsMetaOptions();
 		}
 		$meta = parent::create($model, $options);
-		assert($meta instanceof SignalsMeta);
 		return $meta;
 	}
 
@@ -49,7 +48,7 @@ class SignalsMeta extends Meta
 	 * @param string $name
 	 * @return DocumentPropertyMeta
 	 */
-	public function field($name)
+	public function field($name): DocumentPropertyMeta
 	{
 		$meta = parent::field($name);
 		assert($meta instanceof DocumentPropertyMeta);
@@ -60,11 +59,41 @@ class SignalsMeta extends Meta
 	 * Get document type meta
 	 * @return DocumentTypeMeta
 	 */
-	public function type()
+	public function type(): DocumentTypeMeta
 	{
 		$meta = parent::type();
 		assert($meta instanceof DocumentTypeMeta);
 		return $meta;
+	}
+
+	/** @return DocumentMethodMeta[] */
+	public function methods(): array
+	{
+		$methods = [];
+		foreach (parent::methods() as $name => $method)
+		{
+			if (!$method instanceof DocumentMethodMeta)
+			{
+				throw new \UnexpectedValueException('Signals metadata requires DocumentMethodMeta methods.');
+			}
+			$methods[$name] = $method;
+		}
+		return $methods;
+	}
+
+	/** @return DocumentPropertyMeta[] */
+	public function fields(): array
+	{
+		$fields = [];
+		foreach (parent::fields() as $name => $field)
+		{
+			if (!$field instanceof DocumentPropertyMeta)
+			{
+				throw new \UnexpectedValueException('Signals metadata requires DocumentPropertyMeta properties.');
+			}
+			$fields[$name] = $field;
+		}
+		return $fields;
 	}
 
 }

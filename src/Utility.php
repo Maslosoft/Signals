@@ -28,25 +28,22 @@ class Utility
 	 * Signal instance
 	 * @var Signal
 	 */
-	private $signal = null;
+	private Signal $signal;
 
 	/**
 	 * Processed paths
 	 * @var string[]
 	 */
-	private $paths = [];
+	private array $paths = [];
 
 	public function __construct(Signal $signal)
 	{
-		if(!defined('YII_DEBUG'))
-		{
-			define('YII_DEBUG', true);
-		}
 		$this->signal = $signal;
 	}
 
-	public function generate()
+	public function generate(): void
 	{
+		$this->paths = [];
 		$extractor = $this->signal->getExtractor();
 		$data = $extractor->getData();
 
@@ -54,10 +51,13 @@ class Utility
 		{
 			$this->paths = $extractor->getPaths();
 		}
-		$this->signal->getIO()->write($data);
+		if (!$this->signal->getIO()->write($data))
+		{
+			throw new \RuntimeException('Could not write the generated signal definitions.');
+		}
 	}
 
-	public function getPaths()
+	public function getPaths(): array
 	{
 		return $this->paths;
 	}

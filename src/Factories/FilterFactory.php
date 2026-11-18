@@ -24,13 +24,13 @@ use Maslosoft\Signals\Signal;
 class FilterFactory
 {
 
-	public static function create(Signal $signal, $interface)
+	public static function create(Signal $signal, string $interface): array
 	{
 		$filters = [];
 		$di = $signal->getDi();
 		foreach ($signal->filters as $config)
 		{
-			$filter = $di->apply($config);
+			$filter = is_object($config) ? $config : $di->apply($config);
 			if (!$filter instanceof $interface)
 			{
 				continue;

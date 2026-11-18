@@ -10,3 +10,7 @@
 /extensions
 /test-signals
 .idea/
+
+/tests/runtime/
+/tests/_support/_generated/
+/.phpstan-cache/

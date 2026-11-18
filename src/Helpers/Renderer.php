@@ -24,18 +24,22 @@ use Maslosoft\Signals\Signal;
 class Renderer
 {
 
-	public function renderCli($data)
+	public function renderCli(array $data): array
 	{
 		$result = [];
 		foreach ([Signal::Signals => 'Signals:', Signal::Slots => 'Slots:'] as $type => $name)
 		{
 			$result[] = "$name";
 			$result[] = "";
-			foreach ($data[$type] as $signal => $slots)
+			foreach ($data[$type] ?? [] as $signal => $slots)
 			{
 				$result[] = $signal;
 				foreach ($slots as $slot => $types)
 				{
+					if ($types === false)
+					{
+						continue;
+					}
 					foreach ((array) $types as $stype)
 					{
 						if ($stype === true)
@@ -44,7 +48,7 @@ class Renderer
 						}
 						else
 						{
-							$result[] = sprintf("\t%s::%s", $slot, $type);
+							$result[] = sprintf("\t%s::%s", $slot, $stype);
 						}
 					}
 				}

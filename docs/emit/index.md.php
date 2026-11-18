@@ -1,125 +1,121 @@
-<?php
+<title>Emitting signals</title>
 
-use Maslosoft\Ilmatar\Components\Helpers\EnumBase;
-use Maslosoft\Ilmatar\Widgets\Messages\MessageType;
-use Maslosoft\Signals\Signal;
-use Maslosoft\SignalsExamples\Signals\ConstructorInjected;
-use Maslosoft\SignalsExamples\Signals\MethodInjected;
-use Maslosoft\SignalsExamples\WithConstructorInjection;
-use Maslosoft\SignalsExamples\WithMethodInjection;
-use Maslosoft\SignalsTest\Models\ModelWithConstructorInjection;
-use Maslosoft\Zamm\ShortNamer;
-use Maslosoft\Zamm\Source;
-use Maslosoft\Zamm\Capture;
-?>
-<title>3. Emit</title>
+# Emitting signals
 
-# Emit signal
+`emit($message)` finds receivers registered for the message's exact class, clones
+the message for each injection, invokes that receiver, and returns the resulting
+clones. It returns an empty array when there are no matching receivers.
 
-Prior to emitting signal, [signal definition](../generate/) must be generated.
+## A complete receiver
 
-Emitting signal is a process where single point in application
-emerges action and other, scattered around application receivers take action after
-receiving such signal.
+Make application classes autoloadable with Composer. For these examples, map
+`App\` to `src/`, and place each class in the corresponding file.
 
-To emit signal simply call `emit` method with some signal as param.
-
-## Receiving signals
-
-Signals could be received via various injection methods. This depends on receiver implementation.
-To create receiver use annotation `@SlotFor` on either class, method or property definition.
-Depending on where annotation is placed, it will be injected properly by signals.
-
-*Note: Classes used here are [available in examples folder][examples].*
-
-### Class Constructor injection
-
-When annotation will be placed in class comment block, [Signals][signals] will create instance
-of this class and pass emitted signal as constructor param.
-
-Example:
+In `src/Messages/MenuItems.php`:
 
 ```php
-/**
- * @SlotFor(ConstructorInjected)
- *
- * @see ConstructorInjected
- */
-class WithConstructorInjection implements AnnotatedInterface
+namespace App\Messages;
+
+use Maslosoft\Signals\Interfaces\SignalInterface;
+
+final class MenuItems implements SignalInterface
 {
-...
+    public array $items = [];
+}
 ```
 
-When emitting this is equivalent of following code for each class containing
-annotation `@SlotFor(ConstructorInjected)`:
-
-<?php
-Capture::open();
-new WithConstructorInjection(new ConstructorInjected);
-echo Capture::close()->md;
-?>
-
-Now emit this signal, and see results. This code is really evaluated here:
-
-<?php
-Capture::open();
-$results = (new Signal)->emit(new ConstructorInjected);
-echo Capture::close()->md;
-?>
-
-And the resulting array is one instance of signal with it's property set by `WithConstructorInjection` class:
-
-```
-<?= print_r($results, true) . PHP_EOL; ?>
-```
-
-### Method injection
-
-Possibly most useful injection type. It will instantiate class containing this method and pass
-emitted signal as it's parameter to annotated method.
-
-Following class will react on signal, but signal will be injected into `reactOn` method:
+In `src/Receivers/BlogMenu.php`:
 
 ```php
-class WithMethodInjection implements AnnotatedInterface
+namespace App\Receivers;
+
+use App\Messages\MenuItems;
+use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
+
+final class BlogMenu implements AnnotatedInterface
 {
-    /**
-     * @SlotFor(MethodInjected)
-     * @param MethodInjected $signal
-     */
-    public function reactOn(MethodInjected $signal)
+    /** @SlotFor(\App\Messages\MenuItems) */
+    public function contribute(MenuItems $message): void
     {
-        $signal->emitted = true;
+        $message->items[] = ['label' => 'Blog', 'url' => '/blog'];
     }
 }
 ```
 
-When emitting this is equivalent of following code for every annotated method (might be many times for one class):
+Concrete annotated receivers must implement Addendum's `AnnotatedInterface`.
+`SignalInterface` is a useful marker for messages, but it does not replace
+`AnnotatedInterface` on classes scanned for annotations. These are docblock
+annotations, not PHP attributes. PHP snippets omit the opening tag; add that tag
+when creating a standalone source file.
 
-<?php
-Capture::open();
-$model = new WithMethodInjection();
-$model->reactOn(new MethodInjected());
-echo Capture::close()->md;
-?>
+Add `src` to `paths` in `signals.yml`, then [build the definition](../generate/).
+In application code after loading `vendor/autoload.php`:
 
-Emitting this signal will yield array of `MethodInjected` signals. Live evaluation results are available here:
+```php
+use App\Messages\MenuItems;
+use Maslosoft\Signals\Signal;
 
-<?php
-Capture::open();
-$results = (new Signal)->emit(new MethodInjected);
-echo Capture::close()->md;
-?>
+$original = new MenuItems();
+$results = Signal::fly()->emit($original);
 
-Array is one instance of signal with it's property set by `WithMethodInjection` class:
-
+foreach ($results as $message) {
+    foreach ($message->items as $item) {
+        echo $item['label'], PHP_EOL;
+    }
+}
+// $original->items is still [] in this example.
 ```
-<?= print_r($results, true) . PHP_EOL; ?>
+
+`emit(MenuItems::class)` also works when the message has no required constructor
+arguments. Pass an object when it needs initial data.
+
+## Injection choices
+
+| Annotation location | Construction and injection |
+| --- | --- |
+| Class docblock | Construct the receiver with the cloned message as its constructor argument |
+| Public method docblock | Construct the receiver without arguments, then call the method with the clone |
+| Public property docblock | Construct the receiver without arguments, then assign the clone to that property |
+
+Each registered injection creates a separate receiver and clone, even when several
+methods belong to the same receiver class. Method and property injection require a
+receiver constructible without required arguments. Constructor injection requires
+a constructor accepting the message. These receiver objects are created directly;
+EmbeDi configures the dispatcher and its adapters, not arbitrary receiver services.
+
+For constructor injection:
+
+```php
+namespace App\Receivers;
+
+use App\Messages\MenuItems;
+use Maslosoft\Addendum\Interfaces\AnnotatedInterface;
+
+/** @SlotFor(\App\Messages\MenuItems) */
+final class AccountMenu implements AnnotatedInterface
+{
+    public function __construct(MenuItems $message)
+    {
+        $message->items[] = ['label' => 'Account', 'url' => '/account'];
+    }
+}
 ```
 
-## When to use emitting
+Property injection assigns data; it does not invoke a method. Declare the public
+property explicitly to avoid PHP dynamic properties. Prefer method injection when
+the receiver must perform work immediately.
 
-Use emit when class instantiated by signal must perform some action.
+## Clone and slot awareness
 
-[signals]: /signals/
-[examples]: https://github.com/Maslosoft/Signals/tree/master/examples
+PHP cloning is shallow. Nested objects remain shared unless the message implements
+`__clone()` to copy them. Do not assume each receiver has an independent object
+graph merely because the outer message was cloned.
+
+A message implementing `SlotAwareInterface` receives the receiver through
+`setSlot($slot)`. With method/property injection, this happens before injection.
+With constructor injection it happens after the receiver constructor returns, so
+the constructor cannot rely on the message already knowing its receiver.
+
+Receiver exceptions propagate and stop the dispatch. Earlier receiver side
+effects remain. [Pre-filters](../filters/) can prevent receiver construction;
+post-filters only remove completed results.
